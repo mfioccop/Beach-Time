@@ -1,11 +1,16 @@
-﻿using System.Web;
-using System.Web.Optimization;
-
-namespace BeachTime
+﻿namespace BeachTime
 {
+	using System.Web;
+	using System.Web.Optimization;
+
 	public class BundleConfig
 	{
 		// For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
+		
+		/// <summary>
+		/// Registers bundles to the BundleCollection
+		/// </summary>
+		/// <param name="bundles">The BundleCollection that bundles will be added to</param>
 		public static void RegisterBundles(BundleCollection bundles)
 		{
 			bundles.Add(new ScriptBundle("~/bundles/jquery").Include(

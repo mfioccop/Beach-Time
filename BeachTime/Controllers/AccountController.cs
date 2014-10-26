@@ -1,46 +1,69 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
-using Owin;
-using BeachTime.Models;
-
-namespace BeachTime.Controllers
+﻿namespace BeachTime.Controllers
 {
+    using BeachTime.Models;
+    using Microsoft.AspNet.Identity;
+    using Microsoft.AspNet.Identity.EntityFramework;
+    using Microsoft.AspNet.Identity.Owin;
+    using Microsoft.Owin.Security;
+    using Owin;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Security.Claims;
+    using System.Threading.Tasks;
+    using System.Web;
+    using System.Web.Mvc;
+
+    /// <summary>
+    /// AccountController class handles registration, login, logout of user accounts using the Identity Framework
+    /// and external authentication methods
+    /// </summary>
     [Authorize]
     public class AccountController : Controller
     {
+        /// <summary>
+        /// Manages user account registration and authentication
+        /// </summary>
         private ApplicationUserManager _userManager;
 
+        /// <summary>
+        /// Initializes a new instance of the AccountController class
+        /// </summary>
         public AccountController()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the AccountController class
+        /// </summary>
+        /// <param name="userManager">ApplicationUserManager that the application should use</param>
         public AccountController(ApplicationUserManager userManager)
         {
             UserManager = userManager;
         }
 
-        public ApplicationUserManager UserManager {
+        /// <summary>
+        /// Gets the current UserManager
+        /// </summary>
+        public ApplicationUserManager UserManager
+        {
             get
             {
                 return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             }
+
             private set
             {
                 _userManager = value;
             }
+
         }
 
-        //
-        // GET: /Account/Login
+        /// <summary>
+        /// GET: /Account/Login
+        /// </summary>
+        /// <param name="returnUrl">URL to redirect the user to when the login process is complete</param>
+        /// <returns>The /Account/Login view</returns>
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
@@ -48,8 +71,12 @@ namespace BeachTime.Controllers
             return View();
         }
 
-        //
-        // POST: /Account/Login
+        /// <summary>
+        /// POST: /Account/Login
+        /// </summary>
+        /// <param name="model">Login View Model</param>
+        /// <param name="returnUrl">URL to redirect the user to when the login process is complete</param>
+        /// <returns>If login was successful: redirect to returnUrl, otherwise reload the view with errors displayed</returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -72,17 +99,22 @@ namespace BeachTime.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-
-        //
-        // GET: /Account/Register
+        
+        /// <summary>
+        /// GET: /Account/Register
+        /// </summary>
+        /// <returns>The /Account/Register view</returns>
         [AllowAnonymous]
         public ActionResult Register()
         {
             return View();
         }
 
-        //
-        // POST: /Account/Register
+        /// <summary>
+        /// POST: /Account/Register
+        /// </summary>
+        /// <param name="model">Register View Model</param>
+        /// <returns>Redirects to /Home/Index if registration was successful, or reloads the View if it was not</returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -98,9 +130,9 @@ namespace BeachTime.Controllers
 
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    //// string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    //// var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    //// await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -114,8 +146,12 @@ namespace BeachTime.Controllers
             return View(model);
         }
 
-        //
-        // GET: /Account/ConfirmEmail
+        /// <summary>
+        /// GET: /Account/ConfirmEmail
+        /// </summary>
+        /// <param name="userId">User's id that needs to have its email confirmed</param>
+        /// <param name="code">Confirmation code to compare to the Identity framework's generated code</param>
+        /// <returns>The Error view if the userId or code is null, or reloads the view if successful</returns>
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(string userId, string code)
         {
@@ -136,16 +172,22 @@ namespace BeachTime.Controllers
             }
         }
 
-        //
-        // GET: /Account/ForgotPassword
+        /// <summary>
+        /// GET: /Account/ForgotPassword
+        /// </summary>
+        /// <returns>The /Account/ForgotPassword view</returns>
         [AllowAnonymous]
         public ActionResult ForgotPassword()
         {
             return View();
         }
 
-        //
-        // POST: /Account/ForgotPassword
+        /// <summary>
+        /// POST: /Account/ForgotPassword
+        /// </summary>
+        /// <param name="model">Forgot Password View Model</param>
+        /// <returns>Sends an email to the user if they forgot their password, prompting them to reset it, or if the user does
+        /// not exist then display appropriate error</returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -169,19 +211,24 @@ namespace BeachTime.Controllers
             }
 
             // If we got this far, something failed, redisplay form
-            return View(model);
+            return this.View(model);
         }
 
-        //
-        // GET: /Account/ForgotPasswordConfirmation
+        /// <summary>
+        /// GET: /Account/ForgotPasswordConfirmation
+        /// </summary>
+        /// <returns>The /Account/ForgotPasswordConfirmation view</returns>
         [AllowAnonymous]
         public ActionResult ForgotPasswordConfirmation()
         {
-            return View();
+            return this.View();
         }
-	
-        //
-        // GET: /Account/ResetPassword
+    
+        /// <summary>
+        /// GET: /Account/ResetPassword
+        /// </summary>
+        /// <param name="code">The code to reset the password for a user's account</param>
+        /// <returns>An Error view if the code is not placed in the URL, or displays the /Account/ResetPassword page if the code is present</returns>
         [AllowAnonymous]
         public ActionResult ResetPassword(string code)
         {
@@ -189,11 +236,16 @@ namespace BeachTime.Controllers
             {
                 return View("Error");
             }
-            return View();
+
+            return this.View();
         }
 
-        //
-        // POST: /Account/ResetPassword
+        /// <summary>
+        /// POST: /Account/ResetPassword
+        /// </summary>
+        /// <param name="model">Reset Password View Model</param>
+        /// <returns>If the password reset was successful: redirect to /Account/ResetPasswordConfirmation, 
+        /// otherwise reload the view with errors displayed</returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -205,55 +257,66 @@ namespace BeachTime.Controllers
                 if (user == null)
                 {
                     ModelState.AddModelError("", "No user found.");
-                    return View();
+                    return this.View();
                 }
+
                 IdentityResult result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("ResetPasswordConfirmation", "Account");
+                    return this.RedirectToAction("ResetPasswordConfirmation", "Account");
                 }
+
                 else
                 {
-                    AddErrors(result);
-                    return View();
+                    this.AddErrors(result);
+                    return this.View();
                 }
             }
 
             // If we got this far, something failed, redisplay form
-            return View(model);
+            return this.View(model);
         }
 
-        //
-        // GET: /Account/ResetPasswordConfirmation
+        /// <summary>
+        /// GET: /Account/ResetPasswordConfirmation
+        /// </summary>
+        /// <returns>The /Account/ResetPasswordConfirmation view</returns>
         [AllowAnonymous]
         public ActionResult ResetPasswordConfirmation()
         {
-            return View();
+            return this.View();
         }
 
-        //
-        // POST: /Account/Disassociate
+        /// <summary>
+        /// POST: /Account/Disassociate
+        /// </summary>
+        /// <param name="loginProvider"></param>
+        /// <param name="providerKey"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Disassociate(string loginProvider, string providerKey)
         {
             ManageMessageId? message = null;
-            IdentityResult result = await UserManager.RemoveLoginAsync(User.Identity.GetUserId(), new UserLoginInfo(loginProvider, providerKey));
+            IdentityResult result = await this.UserManager.RemoveLoginAsync(User.Identity.GetUserId(), new UserLoginInfo(loginProvider, providerKey));
             if (result.Succeeded)
             {
-                var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-                await SignInAsync(user, isPersistent: false);
+                var user = await this.UserManager.FindByIdAsync(User.Identity.GetUserId());
+                await this.SignInAsync(user, isPersistent: false);
                 message = ManageMessageId.RemoveLoginSuccess;
             }
             else
             {
                 message = ManageMessageId.Error;
             }
-            return RedirectToAction("Manage", new { Message = message });
+            return this.RedirectToAction("Manage", new { Message = message });
         }
 
-        //
-        // GET: /Account/Manage
+        /// <summary>
+        /// GET: /Account/Manage
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public ActionResult Manage(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
@@ -262,34 +325,37 @@ namespace BeachTime.Controllers
                 : message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
                 : message == ManageMessageId.Error ? "An error has occurred."
                 : "";
-            ViewBag.HasLocalPassword = HasPassword();
+            ViewBag.HasLocalPassword = this.HasPassword();
             ViewBag.ReturnUrl = Url.Action("Manage");
-            return View();
+            return this.View();
         }
 
-        //
-        // POST: /Account/Manage
+        /// <summary>
+        /// POST: /Account/Manage
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Manage(ManageUserViewModel model)
         {
-            bool hasPassword = HasPassword();
+            bool hasPassword = this.HasPassword();
             ViewBag.HasLocalPassword = hasPassword;
             ViewBag.ReturnUrl = Url.Action("Manage");
             if (hasPassword)
             {
                 if (ModelState.IsValid)
                 {
-                    IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
+                    IdentityResult result = await this.UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
                     if (result.Succeeded)
                     {
-                        var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-                        await SignInAsync(user, isPersistent: false);
-                        return RedirectToAction("Manage", new { Message = ManageMessageId.ChangePasswordSuccess });
+                        var user = await this.UserManager.FindByIdAsync(User.Identity.GetUserId());
+                        await this.SignInAsync(user, isPersistent: false);
+                        return this.RedirectToAction("Manage", new { Message = ManageMessageId.ChangePasswordSuccess });
                     }
                     else
                     {
-                        AddErrors(result);
+                        this.AddErrors(result);
                     }
                 }
             }
@@ -304,24 +370,28 @@ namespace BeachTime.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    IdentityResult result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
+                    IdentityResult result = await this.UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
                     if (result.Succeeded)
                     {
-                        return RedirectToAction("Manage", new { Message = ManageMessageId.SetPasswordSuccess });
+                        return this.RedirectToAction("Manage", new { Message = ManageMessageId.SetPasswordSuccess });
                     }
                     else
                     {
-                        AddErrors(result);
+                        this.AddErrors(result);
                     }
                 }
             }
 
             // If we got this far, something failed, redisplay form
-            return View(model);
+            return this.View(model);
         }
 
-        //
-        // POST: /Account/ExternalLogin
+        /// <summary>
+        /// POST: /Account/ExternalLogin
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="returnUrl">URL to redirect the user to when the login process is complete</param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -331,35 +401,41 @@ namespace BeachTime.Controllers
             return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
         }
 
-        //
-        // GET: /Account/ExternalLoginCallback
+        /// <summary>
+        /// GET: /Account/ExternalLoginCallback
+        /// </summary>
+        /// <param name="returnUrl">URL to redirect the user to when the login process is complete</param>
+        /// <returns></returns>
         [AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
-            var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
+            var loginInfo = await this.AuthenticationManager.GetExternalLoginInfoAsync();
             if (loginInfo == null)
             {
-                return RedirectToAction("Login");
+                return this.RedirectToAction("Login");
             }
 
             // Sign in the user with this external login provider if the user already has a login
-            var user = await UserManager.FindAsync(loginInfo.Login);
+            var user = await this.UserManager.FindAsync(loginInfo.Login);
             if (user != null)
             {
-                await SignInAsync(user, isPersistent: false);
-                return RedirectToLocal(returnUrl);
+                await this.SignInAsync(user, isPersistent: false);
+                return this.RedirectToLocal(returnUrl);
             }
             else
             {
                 // If the user does not have an account, then prompt the user to create an account
                 ViewBag.ReturnUrl = returnUrl;
                 ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
+                return this.View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
             }
         }
 
-        //
-        // POST: /Account/LinkLogin
+        /// <summary>
+        /// POST: /Account/LinkLogin
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LinkLogin(string provider)
@@ -368,25 +444,33 @@ namespace BeachTime.Controllers
             return new ChallengeResult(provider, Url.Action("LinkLoginCallback", "Account"), User.Identity.GetUserId());
         }
 
-        //
-        // GET: /Account/LinkLoginCallback
+        /// <summary>
+        /// GET: /Account/LinkLoginCallback
+        /// </summary>
+        /// <returns></returns>
         public async Task<ActionResult> LinkLoginCallback()
         {
-            var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync(XsrfKey, User.Identity.GetUserId());
+            var loginInfo = await this.AuthenticationManager.GetExternalLoginInfoAsync(XsrfKey, User.Identity.GetUserId());
             if (loginInfo == null)
             {
-                return RedirectToAction("Manage", new { Message = ManageMessageId.Error });
+                return this.RedirectToAction("Manage", new { Message = ManageMessageId.Error });
             }
-            IdentityResult result = await UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
+
+            IdentityResult result = await this.UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
             if (result.Succeeded)
             {
-                return RedirectToAction("Manage");
+                return this.RedirectToAction("Manage");
             }
-            return RedirectToAction("Manage", new { Message = ManageMessageId.Error });
+
+            return this.RedirectToAction("Manage", new { Message = ManageMessageId.Error });
         }
 
-        //
-        // POST: /Account/ExternalLoginConfirmation
+        /// <summary>
+        /// POST: /Account/ExternalLoginConfirmation
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="returnUrl">URL to redirect the user to when the login process is complete</param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -394,35 +478,38 @@ namespace BeachTime.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Manage");
+                return this.RedirectToAction("Manage");
             }
 
             if (ModelState.IsValid)
             {
                 // Get the information about the user from the external login provider
-                var info = await AuthenticationManager.GetExternalLoginInfoAsync();
+                var info = await this.AuthenticationManager.GetExternalLoginInfoAsync();
                 if (info == null)
                 {
-                    return View("ExternalLoginFailure");
+                    return this.View("ExternalLoginFailure");
                 }
+
                 var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
-                IdentityResult result = await UserManager.CreateAsync(user);
+                IdentityResult result = await this.UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
-                    result = await UserManager.AddLoginAsync(user.Id, info.Login);
+                    result = await this.UserManager.AddLoginAsync(user.Id, info.Login);
                     if (result.Succeeded)
                     {
-                        await SignInAsync(user, isPersistent: false);
+                        await this.SignInAsync(user, isPersistent: false);
                         
                         // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                         // Send an email with this link
-                        // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                        // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                        // SendEmail(user.Email, callbackUrl, "Confirm your account", "Please confirm your account by clicking this link");
-                        
-                        return RedirectToLocal(returnUrl);
+                        //// string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                        //// var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                        //// SendEmail(user.Email, callbackUrl, "Confirm your account", "Please confirm your account by clicking this link");
+
+                        return this.RedirectToLocal(returnUrl);
                     }
+
                 }
+
                 AddErrors(result);
             }
 
@@ -430,8 +517,10 @@ namespace BeachTime.Controllers
             return View(model);
         }
 
-        //
-        // POST: /Account/LogOff
+        /// <summary>
+        /// POST: /Account/LogOff
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
@@ -440,14 +529,20 @@ namespace BeachTime.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //
-        // GET: /Account/ExternalLoginFailure
+        /// <summary>
+        /// GET: /Account/ExternalLoginFailure
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         public ActionResult ExternalLoginFailure()
         {
-            return View();
+            return this.View();
         }
 
+        /// <summary>
+        /// Remove account list
+        /// </summary>
+        /// <returns></returns>
         [ChildActionOnly]
         public ActionResult RemoveAccountList()
         {
@@ -456,6 +551,10 @@ namespace BeachTime.Controllers
             return (ActionResult)PartialView("_RemoveAccountPartial", linkedAccounts);
         }
 
+        /// <summary>
+        /// Dispose method override for IDisposable interface
+        /// </summary>
+        /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && UserManager != null)
@@ -541,7 +640,9 @@ namespace BeachTime.Controllers
             }
 
             public string LoginProvider { get; set; }
+
             public string RedirectUri { get; set; }
+
             public string UserId { get; set; }
 
             public override void ExecuteResult(ControllerContext context)
