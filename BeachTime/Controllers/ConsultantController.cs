@@ -32,6 +32,7 @@ namespace BeachTime.Controllers
 
         // POST: Consultant/Edit/5
         [HttpPost]
+		[ValidateAntiForgeryToken]
         public ActionResult Edit(int id, FormCollection collection)
         {
             try
