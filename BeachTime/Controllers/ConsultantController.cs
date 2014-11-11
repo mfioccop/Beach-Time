@@ -15,6 +15,7 @@ namespace BeachTime.Controllers
             return View();
         }
 
+
         // GET: Consultant/Edit/5
         public ActionResult Edit(int id)
         {
@@ -45,6 +46,8 @@ namespace BeachTime.Controllers
 				// Confirm new email
 				// New password
 				// Confirm new password
+
+
 
 				// OLD PASSWORD???
 
