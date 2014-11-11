@@ -41,7 +41,8 @@ namespace BeachTime.Data {
 		}
 
 		public static AppDbContext Create() {
-			return new AppDbContext(true);
+			var resetDatabase = Convert.ToBoolean(ConfigurationManager.AppSettings["ResetDatabase"]);
+			return new AppDbContext(resetDatabase);
 		}
 
 		public static void ConfigureDapper() {
