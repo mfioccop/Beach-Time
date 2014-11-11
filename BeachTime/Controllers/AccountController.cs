@@ -1,8 +1,9 @@
-﻿namespace BeachTime.Controllers
+﻿using BeachTime.Data;
+
+namespace BeachTime.Controllers
 {
     using BeachTime.Models;
     using Microsoft.AspNet.Identity;
-    using Microsoft.AspNet.Identity.EntityFramework;
     using Microsoft.AspNet.Identity.Owin;
     using Microsoft.Owin.Security;
     using Owin;
@@ -24,7 +25,7 @@
         /// <summary>
         /// Manages user account registration and authentication
         /// </summary>
-        private ApplicationUserManager _userManager;
+        private BeachUserManager _userManager;
 
         /// <summary>
         /// Initializes a new instance of the AccountController class
@@ -36,8 +37,8 @@
         /// <summary>
         /// Initializes a new instance of the AccountController class
         /// </summary>
-        /// <param name="userManager">ApplicationUserManager that the application should use</param>
-        public AccountController(ApplicationUserManager userManager)
+        /// <param name="userManager">BeachUserManager that the application should use</param>
+        public AccountController(BeachUserManager userManager)
         {
             UserManager = userManager;
         }
@@ -45,11 +46,11 @@
         /// <summary>
         /// Gets the current UserManager
         /// </summary>
-        public ApplicationUserManager UserManager
+        public BeachUserManager UserManager
         {
             get
             {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<BeachUserManager>();
             }
 
             private set
@@ -122,7 +123,7 @@
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+                var user = new BeachUser() { UserName = model.Email, Email = model.Email };
                 IdentityResult result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -490,7 +491,7 @@
                     return this.View("ExternalLoginFailure");
                 }
 
-                var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+                var user = new BeachUser() { UserName = model.Email, Email = model.Email };
                 IdentityResult result = await this.UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -577,7 +578,7 @@
             }
         }
 
-        private async Task SignInAsync(ApplicationUser user, bool isPersistent)
+        private async Task SignInAsync(BeachUser user, bool isPersistent)
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
             AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, await user.GenerateUserIdentityAsync(UserManager));
