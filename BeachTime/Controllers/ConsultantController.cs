@@ -3,15 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace BeachTime.Controllers
 {
-	//[Authorize(Roles = "Consultant")]
     public class ConsultantController : Controller
     {
-        // GET: Consultant
+
+		/// <summary>
+        /// Manages user account registration and authentication
+        /// </summary>
+        private BeachUserManager _userManager;
+
+
+	    /// <summary>
+	    /// Gets the current UserManager
+	    /// </summary>
+	    public BeachUserManager UserManager
+	    {
+		    get { return _userManager ?? HttpContext.GetOwinContext().GetUserManager<BeachUserManager>(); }
+
+		    private set { _userManager = value; }
+
+	    }
+
+	    // GET: Consultant
         public ActionResult Index()
         {
+	        if (!UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
+		        return RedirectToAction("Login", "Account");
+	      
+
             return View();
         }
 
@@ -19,6 +42,9 @@ namespace BeachTime.Controllers
         // GET: Consultant/Edit/5
         public ActionResult Edit(int id)
         {
+			if (!UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
+				return RedirectToAction("Login", "Account");
+
 			// Current Project
 			// Skill tags
 			// New email
@@ -36,6 +62,9 @@ namespace BeachTime.Controllers
 		[ValidateAntiForgeryToken]
         public ActionResult Edit(int id, FormCollection collection)
         {
+			if (!UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
+				return RedirectToAction("Login", "Account");
+
             try
             {
                 // TODO: Add update logic here
@@ -63,6 +92,9 @@ namespace BeachTime.Controllers
 		// GET: Consultant/Upload
 	    public ActionResult Upload()
 	    {
+			if (!UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
+				return RedirectToAction("Login", "Account");
+
 		    return PartialView("_Upload");
 	    }
 
