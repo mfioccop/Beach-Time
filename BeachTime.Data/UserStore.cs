@@ -11,7 +11,8 @@ using Microsoft.AspNet.Identity;
 namespace BeachTime.Data {
 	public class UserStore : IUserStore<BeachUser>, IUserLoginStore<BeachUser>, IUserPasswordStore<BeachUser>,
 		IUserSecurityStampStore<BeachUser>, IUserEmailStore<BeachUser>, IUserLockoutStore<BeachUser, string>,
-		IUserTwoFactorStore<BeachUser, string>, IUserRoleStore<BeachUser>, IUserPhoneNumberStore<BeachUser> {
+		IUserTwoFactorStore<BeachUser, string>, IUserRoleStore<BeachUser>, IUserPhoneNumberStore<BeachUser>,
+		IUserSkillStore<BeachUser, string> {
 		private readonly string connectionString;
 
 		public UserStore(string connectionStringName) {
@@ -474,5 +475,25 @@ join Roles r
 		}
 
 		#endregion IUserPhoneNumberStore
+
+		#region IUserSkillStore
+
+		public Task<IList<string>> GetSkillsAsync(BeachUser user) {
+			if (user == null)
+				throw new ArgumentNullException("user");
+
+			const string getSkillsQuery =
+				@"select Skills.Name
+from Skills
+where Skills.UserId = @userId";
+			using (var con = GetConnection())
+				return Task.FromResult((IList<string>)con.Query<string>(getSkillsQuery, new { user.UserId }).ToList());
+		}
+
+		public Task SetSkillsAsync(BeachUser user, IList<string> skills) {
+			throw new NotImplementedException();
+		}
+
+		#endregion IUserSkillStore
 	}
 }

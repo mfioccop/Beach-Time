@@ -3,6 +3,8 @@ IF OBJECT_ID('dbo.ExternalLogins', 'U') IS NOT NULL
 	DROP TABLE dbo.ExternalLogins;
 IF OBJECT_ID('dbo.UserRoles', 'U') IS NOT NULL
 	DROP TABLE dbo.UserRoles;
+IF OBJECT_ID('dbo.Skills', 'U') IS NOT NULL
+	DROP TABLE dbo.Skills;
 IF OBJECT_ID('dbo.Users', 'U') IS NOT NULL
 	DROP TABLE dbo.Users;
 IF OBJECT_ID('dbo.Roles', 'U') IS NOT NULL
@@ -51,6 +53,19 @@ CREATE TABLE [dbo].[Roles]
 	CONSTRAINT [PK_Roles] PRIMARY KEY ([RoleId])
 );
 CREATE UNIQUE INDEX IX_Roles_Name ON Roles(Name);
+
+CREATE TABLE [dbo].[Skills]
+(
+	[UserId] INT NOT NULL,
+	[Name] VARCHAR(255) NOT NULL,
+	CONSTRAINT [PK_Skills] PRIMARY KEY
+	(
+		[UserId],
+		[Name]
+	),
+	CONSTRAINT [FK_Skills_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users]([UserId]) ON DELETE CASCADE
+);
+CREATE UNIQUE INDEX IX_Skills_Name ON Skills(Name);
 
 CREATE TABLE [dbo].[UserRoles]
 (
