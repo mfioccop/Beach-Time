@@ -48,6 +48,21 @@ namespace BeachTime {
 			}
 			return manager;
 		}
+
+		public IList<string> GetUserSkills(BeachUser user) {
+			var skillStore = (IUserSkillStore<BeachUser, string>)Store;
+			return skillStore.GetSkillsAsync(user).Result;
+		}
+
+		public void SetUserSkills(BeachUser user, IList<string> skills) {
+			var skillStore = (IUserSkillStore<BeachUser, string>)Store;
+			skillStore.SetSkillsAsync(user, skills).Wait();
+		}
+
+		public void ClearUserSkills(BeachUser user) {
+			var skillStore = (IUserSkillStore<BeachUser, string>)Store;
+			skillStore.ClearSkillsAsync(user).Wait();
+		}
 	}
 
 	public class BeachSignInManager : SignInManager<BeachUser, string> {
