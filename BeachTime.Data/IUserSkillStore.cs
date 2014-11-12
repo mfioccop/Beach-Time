@@ -9,5 +9,6 @@ namespace BeachTime.Data {
   public interface IUserSkillStore<in TUser, in TKey> : IDisposable where TUser : class, IUser<TKey> {
 	  Task<IList<string>> GetSkillsAsync(TUser user);
 	  Task SetSkillsAsync(TUser user, IList<string> skills);
-	}
+	  Task ClearSkillsAsync(TUser user);
+  }
 }

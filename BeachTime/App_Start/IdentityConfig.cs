@@ -58,6 +58,11 @@ namespace BeachTime {
 			var skillStore = (IUserSkillStore<BeachUser, string>)Store;
 			skillStore.SetSkillsAsync(user, skills).Wait();
 		}
+
+		public void ClearUserSkills(BeachUser user) {
+			var skillStore = (IUserSkillStore<BeachUser, string>)Store;
+			skillStore.ClearSkillsAsync(user).Wait();
+		}
 	}
 
 	public class BeachSignInManager : SignInManager<BeachUser, string> {
