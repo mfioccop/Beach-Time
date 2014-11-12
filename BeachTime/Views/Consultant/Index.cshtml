@@ -1,17 +1,30 @@
-﻿
+﻿@model BeachTime.Models.ConsultantIndexViewModel
+
 @{
     ViewBag.Title = "Index";
 }
 
 <h2>Consultant Dashboard</h2>
 
-<h3>Welcome, ...username/firstname+lastname...</h3>
+<h3>Welcome, 
+    @Html.ValueForModel(Model.FirstName) @Html.ValueForModel(Model.LastName)
+    </h3>
 
 <p>dashboard stuff:</p>
 <ul>
-    <li>current project</li>
+    
+    <li>current project: @Html.ValueForModel(Model.CurrentProject)</li>
+
     <li>account type (consultant/exec)</li>
-    <li>account tags (skills)</li>
+    <li>account tags (skills):
+        @{
+            foreach (var item in Model.SkillList)
+            {
+                @Html.ValueForModel(item);
+                @:,&nbsp;
+            }
+        }
+    </li>
     <li>resume+other files list (with links to view and remove individual files)</li>
     <li>add new file link</li>
     

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using BeachTime.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
@@ -33,9 +34,20 @@ namespace BeachTime.Controllers
         {
 	        if (!UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 		        return RedirectToAction("Login", "Account");
-	      
+			
+			// Find the user in the database and retrieve basic account information
+	        var user = UserManager.FindById(User.Identity.GetUserId());
 
-            return View();
+			// TODO: Implement actual UserStore call
+	        var cons = new ConsultantIndexViewModel()
+	        {
+				FirstName = user.Email,
+				LastName = "Doe",
+				CurrentProject = "On the beach",
+				SkillList = UserManager.GetSkills();
+			};
+
+            return View(cons);
         }
 
 
