@@ -11,7 +11,8 @@ using Microsoft.AspNet.Identity;
 namespace BeachTime.Data {
 	public class UserStore : IUserStore<BeachUser>, IUserLoginStore<BeachUser>, IUserPasswordStore<BeachUser>,
 		IUserSecurityStampStore<BeachUser>, IUserEmailStore<BeachUser>, IUserLockoutStore<BeachUser, string>,
-		IUserTwoFactorStore<BeachUser, string>, IUserRoleStore<BeachUser>, IUserPhoneNumberStore<BeachUser> {
+		IUserTwoFactorStore<BeachUser, string>, IUserRoleStore<BeachUser>, IUserPhoneNumberStore<BeachUser>,
+		IUserSkillStore<BeachUser, string> {
 		private readonly string connectionString;
 
 		public UserStore(string connectionStringName) {
@@ -474,5 +475,55 @@ join Roles r
 		}
 
 		#endregion IUserPhoneNumberStore
+
+		#region IUserSkillStore
+
+		public Task<IList<string>> GetSkillsAsync(BeachUser user) {
+			if (user == null)
+				throw new ArgumentNullException("user");
+
+			const string getSkillsQuery =
+				@"select Skills.Name
+from Skills
+where Skills.UserId = @userId";
+			using (var con = GetConnection())
+				return Task.FromResult((IList<string>)con.Query<string>(getSkillsQuery, new { user.UserId }).ToList());
+		}
+
+		private struct Skill {
+			public string UserId { get; set; }
+			public string Name { get; set; }
+		}
+
+		public Task SetSkillsAsync(BeachUser user, IList<string> skills) {
+			if (user == null)
+				throw new ArgumentNullException("user");
+			if (skills == null)
+				throw new ArgumentNullException("skills");
+
+			var userSkills = new List<Skill>();
+			foreach (var skill in skills)
+				userSkills.Add(new Skill{UserId = user.Id, Name = skill});
+
+			ClearSkillsAsync(user).Wait();
+
+			using (var con = GetConnection())
+				con.Execute("insert into Skills values (@userId, @name)", userSkills);
+
+			return Task.FromResult(0);
+		}
+
+		public Task ClearSkillsAsync(BeachUser user) {
+			if (user == null)
+				throw new ArgumentNullException("user");
+
+			using (var con = GetConnection())
+				con.Execute("delete from Skills where UserId = @userId", new {user.UserId});
+
+			return Task.FromResult(0);
+		}
+
+
+		#endregion IUserSkillStore
 	}
 }
