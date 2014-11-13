@@ -38,13 +38,19 @@ namespace BeachTime.Controllers
 			// Find the user in the database and retrieve basic account information
 	        var user = UserManager.FindById(User.Identity.GetUserId());
 
-			// TODO: Implement actual UserStore call
+			// TODO: Implement actual data calls
 	        var cons = new ConsultantIndexViewModel()
 	        {
 				FirstName = user.Email,
 				LastName = "Doe",
-				CurrentProject = "On the beach",
-				SkillList = UserManager.GetSkills();
+				Projects = new List<ProjectViewModel>
+				{
+					new ProjectViewModel{IsCompleted = false, ProjectName = "BeachTime"},
+					new ProjectViewModel{IsCompleted = true, ProjectName = "Old project"}
+				
+				},
+
+				SkillList = UserManager.GetUserSkills(user).ToList()
 			};
 
             return View(cons);
