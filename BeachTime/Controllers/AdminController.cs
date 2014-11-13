@@ -32,7 +32,7 @@ namespace BeachTime.Controllers
         // GET: Admin
         public ActionResult Index()
         {
-			if (!UserManager.IsInRole(User.Identity.GetUserId(), "Admin"))
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Admin"))
 				return RedirectToAction("Login", "Account");
 
             return View();

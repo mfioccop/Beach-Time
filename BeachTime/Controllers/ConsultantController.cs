@@ -32,7 +32,7 @@ namespace BeachTime.Controllers
 	    // GET: Consultant
         public ActionResult Index()
         {
-	        if (!UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
+	        if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 		        return RedirectToAction("Login", "Account");
 			
 			// Find the user in the database and retrieve basic account information
@@ -60,7 +60,7 @@ namespace BeachTime.Controllers
         // GET: Consultant/Edit/5
         public ActionResult Edit(int id)
         {
-			if (!UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 				return RedirectToAction("Login", "Account");
 
 			// Current Project
@@ -80,7 +80,7 @@ namespace BeachTime.Controllers
 		[ValidateAntiForgeryToken]
         public ActionResult Edit(int id, FormCollection collection)
         {
-			if (!UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 				return RedirectToAction("Login", "Account");
 
             try
@@ -110,7 +110,7 @@ namespace BeachTime.Controllers
 		// GET: Consultant/Upload
 	    public ActionResult Upload()
 	    {
-			if (!UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 				return RedirectToAction("Login", "Account");
 
 		    return PartialView("_Upload");

@@ -31,7 +31,7 @@ namespace BeachTime.Controllers
         // GET: Executive
         public ActionResult Index()
         {
-			if (!UserManager.IsInRole(User.Identity.GetUserId(), "Executive"))
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Executive"))
 				return RedirectToAction("Login", "Account");
 	      
 
@@ -41,7 +41,7 @@ namespace BeachTime.Controllers
         // GET: Executive/Details/5
         public ActionResult Details(int id)
         {
-			if (!UserManager.IsInRole(User.Identity.GetUserId(), "Executive"))
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Executive"))
 				return RedirectToAction("Login", "Account");
 	      
 
@@ -53,7 +53,7 @@ namespace BeachTime.Controllers
         // GET: Executive/Edit/5
         public ActionResult Edit(int id)
         {
-			if (!UserManager.IsInRole(User.Identity.GetUserId(), "Executive"))
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Executive"))
 				return RedirectToAction("Login", "Account");
 
 			return View();
@@ -63,7 +63,7 @@ namespace BeachTime.Controllers
         [HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
         {
-			if (!UserManager.IsInRole(User.Identity.GetUserId(), "Executive"))
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Executive"))
 				return RedirectToAction("Login", "Account");
 	      
 

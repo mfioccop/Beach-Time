@@ -13,9 +13,18 @@
 <p>dashboard stuff:</p>
 <ul>
     
-    <li>current project: @Html.ValueForModel(Model.Projects.First().ProjectName)</li>
+    <li>Projects: 
+    @{
+        foreach (var item in Model.Projects)
+        {
+            @Html.ValueForModel(item.ProjectName);
+            @:,&nbsp;
+            }
+    }
+    </li>
 
     <li>account type (consultant/exec)</li>
+
     <li>account tags (skills):
         @{
             foreach (var item in Model.SkillList)
@@ -25,9 +34,12 @@
             }
         }
     </li>
+
     <li>resume+other files list (with links to view and remove individual files)</li>
+
     <li>add new file link</li>
     
     <li>update profile button (either opens new page OR popup window <a href="http://stackoverflow.com/questions/4803424/mvc-pop-up-windows">EXAMPLE</a> or <a href="http://www.dotnet-tricks.com/Tutorial/mvc/42R0171112-CRUD-Operations-using-jQuery-dialog-and-Entity-Framework---MVC-Razor.html">2nd EXAMPLE</a>)</li>
+    
     <li>logout button -> redirect to Home/Index</li>
 </ul>
