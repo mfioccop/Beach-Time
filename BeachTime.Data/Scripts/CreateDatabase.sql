@@ -65,7 +65,7 @@ CREATE TABLE [dbo].[Skills]
 	),
 	CONSTRAINT [FK_Skills_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users]([UserId]) ON DELETE CASCADE
 );
-CREATE UNIQUE INDEX IX_Skills_Name ON Skills(Name);
+CREATE INDEX IX_Skills_Name ON Skills(Name);
 
 CREATE TABLE [dbo].[UserRoles]
 (
