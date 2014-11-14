@@ -41,16 +41,16 @@ namespace BeachTime.Models
 		
 		[DisplayName("Old Password")]
 		[PasswordPropertyText(true)]
-		public string OldPassword { private get; set; }
+		public string OldPassword { get; set; }
 
 		[DisplayName("New Password")]
 		[PasswordPropertyText(true)]
-		public string NewPassword { private get; set; }
+		public string NewPassword { get; set; }
 
 		[DisplayName("Confirm Password")]
 		[PasswordPropertyText(true)]
 		[Compare("NewPassword", ErrorMessage = "Passwords must match")]
-		public string ConfirmPassword { private get; set; }
+		public string ConfirmPassword { get; set; }
 
 		[DisplayName("New Email Address")]
 		[EmailAddress(ErrorMessage = "Invalid email address")]

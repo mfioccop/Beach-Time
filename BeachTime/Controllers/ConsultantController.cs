@@ -39,7 +39,7 @@ namespace BeachTime.Controllers
 	        var user = UserManager.FindById(User.Identity.GetUserId());
 
 			// TODO: Implement actual data calls
-	        var cons = new ConsultantIndexViewModel()
+	        var consultant = new ConsultantIndexViewModel()
 	        {
 				FirstName = user.Email,
 				LastName = "Doe",
@@ -53,12 +53,12 @@ namespace BeachTime.Controllers
 				SkillList = UserManager.GetUserSkills(user).ToList()
 			};
 
-            return View(cons);
+            return View(consultant);
         }
 
 
-        // GET: Consultant/Edit/5
-        public ActionResult Edit(int id)
+        // GET: Consultant/Edit
+        public ActionResult Edit()
         {
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 				return RedirectToAction("Login", "Account");
@@ -72,7 +72,23 @@ namespace BeachTime.Controllers
 
 			// OLD PASSWORD???
 
-            return View();
+			// Find the user in the database and retrieve basic account information
+			var user = UserManager.FindById(User.Identity.GetUserId());
+
+	        var consultant = new ConsultantEditViewModel()
+	        {
+				Projects = new List<ProjectViewModel>() { new ProjectViewModel() { ProjectName = "BeachTime", IsCompleted = false } },
+				SkillList = UserManager.GetUserSkills(user).ToList(),
+				NewEmail = String.Empty,
+				ConfirmEmail = String.Empty,
+				NewPassword = String.Empty,
+				ConfirmPassword = String.Empty,
+				OldPassword = String.Empty,
+				Status = "On a project"
+				
+	        };
+
+            return View(consultant);
         }
 
         // POST: Consultant/Edit/5

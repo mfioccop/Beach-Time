@@ -1,4 +1,5 @@
-﻿
+﻿@model BeachTime.Models.ConsultantEditViewModel
+
 @{
     ViewBag.Title = "Edit";
 }
@@ -17,3 +18,15 @@
     <li>OLD PASSWORD input if user enters info in the new email/new password fields as confirmation (use jquery to hide element until content is added to the other fields)</li>
     <li>Update profile button to submit changes -> redirect to Consultant/Index</li>
 </ul>
+
+<div>
+    @using (Html.BeginForm("Edit", "Consultant", FormMethod.Post, new { @class = "form-horizontal", role="form"}))
+    {
+        @Html.AntiForgeryToken();
+        
+        <h2>Update profile form, needs actual implementation</h2>
+        //  Rest of form goes here
+        @Html.EditorForModel();
+        
+    }
+</div>
