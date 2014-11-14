@@ -245,6 +245,8 @@
     <Content Include="Views\Executive\Details.cshtml" />
     <Content Include="Views\Executive\Edit.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Consultant\_CreateProject.cshtml" />
+    <Content Include="Views\Consultant\_UpdateProject.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

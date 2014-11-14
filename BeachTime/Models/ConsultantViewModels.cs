@@ -17,7 +17,7 @@ namespace BeachTime.Models
 		[DisplayName("Last Name")]
 		public string LastName { get; set; }
 		
-		[DisplayName("Current Projects")]
+		[DisplayName("Projects")]
 		public ICollection<ProjectViewModel> Projects { get; set; }
 		
 		[DisplayName("Skills")]
@@ -30,7 +30,7 @@ namespace BeachTime.Models
 	public class ConsultantEditViewModel
 	{
 
-		[DisplayName("Current Projects")]
+		[DisplayName("Projects")]
 		public ICollection<ProjectViewModel> Projects { get; set; }
 
 		[DisplayName("Skills")]

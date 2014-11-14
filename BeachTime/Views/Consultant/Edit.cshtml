@@ -9,13 +9,24 @@
 <h3>dialog/description on updating profile</h3>
 
 <ul>
-    <li>current project input + label</li>
+    <li>Projects input + label</li>
+    
+    <table>
+        <th>Project Name</th><th>Status</th><th>Update Project</th>
+        @{
+            foreach (var item in Model.Projects)
+            {
+                <tr>
+                    <td>@item.ProjectName</td>
+                    <td>@item.IsCompleted.ToString()</td>
+                    <td>@Html.ActionLink("Update", "UpdateProject", "Consultant", new { id = 5 }, null)</td>
+                </tr>
+            }
+        }
+    </table>
+    @Html.ActionLink("Add new project", "CreateProject", "Consultant")
+
     <li>skill tags (mention delimiter, or maybe <a href="http://xoxco.com/projects/code/tagsinput/">use this plugin for tagging system</a>)</li>
-    <li>new email input + label</li>
-    <li>confirm new email input + label</li>
-    <li>new password input + label</li>
-    <li>confirm new email input + label</li>
-    <li>OLD PASSWORD input if user enters info in the new email/new password fields as confirmation (use jquery to hide element until content is added to the other fields)</li>
     <li>Update profile button to submit changes -> redirect to Consultant/Index</li>
 </ul>
 

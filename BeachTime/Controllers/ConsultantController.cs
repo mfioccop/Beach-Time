@@ -118,5 +118,30 @@ namespace BeachTime.Controllers
 		    return PartialView("_Upload");
 	    }
 
+		// GET: Consultant/CreateProject
+	    public ActionResult CreateProject()
+	    {
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
+				return RedirectToAction("Login", "Account");
+
+			return PartialView("_CreateProject");
+	    }
+		
+		// GET: Consultant/UpdateProject/5
+	    public ActionResult UpdateProject(int id)
+	    {
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
+				return RedirectToAction("Login", "Account");
+
+
+			// TODO: Get project from database by id parameter
+		    var project = new ProjectViewModel()
+		    {
+				ProjectName = "Test project",
+				IsCompleted = false
+		    };
+
+			return PartialView("_UpdateProject", project);
+	    }
     }
 }
