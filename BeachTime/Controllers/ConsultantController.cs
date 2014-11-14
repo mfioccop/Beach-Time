@@ -63,57 +63,43 @@ namespace BeachTime.Controllers
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 				return RedirectToAction("Login", "Account");
 
-			// Current Project
-			// Skill tags
-			// New email
-			// Confirm new email
-			// New password
-			// Confirm new password
-
-			// OLD PASSWORD???
-
 			// Find the user in the database and retrieve basic account information
 			var user = UserManager.FindById(User.Identity.GetUserId());
 
 	        var consultant = new ConsultantEditViewModel()
 	        {
 				Projects = new List<ProjectViewModel>() { new ProjectViewModel() { ProjectName = "BeachTime", IsCompleted = false } },
+				// TODO Projects = UserManager.GetUserProjects(user).ToList(),
+
 				SkillList = UserManager.GetUserSkills(user).ToList(),
-				NewEmail = String.Empty,
-				ConfirmEmail = String.Empty,
-				NewPassword = String.Empty,
-				ConfirmPassword = String.Empty,
-				OldPassword = String.Empty,
-				Status = "On a project"
 				
+				Status = "On a project"
+				// TODO Status = UserManager.GetUserBeachStatus(user)
 	        };
 
             return View(consultant);
         }
 
-        // POST: Consultant/Edit/5
+        // POST: Consultant/Edit
         [HttpPost]
 		[ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(FormCollection collection)
         {
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 				return RedirectToAction("Login", "Account");
 
             try
             {
-                // TODO: Add update logic here
+				// Find the user in the database and retrieve basic account information
+				var user = UserManager.FindById(User.Identity.GetUserId());
 
-				// Current Project
-				// Skill tags
-				// New email
-				// Confirm new email
-				// New password
-				// Confirm new password
+				// TODO: Projects
+				//UserManager.SetUserProjects(user, Request.Form["Projects"]);
 
-
-
-				// OLD PASSWORD???
-
+				// TODO: Skill tags
+				List<string> skillsList = new List<string>();
+				UserManager.SetUserSkills(user, skillsList);
+				
                 return RedirectToAction("Index");
             }
             catch
