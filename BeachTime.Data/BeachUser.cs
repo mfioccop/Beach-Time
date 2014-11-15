@@ -10,6 +10,8 @@ namespace BeachTime.Data {
 	public class BeachUser : IUser {
 		public int UserId { get; set; }
 		public string UserName { get; set; }
+		public string FirstName { get; set; }
+		public string LastName { get; set; }
 		public string Email { get; set; }
 		public bool EmailConfirmed { get; set; }
 		public string PhoneNumber { get; set; }
@@ -43,6 +45,8 @@ namespace BeachTime.Data {
 		protected bool Equals(BeachUser other) {
 			return UserId == other.UserId &&
 			       string.Equals(UserName, other.UserName) &&
+				   string.Equals(FirstName, other.FirstName) &&
+				   string.Equals(LastName, other.LastName) &&
 			       string.Equals(Email, other.Email) &&
 			       EmailConfirmed.Equals(other.EmailConfirmed) &&
 			       string.Equals(PhoneNumber, other.PhoneNumber) &&
@@ -62,6 +66,8 @@ namespace BeachTime.Data {
 				new {
 					UserId,
 					UserName,
+					FirstName,
+					LastName,
 					Email,
 					EmailConfirmed,
 					PhoneNumber,
@@ -80,10 +86,10 @@ namespace BeachTime.Data {
 		public override string ToString() {
 			return
 				string.Format(
-					"UserId: {0}, UserName: {1}, Email: {2}, EmailConfirmed: {3}, PhoneNumber: {4}, PhoneNumberConfirmed: {5}, AccessFailedCount: {6}, LockoutEndDateUtc: {7}, LockoutEnabled: {8}, EmailTwoFactorEnabled: {9}, GoogleAuthenticatorEnabled: {10}, GoogleAuthenticatorSecretKey: {11}, PasswordHash: {12}, SecurityStamp: {13}",
+					"UserId: {0}, UserName: {1}, FirstName: {14}, LastName: {15}, Email: {2}, EmailConfirmed: {3}, PhoneNumber: {4}, PhoneNumberConfirmed: {5}, AccessFailedCount: {6}, LockoutEndDateUtc: {7}, LockoutEnabled: {8}, EmailTwoFactorEnabled: {9}, GoogleAuthenticatorEnabled: {10}, GoogleAuthenticatorSecretKey: {11}, PasswordHash: {12}, SecurityStamp: {13}",
 					UserId, UserName, Email, EmailConfirmed, PhoneNumber, PhoneNumberConfirmed, AccessFailedCount, LockoutEndDateUtc,
 					LockoutEnabled, EmailTwoFactorEnabled, GoogleAuthenticatorEnabled, GoogleAuthenticatorSecretKey, PasswordHash,
-					SecurityStamp);
+					SecurityStamp, FirstName, LastName);
 		}
 	}
 

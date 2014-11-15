@@ -37,13 +37,15 @@ namespace BeachTime.Data {
 
 		#region IUserStore
 
-		public async Task CreateAsync(BeachUser beachUser) {
+		public Task CreateAsync(BeachUser beachUser) {
 			if (beachUser == null)
 				throw new ArgumentNullException("BeachUser");
 
 			const string createQuery =
 				@"insert into Users (
 	UserName,
+	FirstName,
+	LastName,
 	Email,
 	EmailConfirmed,
 	PhoneNumber,
@@ -58,6 +60,8 @@ namespace BeachTime.Data {
 	SecurityStamp
 ) output Inserted.UserId values (
 	@userName,
+	@firstName,
+	@lastName,
 	@email,
 	@emailConfirmed,
 	@phoneNumber,
@@ -71,20 +75,18 @@ namespace BeachTime.Data {
 	@passwordHash,
 	@securityStamp)";
 
-			await Task.Run(() => {
-				using (var con = GetConnection())
-					beachUser.UserId = con.Query<int>(createQuery, beachUser).Single();
-			});
+			using (var con = GetConnection())
+				beachUser.UserId = con.Query<int>(createQuery, beachUser).Single();
+			return Task.FromResult(0);
 		}
 
-		public async Task DeleteAsync(BeachUser beachUser) {
+		public Task DeleteAsync(BeachUser beachUser) {
 			if (beachUser == null)
 				throw new ArgumentNullException("BeachUser");
 
-			await Task.Run(() => {
-				using (var con = GetConnection())
-					return con.Execute("delete from Users where UserId = @userId", new { beachUser.UserId });
-			});
+			using (var con = GetConnection())
+				con.Execute("delete from Users where UserId = @userId", new { beachUser.UserId });
+			return Task.FromResult(0);
 		}
 
 		public Task<BeachUser> FindByIdAsync(string userId) {
@@ -106,13 +108,15 @@ namespace BeachTime.Data {
 						con.Query<BeachUser>("select * from Users where UserName = @userName", new { userName }).SingleOrDefault());
 		}
 
-		public async Task UpdateAsync(BeachUser beachUser) {
+		public Task UpdateAsync(BeachUser beachUser) {
 			if (beachUser == null)
 				throw new ArgumentNullException("BeachUser");
 
 			const string updateQuery =
 				@"update Users set
 	UserName = @userName,
+	FirstName = @firstName,
+	LastName = @lastName,
 	Email = @email,
 	EmailConfirmed = @emailConfirmed,
 	PhoneNumber = @phoneNumber,
@@ -127,10 +131,9 @@ namespace BeachTime.Data {
 	SecurityStamp = @securityStamp
 where UserId = @userId";
 
-			await Task.Run(() => {
-				using (var con = GetConnection())
-					return con.Execute(updateQuery, beachUser);
-			});
+			using (var con = GetConnection())
+				con.Execute(updateQuery, beachUser);
+			return Task.FromResult(0);
 		}
 
 		#endregion IUserStore

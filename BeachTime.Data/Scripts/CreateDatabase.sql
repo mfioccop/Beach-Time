@@ -17,6 +17,8 @@ CREATE TABLE [dbo].[Users]
 (
 	[UserId] INT IDENTITY NOT NULL,
 	[UserName] VARCHAR(255) NOT NULL,
+	[FirstName] VARCHAR(255) NULL,
+	[LastName] VARCHAR(255) NULL,
 	[Email] VARCHAR(255) NOT NULL,
 	[EmailConfirmed] BIT NOT NULL,
 	[PhoneNumber] VARCHAR(15) NULL,
