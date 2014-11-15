@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using BeachTime.Data;
 using BeachTime.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -41,13 +42,13 @@ namespace BeachTime.Controllers
 			// TODO: Implement actual data calls
 	        var consultant = new ConsultantIndexViewModel()
 	        {
-				FirstName = user.Email,
-				LastName = "Doe",
-				Projects = new List<ProjectViewModel>
+				FirstName = user.FirstName,
+				LastName = user.LastName,
+				//Projects = UserManager.GetProjects(user),
+				Projects = new List<ProjectViewModel>()
 				{
-					new ProjectViewModel{IsCompleted = false, ProjectName = "BeachTime"},
-					new ProjectViewModel{IsCompleted = true, ProjectName = "Old project"}
-				
+					new ProjectViewModel(){ ProjectName = "Test project", IsCompleted = false },
+					new ProjectViewModel(){ ProjectName = "Test project 2", IsCompleted = true }
 				},
 
 				SkillList = UserManager.GetUserSkills(user).ToList()
@@ -73,8 +74,7 @@ namespace BeachTime.Controllers
 
 				SkillList = UserManager.GetUserSkills(user).ToList(),
 				
-				Status = "On a project"
-				// TODO Status = UserManager.GetUserBeachStatus(user)
+				Status = UserManager.UserOnBeach(user).ToString()
 	        };
 
             return View(consultant);
@@ -95,7 +95,7 @@ namespace BeachTime.Controllers
 
 				// TODO: Projects
 				//UserManager.SetUserProjects(user, Request.Form["Projects"]);
-
+				
 				// TODO: Skill tags
 				List<string> skillsList = new List<string>();
 				UserManager.SetUserSkills(user, skillsList);
@@ -118,6 +118,8 @@ namespace BeachTime.Controllers
 		    return PartialView("_Upload");
 	    }
 
+
+
 		// GET: Consultant/CreateProject
 	    public ActionResult CreateProject()
 	    {
@@ -126,6 +128,38 @@ namespace BeachTime.Controllers
 
 			return PartialView("_CreateProject");
 	    }
+
+
+		// POST: Consultant/CreateProject
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult CreateProject(FormCollection collection)
+		{
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
+				return RedirectToAction("Login", "Account");
+
+			try
+			{
+				var user = UserManager.FindById(User.Identity.GetUserId());
+
+				var project = new Project()
+				{
+					Name = collection["ProjectName"],
+					Completed = collection["IsCompleted"].Contains("true"),
+					UserId = user.UserId
+				};
+				
+				var projectRepo = new ProjectRepository();
+				projectRepo.Create(project);
+
+				return RedirectToAction("Index");
+			}
+			catch
+			{
+				return View("_CreateProject");
+			}
+		}
+
 		
 		// GET: Consultant/UpdateProject/5
 	    public ActionResult UpdateProject(int id)
@@ -134,14 +168,17 @@ namespace BeachTime.Controllers
 				return RedirectToAction("Login", "Account");
 
 
-			// TODO: Get project from database by id parameter
-		    var project = new ProjectViewModel()
+			// TODO: CHECK WITH IAN IF THIS IS HOW THIS SHOULD BE DONE
+		    var projectRepo = new ProjectRepository();
+		    Project project = projectRepo.FindById(id);
+			
+			var projectViewModel = new ProjectViewModel()
 		    {
-				ProjectName = "Test project",
-				IsCompleted = false
+				ProjectName = project.Name,
+				IsCompleted = project.Completed
 		    };
 
-			return PartialView("_UpdateProject", project);
+			return PartialView("_UpdateProject", projectViewModel);
 	    }
     }
 }
