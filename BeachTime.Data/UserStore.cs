@@ -12,7 +12,7 @@ namespace BeachTime.Data {
 	public class UserStore : IUserStore<BeachUser>, IUserLoginStore<BeachUser>, IUserPasswordStore<BeachUser>,
 		IUserSecurityStampStore<BeachUser>, IUserEmailStore<BeachUser>, IUserLockoutStore<BeachUser, string>,
 		IUserTwoFactorStore<BeachUser, string>, IUserRoleStore<BeachUser>, IUserPhoneNumberStore<BeachUser>,
-		IUserSkillStore<BeachUser, string> {
+		IUserSkillStore<BeachUser, string>, IUserBeachStore {
 		private readonly string connectionString;
 
 		public UserStore(string connectionStringName) {
@@ -528,5 +528,27 @@ where Skills.UserId = @userId";
 
 
 		#endregion IUserSkillStore
+
+		#region IUserBeachStore
+
+		public bool OnBeach(BeachUser user) {
+			if (user == null)
+				throw new ArgumentNullException("user");
+
+			using (var con = GetConnection())
+				return con.Query<int>("select count(*) from Projects where UserId = @userId and Completed = 1", new { user.UserId }).Single() == 0;
+		}
+
+		public IEnumerable<BeachUser> GetBeachedUsers() {
+			// gotta be a better way
+			var beachedUsers = new List<BeachUser>();
+			using (var con = GetConnection()) {
+				var users = con.Query<BeachUser>("select * from Users");
+				beachedUsers.AddRange(users.Where(OnBeach));
+			}
+			return beachedUsers;
+		}
+
+		#endregion IUserBeachStore
 	}
 }
