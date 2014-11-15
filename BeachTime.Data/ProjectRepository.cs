@@ -14,6 +14,10 @@ namespace BeachTime.Data {
 
 		private readonly string connectionString;
 
+		public ProjectRepository() {
+			connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+		}
+
 		public ProjectRepository(string connectionStringName) {
 			if (string.IsNullOrWhiteSpace(connectionStringName))
 				throw new ArgumentNullException("connectionStringName");
