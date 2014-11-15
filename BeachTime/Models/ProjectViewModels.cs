@@ -10,5 +10,6 @@ namespace BeachTime.Models
 		public string ProjectName { get; set; }
 		public bool IsCompleted { get; set; }
 
+		public int ProjectId { get; set; }
 	}
 }

@@ -19,7 +19,7 @@
                 <tr>
                     <td>@item.ProjectName</td>
                     <td>@item.IsCompleted.ToString()</td>
-                    <td>@Html.ActionLink("Update", "UpdateProject", "Consultant", new { id = 5 }, null)</td>
+                    <td>@Html.ActionLink("Update", "UpdateProject", "Consultant", new { id = item.ProjectId }, null)</td>
                 </tr>
             }
         }

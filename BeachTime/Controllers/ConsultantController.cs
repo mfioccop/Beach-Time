@@ -39,18 +39,27 @@ namespace BeachTime.Controllers
 			// Find the user in the database and retrieve basic account information
 	        var user = UserManager.FindById(User.Identity.GetUserId());
 
-			// TODO: Implement actual data calls
+			// Get projects for this user
+			var projectRepo = new ProjectRepository();
+			var projects = projectRepo.FindAll();
+			projects.Where(p => p.UserId == user.UserId);
+			var projectViewModels = new List<ProjectViewModel>();
+
+			foreach (var project in projects)
+			{
+				var pvm = new ProjectViewModel()
+				{
+					ProjectName = project.Name,
+					IsCompleted = project.Completed
+				};
+				projectViewModels.Add(pvm);
+			}
+
 	        var consultant = new ConsultantIndexViewModel()
 	        {
 				FirstName = user.FirstName,
 				LastName = user.LastName,
-				//Projects = UserManager.GetProjects(user),
-				Projects = new List<ProjectViewModel>()
-				{
-					new ProjectViewModel(){ ProjectName = "Test project", IsCompleted = false },
-					new ProjectViewModel(){ ProjectName = "Test project 2", IsCompleted = true }
-				},
-
+				Projects = projectViewModels,
 				SkillList = UserManager.GetUserSkills(user).ToList()
 			};
 
@@ -66,11 +75,27 @@ namespace BeachTime.Controllers
 
 			// Find the user in the database and retrieve basic account information
 			var user = UserManager.FindById(User.Identity.GetUserId());
+	        
+			// Get projects for this user
+			var projectRepo = new ProjectRepository();
+	        var projects = projectRepo.FindAll();
+	        projects.Where(p => p.UserId == user.UserId);
+	        var projectViewModels = new List<ProjectViewModel>();
 
-	        var consultant = new ConsultantEditViewModel()
+	        foreach (var project in projects)
 	        {
-				Projects = new List<ProjectViewModel>() { new ProjectViewModel() { ProjectName = "BeachTime", IsCompleted = false } },
-				// TODO Projects = UserManager.GetUserProjects(user).ToList(),
+		        var pvm = new ProjectViewModel()
+		        {
+			        ProjectName = project.Name,
+			        IsCompleted = project.Completed,
+					ProjectId = project.ProjectId
+		        };
+				projectViewModels.Add(pvm);
+	        }
+
+			var consultant = new ConsultantEditViewModel()
+	        {
+				Projects = projectViewModels,
 
 				SkillList = UserManager.GetUserSkills(user).ToList(),
 				
@@ -93,11 +118,8 @@ namespace BeachTime.Controllers
 				// Find the user in the database and retrieve basic account information
 				var user = UserManager.FindById(User.Identity.GetUserId());
 
-				// TODO: Projects
-				//UserManager.SetUserProjects(user, Request.Form["Projects"]);
-				
 				// TODO: Skill tags
-				List<string> skillsList = new List<string>();
+				var skillsList = new List<string>();
 				UserManager.SetUserSkills(user, skillsList);
 				
                 return RedirectToAction("Index");
@@ -175,10 +197,43 @@ namespace BeachTime.Controllers
 			var projectViewModel = new ProjectViewModel()
 		    {
 				ProjectName = project.Name,
-				IsCompleted = project.Completed
+				IsCompleted = project.Completed,
+				ProjectId = project.ProjectId
 		    };
 
 			return PartialView("_UpdateProject", projectViewModel);
 	    }
+
+
+		// POST: Consultant/UpdateProject
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult UpdateProject(FormCollection collection)
+		{
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
+				return RedirectToAction("Login", "Account");
+
+			try
+			{
+				var user = UserManager.FindById(User.Identity.GetUserId());
+
+				var project = new Project()
+				{
+					Name = collection["ProjectName"],
+					Completed = collection["IsCompleted"].Contains("true"),
+					UserId = user.UserId,
+					ProjectId = int.Parse(collection["ProjectId"])
+				};
+
+				var projectRepo = new ProjectRepository();
+				projectRepo.Update(project);
+
+				return RedirectToAction("Index");
+			}
+			catch
+			{
+				return View("_UpdateProject");
+			}
+		}
     }
 }

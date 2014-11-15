@@ -18,7 +18,7 @@ namespace BeachTime.Models
 		public string LastName { get; set; }
 		
 		[DisplayName("Projects")]
-		public ICollection<ProjectViewModel> Projects { get; set; }
+		public IList<ProjectViewModel> Projects { get; set; }
 		
 		[DisplayName("Skills")]
 		public List<string> SkillList { get; set; }
@@ -31,7 +31,7 @@ namespace BeachTime.Models
 	{
 
 		[DisplayName("Projects")]
-		public ICollection<ProjectViewModel> Projects { get; set; }
+		public IList<ProjectViewModel> Projects { get; set; }
 
 		[DisplayName("Skills")]
 		public List<string> SkillList { get; set; }
