@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -42,7 +44,6 @@ namespace BeachTime.Controllers
 			// Get all projects
 			var projectRepo = new ProjectRepository();
 			var projects = projectRepo.FindAll();
-			
 			var projectViewModels = new List<ProjectViewModel>();
 
 			// Filter projects for this user
@@ -81,10 +82,9 @@ namespace BeachTime.Controllers
 			// Get projects for this user
 			var projectRepo = new ProjectRepository();
 	        var projects = projectRepo.FindAll();
-	        projects.Where(p => p.UserId == user.UserId);
 	        var projectViewModels = new List<ProjectViewModel>();
 
-	        foreach (var project in projects)
+			foreach (var project in projects.Where(p => p.UserId == user.UserId))
 	        {
 		        var pvm = new ProjectViewModel()
 		        {
@@ -237,5 +237,70 @@ namespace BeachTime.Controllers
 				return View("_UpdateProject");
 			}
 		}
+
+
+		// GET: Consultant/UploadFile
+		public ActionResult UploadFile()
+		{
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
+				return RedirectToAction("Login", "Account");
+
+			return PartialView("_UploadFile", new FileUploadViewModel());
+		}
+
+
+		// POST: Consultant/UploadFile
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult UploadFile(FileUploadViewModel model)
+		{
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
+				return RedirectToAction("Login", "Account");
+
+			try
+			{
+				var user = UserManager.FindById(User.Identity.GetUserId());
+
+				var validFileTypes = new string[]
+				{
+					"application/pdf",
+					"application/msword",
+					"application/rtf",
+					"application/x-rtf",
+					"text/richtext"
+				};
+
+				if (model.FileUpload == null || model.FileUpload.ContentLength == 0)
+				{
+					ModelState.AddModelError("FileUpload", "A file is required");
+				}
+				else if (!validFileTypes.Contains(model.FileUpload.ContentType))
+				{
+					ModelState.AddModelError("FileUpload", "Please choose a valid file type (PDF, DOC, RTF)");
+				}
+
+				if (ModelState.IsValid)
+				{
+					// TODO: create new file (once Ian finishes table in db)
+
+					if (model.FileUpload != null && model.FileUpload.ContentLength > 0)
+					{
+						var uploadDirectory = ConfigurationManager.AppSettings["FileUploadPath"];
+						uploadDirectory += "/" + user.UserId;
+
+						var filePath = Path.Combine(Server.MapPath(uploadDirectory), model.FileUpload.FileName);
+
+					}
+				}
+
+
+				return RedirectToAction("Index");
+			}
+			catch
+			{
+				return View("_UploadFile");
+			}
+		}
+
     }
 }
