@@ -39,13 +39,14 @@ namespace BeachTime.Controllers
 			// Find the user in the database and retrieve basic account information
 	        var user = UserManager.FindById(User.Identity.GetUserId());
 
-			// Get projects for this user
+			// Get all projects
 			var projectRepo = new ProjectRepository();
 			var projects = projectRepo.FindAll();
-			projects.Where(p => p.UserId == user.UserId);
+			
 			var projectViewModels = new List<ProjectViewModel>();
 
-			foreach (var project in projects)
+			// Filter projects for this user
+			foreach (var project in projects.Where(p => p.UserId == user.UserId))
 			{
 				var pvm = new ProjectViewModel()
 				{
@@ -55,6 +56,7 @@ namespace BeachTime.Controllers
 				projectViewModels.Add(pvm);
 			}
 
+			// Construct view model for the consultant
 	        var consultant = new ConsultantIndexViewModel()
 	        {
 				FirstName = user.FirstName,
