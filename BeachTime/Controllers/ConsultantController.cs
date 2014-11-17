@@ -95,13 +95,16 @@ namespace BeachTime.Controllers
 				projectViewModels.Add(pvm);
 	        }
 
+	        var skills = UserManager.GetUserSkills(user).ToList();
+
 			var consultant = new ConsultantEditViewModel()
 	        {
 				Projects = projectViewModels,
 
-				SkillList = UserManager.GetUserSkills(user).ToList(),
+				SkillList = skills,
 				
-				Status = UserManager.UserOnBeach(user).ToString()
+				SkillsString = string.Join(",", skills.ToArray()),
+				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
 	        };
 
             return View(consultant);
@@ -110,7 +113,7 @@ namespace BeachTime.Controllers
         // POST: Consultant/Edit
         [HttpPost]
 		[ValidateAntiForgeryToken]
-        public ActionResult Edit(FormCollection collection)
+        public ActionResult Edit(ConsultantEditViewModel model)
         {
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 				return RedirectToAction("Login", "Account");
@@ -120,8 +123,8 @@ namespace BeachTime.Controllers
 				// Find the user in the database and retrieve basic account information
 				var user = UserManager.FindById(User.Identity.GetUserId());
 
-				// TODO: Skill tags
-				var skillsList = new List<string>();
+				// TODO: Skill tags when Jason updates input method
+				var skillsList = model.SkillsString.Split(',').ToList();
 				UserManager.SetUserSkills(user, skillsList);
 				
                 return RedirectToAction("Index");
@@ -131,17 +134,6 @@ namespace BeachTime.Controllers
                 return View();
             }
         }
-
-
-		// GET: Consultant/Upload
-	    public ActionResult Upload()
-	    {
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
-		    return PartialView("_Upload");
-	    }
-
 
 
 		// GET: Consultant/CreateProject
@@ -191,11 +183,13 @@ namespace BeachTime.Controllers
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 				return RedirectToAction("Login", "Account");
 
-
-			// TODO: CHECK WITH IAN IF THIS IS HOW THIS SHOULD BE DONE
 		    var projectRepo = new ProjectRepository();
 		    Project project = projectRepo.FindById(id);
-			
+
+			// Check that the current user owns this project before allowing an update
+		    if (int.Parse(User.Identity.GetUserId()) != project.UserId)
+			    return RedirectToAction("Index", "Consultant");
+
 			var projectViewModel = new ProjectViewModel()
 		    {
 				ProjectName = project.Name,
@@ -230,7 +224,7 @@ namespace BeachTime.Controllers
 				var projectRepo = new ProjectRepository();
 				projectRepo.Update(project);
 
-				return RedirectToAction("Index");
+				return RedirectToAction("Edit");
 			}
 			catch
 			{

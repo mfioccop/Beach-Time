@@ -33,6 +33,8 @@ namespace BeachTime.Models
 		[DisplayName("Projects")]
 		public IList<ProjectViewModel> Projects { get; set; }
 
+		public string SkillsString { get; set; }
+
 		[DisplayName("Skills")]
 		public List<string> SkillList { get; set; }
 

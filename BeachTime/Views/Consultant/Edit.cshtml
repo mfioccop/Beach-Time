@@ -8,37 +8,57 @@
 
 <h3>dialog/description on updating profile</h3>
 
-<ul>
-    <li>Projects input + label</li>
-    
-    <table>
-        <th>Project Name</th><th>Status</th><th>Update Project</th>
-        @{
-            foreach (var item in Model.Projects)
-            {
-                <tr>
-                    <td>@item.ProjectName</td>
-                    <td>@item.IsCompleted.ToString()</td>
-                    <td>@Html.ActionLink("Update", "UpdateProject", "Consultant", new { id = item.ProjectId }, null)</td>
-                </tr>
-            }
+<table>
+    <th>Project Name</th>
+    <th>Status</th>
+    <th>Update Project</th>
+    @{
+        foreach (var item in Model.Projects)
+        {
+            <tr>
+                <td>@item.ProjectName</td>
+                <td>
+                    @{
+                        if (item.IsCompleted)
+                        {
+                            @:Completed
+                        }
+                        else
+                        {
+                            @:In progress
+                        }
+                }
+            </td>
+            <td>@Html.ActionLink("Update", "UpdateProject", "Consultant", new { id = item.ProjectId }, null)</td>
+        </tr>
         }
-    </table>
-    @Html.ActionLink("Add new project", "CreateProject", "Consultant")
+    }
+</table>
 
-    <li>skill tags (mention delimiter, or maybe <a href="http://xoxco.com/projects/code/tagsinput/">use this plugin for tagging system</a>)</li>
-    <li>Update profile button to submit changes -> redirect to Consultant/Index</li>
-</ul>
+@Html.ActionLink("Add new project", "CreateProject", "Consultant")
+
+<br /><br/>
+Skill tags (current delimeter single comma = "skill1,skill2" , or maybe <a href="http://xoxco.com/projects/code/tagsinput/">use this plugin for tagging system</a>)
 
 <div>
     @using (Html.BeginForm("Edit", "Consultant", FormMethod.Post, new { @class = "form-horizontal", role="form"}))
     {
         @Html.AntiForgeryToken();
+
+        @:Skills:
+
+        var skills = String.Empty;
         
-        <h2>Update profile form, needs actual implementation</h2>
-        //  Rest of form goes here
-        @Html.EditorForModel();
-        
+        foreach (var item in Model.SkillList)
+        {
+            skills += item + ",";
+        }
+
+        @Html.EditorFor(m => m.SkillsString);
+
         <input type="submit" value="Update Profile" />
     }
 </div>
+
+<br/>
+@Html.ActionLink("Return to Dashboard", "Index", "Consultant")

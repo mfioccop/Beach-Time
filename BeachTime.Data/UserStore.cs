@@ -536,7 +536,7 @@ where Skills.UserId = @userId";
 				throw new ArgumentNullException("user");
 
 			using (var con = GetConnection())
-				return con.Query<int>("select count(*) from Projects where UserId = @userId and Completed = 1", new { user.UserId }).Single() == 0;
+				return con.Query<int>("select count(*) from Projects where UserId = @userId and Completed = 0", new { user.UserId }).Single() == 0;
 		}
 
 		public IEnumerable<BeachUser> GetBeachedUsers() {
