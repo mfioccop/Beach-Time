@@ -63,7 +63,8 @@ namespace BeachTime.Controllers
 				FirstName = user.FirstName,
 				LastName = user.LastName,
 				Projects = projectViewModels,
-				SkillList = UserManager.GetUserSkills(user).ToList()
+				SkillList = UserManager.GetUserSkills(user).ToList(),
+				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
 			};
 
             return View(consultant);

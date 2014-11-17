@@ -10,6 +10,7 @@
     @Html.ValueForModel(Model.FirstName) @Html.ValueForModel(Model.LastName)
     </h3>
 
+<h3>Status: @Html.ValueForModel(Model.Status)</h3>
 <p>dashboard stuff:</p>
 <ul>
     
@@ -23,7 +24,6 @@
     }
     </li>
 
-    <li>account type (consultant/exec)</li>
 
     <li>account tags (skills):
         @{
@@ -41,5 +41,4 @@
     
     <li>update profile button (either opens new page OR popup window <a href="http://stackoverflow.com/questions/4803424/mvc-pop-up-windows">EXAMPLE</a> or <a href="http://www.dotnet-tricks.com/Tutorial/mvc/42R0171112-CRUD-Operations-using-jQuery-dialog-and-Entity-Framework---MVC-Razor.html">2nd EXAMPLE</a>)</li>
     <li>@Html.ActionLink("UPDATE PROFILE", "Edit", "Consultant")</li>
-    <li>logout button -> redirect to Home/Index</li>
 </ul>
