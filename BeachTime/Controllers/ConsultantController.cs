@@ -184,7 +184,7 @@ namespace BeachTime.Controllers
 				return RedirectToAction("Login", "Account");
 
 		    var projectRepo = new ProjectRepository();
-		    Project project = projectRepo.FindById(id);
+		    Project project = projectRepo.FindByProjectId(id);
 
 			// Check that the current user owns this project before allowing an update
 		    if (int.Parse(User.Identity.GetUserId()) != project.UserId)
