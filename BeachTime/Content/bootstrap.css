@@ -2350,7 +2350,7 @@ output {
   padding: 6px 16px;
   font-size: 13px;
   line-height: 1.846;
-  color: #666666;
+  color: #50371F;
   background-color: transparent;
   background-image: none;
   border: 1px solid transparent;
@@ -2368,14 +2368,14 @@ output {
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
 }
 .form-control::-moz-placeholder {
-  color: #bbbbbb;
+  color: #50371F;
   opacity: 1;
 }
 .form-control:-ms-input-placeholder {
-  color: #bbbbbb;
+  color: #50371F;
 }
 .form-control::-webkit-input-placeholder {
-  color: #bbbbbb;
+  color: #50371F;
 }
 .form-control[disabled],
 .form-control[readonly],
@@ -2803,7 +2803,7 @@ fieldset[disabled] .btn-default.active {
   background-color: #666666;
 }
 .btn-primary {
-  color: #ffffff;
+  color: #855C33;
   background-color: #2196f3;
   border-color: transparent;
 }
@@ -2812,7 +2812,7 @@ fieldset[disabled] .btn-default.active {
 .btn-primary:active,
 .btn-primary.active,
 .open > .dropdown-toggle.btn-primary {
-  color: #ffffff;
+  color: #855C33;
   background-color: #0c7cd5;
   border-color: rgba(0, 0, 0, 0);
 }
@@ -2841,7 +2841,7 @@ fieldset[disabled] .btn-primary.active {
 }
 .btn-primary .badge {
   color: #2196f3;
-  background-color: #ffffff;
+  background-color: #855C33;
 }
 .btn-success {
   color: #ffffff;
@@ -4087,7 +4087,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   box-shadow: inset 20px 20px 30px rgba(255, 255, 255, 0.1);
 }
 .navbar-default .navbar-brand {
-  color: #855C33;
+  color: #5D4024;
 }
 .navbar-default .navbar-brand:hover,
 .navbar-default .navbar-brand:focus {
@@ -4095,10 +4095,10 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   background-color: transparent;
 }
 .navbar-default .navbar-text {
-  color: #855C33;
+  color: #5D4024;
 }
 .navbar-default .navbar-nav > li > a {
-  color: #855C33;
+  color: #5D4024;
 }
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
@@ -4539,7 +4539,7 @@ a.list-group-item.active > .badge,
   padding: 30px;
   margin-bottom: 30px;
   color: inherit;
-  background-color: #EDE7E0;
+  background-color: #50371F;
   box-shadow: 10px 10px 20px #94704D;
 }
 .jumbotron h1,
@@ -4552,7 +4552,7 @@ a.list-group-item.active > .badge,
   font-weight: 200;
 }
 .jumbotron > hr {
-  border-top-color: #EDE7E0;
+  border-top-color: #50371F;
 }
 .container .jumbotron {
   border-radius: 3px;
@@ -6434,7 +6434,7 @@ input[type=number][readonly],
 [type=password].form-control[readonly] {
   -webkit-box-shadow: none;
   box-shadow: none;
-  border-bottom: 1px dotted #ddd;
+  border-bottom: 1px dotted #50371F;
 }
 select,
 select.form-control {
@@ -6637,6 +6637,6 @@ select.form-control {
 p.border {
 			  border-style: solid;
 			  border-width: 2px;
-			  color: #855C33;
+			  color: #5D4024;
 
 		  }
