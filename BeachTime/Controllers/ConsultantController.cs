@@ -12,41 +12,47 @@ using Microsoft.AspNet.Identity.Owin;
 
 namespace BeachTime.Controllers
 {
-    public class ConsultantController : Controller
-    {
+	public class ConsultantController : Controller
+	{
+
+		#region UserManager
 
 		/// <summary>
-        /// Manages user account registration and authentication
-        /// </summary>
-        private BeachUserManager _userManager;
+		/// Manages user account registration and authentication
+		/// </summary>
+		private BeachUserManager _userManager;
 
-	    /// <summary>
-	    /// Gets the current UserManager
-	    /// </summary>
-	    public BeachUserManager UserManager
-	    {
-		    get { return _userManager ?? HttpContext.GetOwinContext().GetUserManager<BeachUserManager>(); }
+		/// <summary>
+		/// Gets the current UserManager
+		/// </summary>
+		public BeachUserManager UserManager
+		{
+			get { return _userManager ?? HttpContext.GetOwinContext().GetUserManager<BeachUserManager>(); }
 
-		    private set { _userManager = value; }
+			private set { _userManager = value; }
 
-	    }
+		}
 
-	    // GET: Consultant
-        public ActionResult Index()
-        {
-	        if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-		        return RedirectToAction("Login", "Account");
-			
+		#endregion
+
+		#region Index
+
+		// GET: Consultant
+		public ActionResult Index()
+		{
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
+				return RedirectToAction("Login", "Account");
+
 			// Find the user in the database and retrieve basic account information
-	        var user = UserManager.FindById(User.Identity.GetUserId());
+			var user = UserManager.FindById(User.Identity.GetUserId());
 
 			// Get all projects
 			var projectRepo = new ProjectRepository();
-			var projects = projectRepo.FindAll();
+			var projects = projectRepo.FindByUserId(user.UserId);
 			var projectViewModels = new List<ProjectViewModel>();
 
 			// Filter projects for this user
-			foreach (var project in projects.Where(p => p.UserId == user.UserId))
+			foreach (var project in projects)
 			{
 				var pvm = new ProjectViewModel()
 				{
@@ -57,8 +63,8 @@ namespace BeachTime.Controllers
 			}
 
 			// Construct view model for the consultant
-	        var consultant = new ConsultantIndexViewModel()
-	        {
+			var consultant = new ConsultantIndexViewModel()
+			{
 				FirstName = user.FirstName,
 				LastName = user.LastName,
 				Projects = projectViewModels,
@@ -66,84 +72,90 @@ namespace BeachTime.Controllers
 				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
 			};
 
-            return View(consultant);
-        }
+			return View(consultant);
+		}
 
+		#endregion
 
-        // GET: Consultant/Edit
-        public ActionResult Edit()
-        {
+		#region Edit
+
+		// GET: Consultant/Edit
+		public ActionResult Edit()
+		{
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 				return RedirectToAction("Login", "Account");
 
 			// Find the user in the database and retrieve basic account information
 			var user = UserManager.FindById(User.Identity.GetUserId());
-	        
+
 			// Get projects for this user
 			var projectRepo = new ProjectRepository();
-	        var projects = projectRepo.FindAll();
-	        var projectViewModels = new List<ProjectViewModel>();
+			var projects = projectRepo.FindByUserId(user.UserId);
+			var projectViewModels = new List<ProjectViewModel>();
 
-			foreach (var project in projects.Where(p => p.UserId == user.UserId))
-	        {
-		        var pvm = new ProjectViewModel()
-		        {
-			        ProjectName = project.Name,
-			        IsCompleted = project.Completed,
+			foreach (var project in projects)
+			{
+				var pvm = new ProjectViewModel()
+				{
+					ProjectName = project.Name,
+					IsCompleted = project.Completed,
 					ProjectId = project.ProjectId
-		        };
+				};
 				projectViewModels.Add(pvm);
-	        }
+			}
 
-	        var skills = UserManager.GetUserSkills(user).ToList();
+			var skills = UserManager.GetUserSkills(user).ToList();
 
 			var consultant = new ConsultantEditViewModel()
-	        {
+			{
 				Projects = projectViewModels,
 
 				SkillList = skills,
-				
+
 				SkillsString = string.Join(",", skills.ToArray()),
 				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
-	        };
+			};
 
-            return View(consultant);
-        }
+			return View(consultant);
+		}
 
-        // POST: Consultant/Edit
-        [HttpPost]
+		// POST: Consultant/Edit
+		[HttpPost]
 		[ValidateAntiForgeryToken]
-        public ActionResult Edit(ConsultantEditViewModel model)
-        {
+		public ActionResult Edit(ConsultantEditViewModel model)
+		{
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 				return RedirectToAction("Login", "Account");
 
-            try
-            {
+			try
+			{
 				// Find the user in the database and retrieve basic account information
 				var user = UserManager.FindById(User.Identity.GetUserId());
 
 				// TODO: Skill tags when Jason updates input method
 				var skillsList = model.SkillsString.Split(',').ToList();
 				UserManager.SetUserSkills(user, skillsList);
-				
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
 
+				return RedirectToAction("Index");
+			}
+			catch
+			{
+				return View();
+			}
+		}
+
+		#endregion
+
+		#region ProjectCreationEditing
 
 		// GET: Consultant/CreateProject
-	    public ActionResult CreateProject()
-	    {
+		public ActionResult CreateProject()
+		{
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 				return RedirectToAction("Login", "Account");
 
 			return PartialView("_CreateProject");
-	    }
+		}
 
 
 		// POST: Consultant/CreateProject
@@ -164,7 +176,7 @@ namespace BeachTime.Controllers
 					Completed = collection["IsCompleted"].Contains("true"),
 					UserId = user.UserId
 				};
-				
+
 				var projectRepo = new ProjectRepository();
 				projectRepo.Create(project);
 
@@ -176,29 +188,29 @@ namespace BeachTime.Controllers
 			}
 		}
 
-		
+
 		// GET: Consultant/UpdateProject/5
-	    public ActionResult UpdateProject(int id)
-	    {
+		public ActionResult UpdateProject(int id)
+		{
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 				return RedirectToAction("Login", "Account");
 
-		    var projectRepo = new ProjectRepository();
-		    Project project = projectRepo.FindByProjectId(id);
+			var projectRepo = new ProjectRepository();
+			Project project = projectRepo.FindByProjectId(id);
 
 			// Check that the current user owns this project before allowing an update
-		    if (int.Parse(User.Identity.GetUserId()) != project.UserId)
-			    return RedirectToAction("Index", "Consultant");
+			if (int.Parse(User.Identity.GetUserId()) != project.UserId)
+				return RedirectToAction("Index", "Consultant");
 
 			var projectViewModel = new ProjectViewModel()
-		    {
+			{
 				ProjectName = project.Name,
 				IsCompleted = project.Completed,
 				ProjectId = project.ProjectId
-		    };
+			};
 
 			return PartialView("_UpdateProject", projectViewModel);
-	    }
+		}
 
 
 		// POST: Consultant/UpdateProject
@@ -232,6 +244,9 @@ namespace BeachTime.Controllers
 			}
 		}
 
+		#endregion
+
+		#region FileUpload
 
 		// GET: Consultant/UploadFile
 		public ActionResult UploadFile()
@@ -256,13 +271,14 @@ namespace BeachTime.Controllers
 				var user = UserManager.FindById(User.Identity.GetUserId());
 
 				var validFileTypes = new string[]
-				{
-					"application/pdf",
-					"application/msword",
-					"application/rtf",
-					"application/x-rtf",
-					"text/richtext"
-				};
+			    {
+				    "application/pdf",		// .pdf
+				    "application/msword",	// .doc
+					"application/vnd.openxmlformats-officedocument.wordprocessingml.document",	// .docx
+				    "application/rtf",		// .rtf
+				    "application/x-rtf",	// .rtf
+				    "text/richtext"			// .rtf
+			    };
 
 				if (model.FileUpload == null || model.FileUpload.ContentLength == 0)
 				{
@@ -282,19 +298,33 @@ namespace BeachTime.Controllers
 						var uploadDirectory = ConfigurationManager.AppSettings["FileUploadPath"];
 						uploadDirectory += "/" + user.UserId;
 
+						if (!Directory.Exists(Server.MapPath(uploadDirectory)))
+						{
+							Directory.CreateDirectory(Server.MapPath(uploadDirectory));
+						}
+
+						// This is the path used to save the file to the application directory
 						var filePath = Path.Combine(Server.MapPath(uploadDirectory), model.FileUpload.FileName);
+						model.FileUpload.SaveAs(filePath);
+
+						// This is the tail of the url that will be saved in the database
+						var fileUrl = Path.Combine(uploadDirectory, model.FileUpload.FileName);
+						// TODO: finish file entry and add to database
 
 					}
+					return RedirectToAction("Index");
 				}
 
-
-				return RedirectToAction("Index");
+				return PartialView("_UploadFile");
 			}
 			catch
 			{
-				return View("_UploadFile");
+				ModelState.AddModelError("", "There was an error processing your file upload, please try again");
+				return PartialView("_UploadFile");
 			}
 		}
 
-    }
+		#endregion
+
+	}
 }
