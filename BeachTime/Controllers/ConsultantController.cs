@@ -280,13 +280,21 @@ namespace BeachTime.Controllers
 				    "text/richtext"			// .rtf
 			    };
 
+				var validFileExtensions = new string[]
+				{
+					".doc", ".docx", ".pdf", ".rtf"
+				};
+
 				if (model.FileUpload == null || model.FileUpload.ContentLength == 0)
 				{
 					ModelState.AddModelError("FileUpload", "A file is required");
 				}
 				else if (!validFileTypes.Contains(model.FileUpload.ContentType))
 				{
-					ModelState.AddModelError("FileUpload", "Please choose a valid file type (PDF, DOC, RTF)");
+					// FIXES: Firefox issue where .doc files are incorrectly labeled as "application/octet-stream", which is too broad of a filetype to accept
+					//	Check the validity of file extension
+					if(!validFileExtensions.Contains(Path.GetExtension(model.FileUpload.FileName)))
+						ModelState.AddModelError("FileUpload", "Please choose a valid file type (PDF, DOC, RTF)");
 				}
 
 				if (ModelState.IsValid)

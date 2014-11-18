@@ -14,6 +14,7 @@ namespace BeachTime.Models
 		[Required]
 		public string Description { get; set; }
 
+		[Required]
 		[DataType(DataType.Upload)]
 		public HttpPostedFileBase FileUpload { get; set; }
 	}
