@@ -20,7 +20,6 @@ namespace BeachTime.Controllers
         /// </summary>
         private BeachUserManager _userManager;
 
-
 	    /// <summary>
 	    /// Gets the current UserManager
 	    /// </summary>
