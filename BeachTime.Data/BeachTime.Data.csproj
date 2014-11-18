@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="AppDbContext.cs" />
     <Compile Include="BeachUser.cs" />
+    <Compile Include="IBeachUserStore.cs" />
     <Compile Include="IProjectRepository.cs" />
     <Compile Include="IUserBeachStore.cs" />
     <Compile Include="IUserSkillStore.cs" />
