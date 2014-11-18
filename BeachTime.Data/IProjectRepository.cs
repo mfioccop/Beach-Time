@@ -12,7 +12,9 @@ namespace BeachTime.Data {
 
 		IEnumerable<Project> FindAll();
 
-		Project FindById(int projectId);
+		Project FindByProjectId(int projectId);
+
+		IEnumerable<Project> FindByUserId(int userId);
 
 		Project FindByName(string projectName);
 
