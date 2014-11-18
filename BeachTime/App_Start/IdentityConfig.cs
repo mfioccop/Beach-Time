@@ -49,6 +49,11 @@ namespace BeachTime {
 			return manager;
 		}
 
+		public IEnumerable<BeachUser> FindAll() {
+			var userStore = (IBeachUserStore)Store;
+			return userStore.FindAll().Result;
+		} 
+		
 		public IList<string> GetUserSkills(BeachUser user) {
 			var skillStore = (IUserSkillStore<BeachUser, string>)Store;
 			return skillStore.GetSkillsAsync(user).Result;
@@ -62,6 +67,16 @@ namespace BeachTime {
 		public void ClearUserSkills(BeachUser user) {
 			var skillStore = (IUserSkillStore<BeachUser, string>)Store;
 			skillStore.ClearSkillsAsync(user).Wait();
+		}
+
+		public bool UserOnBeach(BeachUser user) {
+			var beachStore = (IUserBeachStore)Store;
+			return beachStore.OnBeach(user);
+		}
+
+		public IEnumerable<BeachUser> GetBeachedUsers() {
+			var beachStore = (IUserBeachStore)Store;
+			return beachStore.GetBeachedUsers();
 		}
 	}
 

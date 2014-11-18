@@ -49,7 +49,12 @@
   <ItemGroup>
     <Compile Include="AppDbContext.cs" />
     <Compile Include="BeachUser.cs" />
+    <Compile Include="IBeachUserStore.cs" />
+    <Compile Include="IProjectRepository.cs" />
+    <Compile Include="IUserBeachStore.cs" />
     <Compile Include="IUserSkillStore.cs" />
+    <Compile Include="Project.cs" />
+    <Compile Include="ProjectRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserStore.cs" />
   </ItemGroup>
