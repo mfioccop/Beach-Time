@@ -49,6 +49,11 @@ namespace BeachTime {
 			return manager;
 		}
 
+		public IEnumerable<BeachUser> FindAll() {
+			var userStore = (IBeachUserStore)Store;
+			return userStore.FindAll().Result;
+		} 
+		
 		public IList<string> GetUserSkills(BeachUser user) {
 			var skillStore = (IUserSkillStore<BeachUser, string>)Store;
 			return skillStore.GetSkillsAsync(user).Result;
