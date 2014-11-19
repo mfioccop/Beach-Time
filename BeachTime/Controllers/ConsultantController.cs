@@ -146,7 +146,7 @@ namespace BeachTime.Controllers
 
 		#endregion
 
-		#region ProjectCreationEditing
+		#region Projects
 
 		// GET: Consultant/CreateProject
 		public ActionResult CreateProject()
@@ -294,7 +294,7 @@ namespace BeachTime.Controllers
 					// FIXES: Firefox issue where .doc files are incorrectly labeled as "application/octet-stream", which is too broad of a filetype to accept
 					//	Check the validity of file extension
 					if(!validFileExtensions.Contains(Path.GetExtension(model.FileUpload.FileName)))
-						ModelState.AddModelError("FileUpload", "Please choose a valid file type (PDF, DOC, RTF)");
+						ModelState.AddModelError("FileUpload", "Please choose a valid file type (PDF, DOC, DOCX, RTF)");
 				}
 
 				if (ModelState.IsValid)
