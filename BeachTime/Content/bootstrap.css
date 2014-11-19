@@ -5382,6 +5382,8 @@ button.close {
   z-index: 1050;
   -webkit-overflow-scrolling: touch;
   outline: 0;
+  width: auto;
+  height: auto;
 }
 .modal.fade .modal-dialog {
   -webkit-transform: translate3d(0, -25%, 0);
@@ -5447,11 +5449,13 @@ button.close {
 .modal-body {
   position: relative;
   padding: 15px;
+
 }
 .modal-footer {
   padding: 15px;
   text-align: right;
   border-top: 1px solid transparent;
+  
 }
 .modal-footer .btn + .btn {
   margin-left: 5px;

@@ -1,13 +1,18 @@
 ﻿@model BeachTime.Models.ConsultantEditViewModel
 
 @{
+    Layout = null;
+}
+
+@{
     ViewBag.Title = "Edit";
 }
 
-<div class="jumbotron">
     <h2>Update Profile</h2>
 
-    <h3>dialog/description on updating profile</h3>
+    <p>
+    Please provide some information about your current project, relevant tags for skills and expertise, and upload
+    a resume and other related files that Account Executive may need.
 
     <table>
         <th>Project Name</th>
@@ -20,14 +25,14 @@
                     <td>@item.ProjectName</td>
                     <td>
                         @{
-                if (item.IsCompleted)
-                {
-                    @:Completed
-                        }
-                else
-                {
-                    @:In progress
-                        }
+                            if (item.IsCompleted)
+                            {
+                                @:Completed
+                            }
+                            else
+                            {
+                                @:In progress
+                            }
                         }
                     </td>
                     <td>@Html.ActionLink("Update", "UpdateProject", "Consultant", new { id = item.ProjectId }, null)</td>
@@ -48,20 +53,21 @@
 
             @:Skills:
 
-                                var skills = String.Empty;
+            var skills = String.Empty;
 
-                                foreach (var item in Model.SkillList)
-                                {
-                                    skills += item + ",";
-                                }
+            foreach (var item in Model.SkillList)
+            {
+                skills += item + ",";
+            }
 
-                                @Html.EditorFor(m => m.SkillsString);
+            @Html.EditorFor(m => m.SkillsString);
 
             <input type="submit" value="Update Profile" />
         }
     </div>
+    
 
-    <br />
+<br />
     @Html.ActionLink("Return to Dashboard", "Index", "Consultant")
 
-</div>
+
