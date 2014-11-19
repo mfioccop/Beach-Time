@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace BeachTime.Data {
-	public interface IFileStore {
+	public interface IFileRepository {
 
 		/// <summary>
 		/// Insert a new <see cref="FileInfo"/>
