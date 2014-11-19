@@ -11,6 +11,7 @@ using Dapper;
 namespace BeachTime.Data {
 	public class AppDbContext : IDisposable {
 		public string ConnectionString { get; private set; }
+		public string ConnectionStringName { get; private set; }
 
 		private const string ScriptPath = "Scripts";
 		private const string HostedBinPath = "bin";
@@ -30,6 +31,7 @@ namespace BeachTime.Data {
 		}
 
 		public AppDbContext(string connectionStringName, bool dbResetEnabled = false) {
+			ConnectionStringName = connectionStringName;
 			ConnectionString = ConfigurationManager.ConnectionStrings[connectionStringName].ConnectionString;
 			DbResetEnabled = dbResetEnabled;
 
