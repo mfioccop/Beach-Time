@@ -5,6 +5,8 @@ IF OBJECT_ID('dbo.UserRoles', 'U') IS NOT NULL
 	DROP TABLE dbo.UserRoles;
 IF OBJECT_ID('dbo.Skills', 'U') IS NOT NULL
 	DROP TABLE dbo.Skills;
+IF OBJECT_ID('dbo.FileInfo', 'U') IS NOT NULL
+	DROP TABLE dbo.FileInfo;
 IF OBJECT_ID('dbo.Projects', 'U') IS NOT NULL
 	DROP TABLE dbo.Projects;
 IF OBJECT_ID('dbo.Users', 'U') IS NOT NULL
@@ -81,6 +83,19 @@ CREATE TABLE [dbo].[Projects]
 	CONSTRAINT [FK_Projects_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users]([UserId]) ON DELETE CASCADE
 );
 CREATE UNIQUE INDEX IX_Projects_Name ON Projects(Name);
+
+CREATE TABLE [dbo].[FileInfo]
+(
+	[FileId] INT IDENTITY NOT NULL,
+	[UserId] INT NOT NULL,
+	[Path] VARCHAR(900) NOT NULL,
+	[Title] VARCHAR(255) NOT NULL,
+	[Description] VARCHAR(8000) NOT NULL,
+	CONSTRAINT [PK_FileInfo] PRIMARY KEY ([FileId]),
+	CONSTRAINT [FK_FileInfo_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users]([UserId]) ON DELETE CASCADE,
+	CONSTRAINT [AK_FileInfo_Path] UNIQUE ([Path])
+);
+CREATE UNIQUE INDEX IX_FileInfo_Title ON FileInfo(Title);
 
 CREATE TABLE [dbo].[UserRoles]
 (
