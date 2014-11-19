@@ -1,5 +1,9 @@
 ﻿@model BeachTime.Models.FileUploadViewModel
 
+@{
+    ViewBag.Title = "Upload File";
+}
+
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
