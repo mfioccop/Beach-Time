@@ -18,4 +18,16 @@ namespace BeachTime.Models
 		[DataType(DataType.Upload)]
 		public HttpPostedFileBase FileUpload { get; set; }
 	}
+
+	public class FileIndexViewModel
+	{
+		[Required]
+		public string Title { get; set; }
+
+		[Required]
+		public string Description { get; set; }
+
+		[Required]
+		public string Path { get; set; }
+	}
 }

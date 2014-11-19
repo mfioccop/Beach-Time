@@ -9,6 +9,7 @@ using BeachTime.Data;
 using BeachTime.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using FileInfo = BeachTime.Data.FileInfo;
 
 namespace BeachTime.Controllers
 {
@@ -51,7 +52,7 @@ namespace BeachTime.Controllers
 			var projects = projectRepo.FindByUserId(user.UserId);
 			var projectViewModels = new List<ProjectViewModel>();
 
-			// Filter projects for this user
+			// Create the ProjectViewModels
 			foreach (var project in projects)
 			{
 				var pvm = new ProjectViewModel()
@@ -62,6 +63,23 @@ namespace BeachTime.Controllers
 				projectViewModels.Add(pvm);
 			}
 
+			// Get all files
+			var fileRepo = new FileRepository();
+			var files = fileRepo.FindByUserId(user.UserId);
+			var fileViewModels = new List<FileIndexViewModel>();
+
+			// Create the FileIndexViewModels
+			foreach (var file in files)
+			{
+				var fvm = new FileIndexViewModel()
+				{
+					Title = file.Title,
+					Description = file.Description,
+					Path = Server.MapPath(file.Path)
+				};
+				fileViewModels.Add(fvm);
+			}
+
 			// Construct view model for the consultant
 			var consultant = new ConsultantIndexViewModel()
 			{
@@ -69,7 +87,8 @@ namespace BeachTime.Controllers
 				LastName = user.LastName,
 				Projects = projectViewModels,
 				SkillList = UserManager.GetUserSkills(user).ToList(),
-				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project",
+				FileList = fileViewModels
 			};
 
 			return View(consultant);
@@ -299,8 +318,6 @@ namespace BeachTime.Controllers
 
 				if (ModelState.IsValid)
 				{
-					// TODO: create new file (once Ian finishes table in db)
-
 					if (model.FileUpload != null && model.FileUpload.ContentLength > 0)
 					{
 						var uploadDirectory = ConfigurationManager.AppSettings["FileUploadPath"];
@@ -317,10 +334,23 @@ namespace BeachTime.Controllers
 
 						// This is the tail of the url that will be saved in the database
 						var fileUrl = Path.Combine(uploadDirectory, model.FileUpload.FileName);
-						// TODO: finish file entry and add to database
 
+						// Create the FileInfo instance to add to the database
+						var file = new FileInfo()
+						{
+							Title = model.Title,
+							Description = model.Description,
+							UserId = user.UserId,
+							Path = fileUrl
+						};
+
+						var repository = new FileRepository();
+						repository.Create(file);
+						
+						return RedirectToAction("Index");
 					}
-					return RedirectToAction("Index");
+
+					ModelState.AddModelError("FileUpload", "Please choose a file to upload");
 				}
 
 				return PartialView("_UploadFile");
