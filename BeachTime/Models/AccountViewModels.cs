@@ -37,10 +37,9 @@ namespace BeachTime.Models
 
     public class LoginViewModel
     {
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
+		[Required]
+		[Display(Name = "Username/Email")]
+		public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -60,6 +59,10 @@ namespace BeachTime.Models
 		[Required]
 		[Display(Name = "Last name")]
 		public string LastName { get; set; }
+
+		[Required]
+		[Display(Name = "Username")]
+		public string UserName { get; set; }
 
         [Required]
         [EmailAddress]

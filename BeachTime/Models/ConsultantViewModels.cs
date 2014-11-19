@@ -25,6 +25,9 @@ namespace BeachTime.Models
 
 		[DisplayName("Status")]
 		public string Status { get; set; }
+
+		[DisplayName("Files")]
+		public List<FileIndexViewModel> FileList { get; set; }
 	}
 
 	public class ConsultantEditViewModel
@@ -33,11 +36,16 @@ namespace BeachTime.Models
 		[DisplayName("Projects")]
 		public IList<ProjectViewModel> Projects { get; set; }
 
+		public string SkillsString { get; set; }
+
 		[DisplayName("Skills")]
 		public List<string> SkillList { get; set; }
 
 		[DisplayName("Status")]
 		public string Status { get; set; }
+
+		[DisplayName("Files")]
+		public List<FileUploadViewModel> FileList { get; set; }
 
 	}
 

@@ -62,9 +62,14 @@ namespace BeachTime.Data {
 				return con.Query<Project>("select * from Projects");
 		}
 
-		public Project FindById(int projectId) {
+		public Project FindByProjectId(int projectId) {
 			using (var con = GetConnection())
-					return con.Query<Project>("select * from Projects where ProjectId = @projectId", new { projectId }).SingleOrDefault();
+				return con.Query<Project>("select * from Projects where ProjectId = @projectId", new { projectId }).SingleOrDefault();
+		}
+
+		public IEnumerable<Project> FindByUserId(int userId) {
+			using (var con = GetConnection())
+				return con.Query<Project>("select * from Projects where UserId = @userId", new { userId });
 		}
 
 		public Project FindByName(string projectName) {

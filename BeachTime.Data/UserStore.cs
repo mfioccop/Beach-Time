@@ -9,7 +9,7 @@ using Dapper;
 using Microsoft.AspNet.Identity;
 
 namespace BeachTime.Data {
-	public class UserStore : IUserStore<BeachUser>, IUserLoginStore<BeachUser>, IUserPasswordStore<BeachUser>,
+	public class UserStore : IBeachUserStore, IUserLoginStore<BeachUser>, IUserPasswordStore<BeachUser>,
 		IUserSecurityStampStore<BeachUser>, IUserEmailStore<BeachUser>, IUserLockoutStore<BeachUser, string>,
 		IUserTwoFactorStore<BeachUser, string>, IUserRoleStore<BeachUser>, IUserPhoneNumberStore<BeachUser>,
 		IUserSkillStore<BeachUser, string>, IUserBeachStore {
@@ -87,6 +87,11 @@ namespace BeachTime.Data {
 			using (var con = GetConnection())
 				con.Execute("delete from Users where UserId = @userId", new { beachUser.UserId });
 			return Task.FromResult(0);
+		}
+
+		public Task<IEnumerable<BeachUser>> FindAll() {
+			using (var con = GetConnection())
+				return Task.FromResult(con.Query<BeachUser>("select * from Users"));
 		}
 
 		public Task<BeachUser> FindByIdAsync(string userId) {
@@ -536,7 +541,7 @@ where Skills.UserId = @userId";
 				throw new ArgumentNullException("user");
 
 			using (var con = GetConnection())
-				return con.Query<int>("select count(*) from Projects where UserId = @userId and Completed = 1", new { user.UserId }).Single() == 0;
+				return con.Query<int>("select count(*) from Projects where UserId = @userId and Completed = 0", new { user.UserId }).Single() == 0;
 		}
 
 		public IEnumerable<BeachUser> GetBeachedUsers() {
