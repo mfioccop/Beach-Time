@@ -1,0 +1,38 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Dynamic;
+using System.IO;
+using System.Linq;
+using System.Web;
+using BeachTime.Data;
+
+namespace BeachTime.Models
+{
+    public class ExecutiveIndexViewModel
+    {
+        [DisplayName("First Name")]
+        public string FirstName { get; set; }
+
+        [DisplayName("Last Name")]
+        public string LastName { get; set; }
+
+        [DisplayName("Occupied Consultants")]
+        public int OccupiedConsultants { get; set; }
+
+        [DisplayName("Beach Consultants")]
+        public int BeachConsultants { get; set; }
+
+        [DisplayName("Skills")]
+        public List<string> SkillList { get; set; }
+
+    }
+
+    public class ExecutiveBeachViewModel
+    {
+        [DisplayName("Beach Consultants")]
+        public List<ConsultantIndexViewModel> BeachConsultantViewModels { get; set; }
+   }
+
+}

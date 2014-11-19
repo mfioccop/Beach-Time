@@ -55,7 +55,7 @@ namespace BeachTime.Controllers
 				};
 				projectViewModels.Add(pvm);
 			}
-
+            
 			// Construct view model for the consultant
 	        var consultant = new ConsultantIndexViewModel()
 	        {

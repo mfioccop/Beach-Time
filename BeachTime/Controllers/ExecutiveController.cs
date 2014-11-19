@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using BeachTime.Data;
+using BeachTime.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using WebGrease;
+using WebGrease.Css.Extensions;
 
 namespace BeachTime.Controllers
 {
@@ -33,9 +37,55 @@ namespace BeachTime.Controllers
         {
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Executive"))
 				return RedirectToAction("Login", "Account");
-	      
 
-            return View();
+            // Find the user in the database and retrieve basic account information
+            var user = UserManager.FindById(User.Identity.GetUserId());
+
+            // Get all consultants on projects
+            // TODO: waiting for FindAll()
+
+            // Get all consultants on the beach
+            UserStore beachedUserStore = new UserStore();
+            var beachUsers = beachedUserStore.GetBeachedUsers();
+            int numBeach = beachUsers.Count();
+
+            // Get all skills on the beach
+            List<string> beachSkillsList = new List<string>();
+            foreach (var consultant in beachUsers)
+            {
+                var consultantManager = UserManager.FindById(consultant.Id);
+                beachSkillsList.AddRange(UserManager.GetUserSkills(consultantManager).ToList());
+            }
+
+            // Construct view model for the executive
+            var executive = new ExecutiveIndexViewModel()
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                BeachConsultants = numBeach,
+                SkillList = beachSkillsList
+            };
+            
+            return View(executive);
+        }
+
+        // GET: Executive/Beach/5
+        public ActionResult Beach()
+        {
+            if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Executive"))
+                return RedirectToAction("Login", "Account");
+
+            // Get all consultants on the beach as ViewModels
+            UserStore beachedUserStore = new UserStore();
+            var beachUsers = beachedUserStore.GetBeachedUsers().ToList();
+            
+            // Construct view model for the beach
+            var executive = new ExecutiveBeachViewModel()
+            {
+                //BeachConsultantViewModels = beachUsers
+            };
+
+            return View(executive);
         }
 
         // GET: Executive/Details/5
