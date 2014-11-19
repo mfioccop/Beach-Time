@@ -18,21 +18,23 @@
             </button>
             @Html.ActionLink("IbEACH", "Index", "Home", new { area = "" }, new { @class = "navbar-brand", @style = "font-family:Aharoni; font-size: 250%" })
         </div>
-        <div class="navbar-collapse collapse navbar-responsive-collapse">
+        <div class="navbar-collapse collapse ">
             <ul class="nav navbar-nav" style="font-size:125%">
                 <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                    <li>@Html.ActionLink("Consultant Dashboard", "Index", "Consultant")</li>
-                    <li>@Html.ActionLink("Executive Dashboard", "Index", "Executive")</li>
-                    <li>@Html.ActionLink("Admin Dashboard", "Index", "Admin")</li>
+                <li>@Html.ActionLink("About", "About", "Home")</li>
+                <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                <li>@Html.ActionLink("Consultant Dashboard", "Index", "Consultant")</li>
+                <li>@Html.ActionLink("Executive Dashboard", "Index", "Executive")</li>
+                <li>@Html.ActionLink("Admin Dashboard", "Index", "Admin")</li>
             </ul>
-            
+
         </div>
     </div>
     <div class="container body-content">
-        @RenderBody()
-        <hr />
+        <div class="jumbotron">
+            @RenderBody()
+            <hr />
+        </div>
         <footer>
             <p>&copy; @DateTime.Now.Year - IbEACH</p>
         </footer>
