@@ -15,7 +15,6 @@ namespace BeachTime.Controllers
 {
 	public class ConsultantController : Controller
 	{
-
 		#region UserManager
 
 		/// <summary>
