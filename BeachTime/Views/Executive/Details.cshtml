@@ -1,7 +1,58 @@
-﻿
+﻿@model BeachTime.Models.ConsultantIndexViewModel
+
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Index";
 }
 
-<h2>Details</h2>
+<h2>
+    @Html.ValueForModel(Model.FirstName) @Html.ValueForModel(Model.LastName)
+</h2>
 
+<h3>Status: @Html.ValueForModel(Model.Status)</h3>
+
+<ul>
+
+    <li>
+        Projects:
+        @{
+            foreach (var item in Model.Projects)
+            {
+                @Html.ValueForModel(item.ProjectName);
+            @:,&nbsp;
+            }
+        }
+    </li>
+
+
+    <li>
+        account tags (skills):
+        @{
+            foreach (var item in Model.SkillList)
+            {
+                @Html.ValueForModel(item);
+            @:,&nbsp;
+            }
+        }
+    </li>
+
+    <li>resume+other files list (with links to view and remove individual files):</li>
+
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Link</th>
+        </tr>
+        @{
+            foreach (var item in Model.FileList)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.Description</td>
+                    <td>@item.Path</td>
+                </tr>
+            }
+        }
+
+    </table>
+</ul>

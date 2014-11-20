@@ -19,19 +19,19 @@ namespace BeachTime.Models
         public string LastName { get; set; }
 
         [DisplayName("Occupied Consultants")]
-        public int OccupiedConsultants { get; set; }
+        public int OccupiedConsultantsCount { get; set; }
 
         [DisplayName("Beach Consultants")]
-        public int BeachConsultants { get; set; }
+        public int BeachConsultantsCount { get; set; }
 
         [DisplayName("Skills")]
         public List<string> SkillList { get; set; }
 
     }
 
-    public class ExecutiveBeachViewModel
+    public class ExecutiveUserListViewModel
     {
-        [DisplayName("Beach Consultants")]
+        [DisplayName("List of Consultants")]
         public List<ConsultantIndexViewModel> BeachConsultantViewModels { get; set; }
    }
 
