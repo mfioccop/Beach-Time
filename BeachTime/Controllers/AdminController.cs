@@ -11,22 +11,27 @@ namespace BeachTime.Controllers
     public class AdminController : Controller
     {
 
-		/// <summary>
-		/// Manages user account registration and authentication
-		/// </summary>
-		private BeachUserManager _userManager;
+	    #region UserManager
+
+	    /// <summary>
+	    /// Manages user account registration and authentication
+	    /// </summary>
+	    private BeachUserManager _userManager;
 
 
-		/// <summary>
-		/// Gets the current UserManager
-		/// </summary>
-		public BeachUserManager UserManager
-		{
-			get { return _userManager ?? HttpContext.GetOwinContext().GetUserManager<BeachUserManager>(); }
+	    /// <summary>
+	    /// Gets the current UserManager
+	    /// </summary>
+	    public BeachUserManager UserManager
+	    {
+		    get { return _userManager ?? HttpContext.GetOwinContext().GetUserManager<BeachUserManager>(); }
 
-			private set { _userManager = value; }
+		    private set { _userManager = value; }
 
-		}
+	    }
+
+	    #endregion
+
 
 
         // GET: Admin
@@ -34,6 +39,9 @@ namespace BeachTime.Controllers
         {
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Admin"))
 				return RedirectToAction("Login", "Account");
+
+
+
 
             return View();
         }
