@@ -6,7 +6,7 @@
 
 
     <h2>Consultant Dashboard</h2>
-
+    
     <h3>
         Welcome,
         @Html.ValueForModel(Model.FirstName) @Html.ValueForModel(Model.LastName)
@@ -46,77 +46,8 @@
     
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10" align="center">
-            <a class="btn btn-primary" href="#success" data-toggle="modal"><h6>Update Profile</h6></a>&nbsp;&nbsp;&nbsp;
-            <a class="btn btn-primary" href="#success2" data-toggle="modal"><h6>Add Project</h6></a>&nbsp;&nbsp;&nbsp;
-            <a class="btn btn-primary" href="#success3" data-toggle="modal"><h6>Update Project</h6></a>
+            
+            @Html.ActionLink("Create Project", "CreateProject", null, new { @class = "modal-link btn btn-default btn-lg" })
+            @Html.ActionLink("Upload File", "UploadFile", null, new { @class = "modal-link btn btn-default btn-lg" })
         </div>
     </div>
-
-<!-- Modal -->
-<div class="modal fade" id="success" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header modal-header-success" style="background-color: #00D5FF;">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3>Update Your Profile</h3>
-            </div>
-            <div class="modal-body" style="background-color:#EDE7E0">
-                <iframe src="~/Consultant/Edit" width="570" height="420"></iframe>
-            </div>
-            <div class="modal-footer" style="background-color:#EDE7E0">
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10" align="center">
-                        <a type="submit" href="#success" class="btn btn-default" data-dismiss="modal"><h5>Close</h5></a>
-                    </div>
-                </div>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- Modal -->
-
-<!-- Modal -->
-<div class="modal fade" id="success2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header modal-header-success" style="background-color: #00D5FF;">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3>Add A Project</h3>
-            </div>
-            <div class="modal-body" style="background-color:#EDE7E0">
-                <iframe src="~/Consultant/CreateProject" width="570" height="370"></iframe>
-            </div>
-            <div class="modal-footer" style="background-color:#EDE7E0">
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10" align="center">
-                        <a type="submit" href="#success2" class="btn btn-default" data-dismiss="modal"><h5>Close</h5></a>
-                    </div>
-                </div>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- Modal -->
-
-<!-- Modal -->
-<div class="modal fade" id="success3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header modal-header-success" style="background-color: #00D5FF;">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3>Update Project</h3>
-            </div>
-            <div class="modal-body" style="background-color:#EDE7E0">
-                <iframe src="~/Consultant/UpdateProject" width="570" height="315"></iframe>
-            </div>
-            <div class="modal-footer" style="background-color:#EDE7E0">
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10" align="center">
-                        <a type="submit" href="#success3" class="btn btn-default" data-dismiss="modal"><h5>Close</h5></a>
-                    </div>
-                </div>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- Modal -->

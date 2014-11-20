@@ -8,14 +8,12 @@
 @{
     ViewBag.Title = "Edit";
 }
-    <p>
+    
     Please provide some information about your current project, relevant tags for skills and expertise, and upload
     a resume and other related files that Account Executive may need.
 
-        <p>Project Name: @Model.Projects</p>
-        <p>Status:       @Model.Status</p>
         
-@{
+        @{
             foreach (var item in Model.Projects)
             {
                 <tr>
