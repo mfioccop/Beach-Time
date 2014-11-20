@@ -12,7 +12,6 @@ namespace BeachTime.Controllers
 
 	public class HomeController : Controller
 	{
-
 		#region UserManager_HelperMethods
 
 		/// <summary>
