@@ -1,4 +1,5 @@
 ﻿@model BeachTime.Models.ProjectViewModel
+@Styles.Render("~/Content/css")
 
 @{
     ViewBag.Title = "Update Profile";
@@ -8,7 +9,7 @@
 {
     @Html.AntiForgeryToken()
     
-    <div class="form-horizontal">
+    <div>
         <h4>ProjectViewModel</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -40,6 +41,3 @@
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>

@@ -1,4 +1,5 @@
 ﻿@model BeachTime.Models.ConsultantEditViewModel
+@Styles.Render("~/Content/css")
 
 @{
     Layout = null;
@@ -7,18 +8,14 @@
 @{
     ViewBag.Title = "Edit";
 }
-
-    <h2>Update Profile</h2>
-
     <p>
     Please provide some information about your current project, relevant tags for skills and expertise, and upload
     a resume and other related files that Account Executive may need.
 
-    <table>
-        <th>Project Name</th>
-        <th>Status</th>
-        <th>Update Project</th>
-        @{
+        <p>Project Name: @Model.Projects</p>
+        <p>Status:       @Model.Status</p>
+        
+@{
             foreach (var item in Model.Projects)
             {
                 <tr>
@@ -35,20 +32,18 @@
                             }
                         }
                     </td>
-                    <td>@Html.ActionLink("Update", "UpdateProject", "Consultant", new { id = item.ProjectId }, null)</td>
                 </tr>
             }
         }
-    </table>
-
-    @Html.ActionLink("Add new project", "CreateProject", "Consultant")
-
+    
+    
     <br /><br />
     Skill tags (current delimeter single comma = "skill1,skill2" , or maybe <a href="http://timschlechter.github.io/bootstrap-tagsinput/examples/">use this plugin for tagging system</a>)
 
     <div>
         @using (Html.BeginForm("Edit", "Consultant", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
+            
             @Html.AntiForgeryToken();
 
             @:Skills:
@@ -62,8 +57,10 @@
 
             @Html.EditorFor(m => m.SkillsString);
 
-            <input type="submit" value="Update Profile" />
+            <input type="submit" class="btn btn-default btn-sm" value="Update Skills" /> 
+            
         }
+
     </div>
     
 

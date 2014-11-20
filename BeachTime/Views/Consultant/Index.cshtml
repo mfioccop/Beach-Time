@@ -42,9 +42,6 @@
         <li>resume+other files list (with links to view and remove individual files)</li>
 
         <li>add new file link</li>
-
-        <li>update profile button (either opens new page OR popup window <a href="http://stackoverflow.com/questions/4803424/mvc-pop-up-windows">EXAMPLE</a> or <a href="http://www.dotnet-tricks.com/Tutorial/mvc/42R0171112-CRUD-Operations-using-jQuery-dialog-and-Entity-Framework---MVC-Razor.html">2nd EXAMPLE</a>)</li>
-        <li>@Html.ActionLink("UPDATE PROFILE", "Edit", "Consultant")</li>
     </ul>
     
     <div class="form-group">
@@ -64,12 +61,12 @@
                 <h3>Update Your Profile</h3>
             </div>
             <div class="modal-body" style="background-color:#EDE7E0">
-                <iframe src="~/Consultant/Edit" width="570" height="315"></iframe>
+                <iframe src="~/Consultant/Edit" width="570" height="420"></iframe>
             </div>
             <div class="modal-footer" style="background-color:#EDE7E0">
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10" align="center">
-                        <a type="submit" href="#success" class="btn btn-primary" data-dismiss="modal"><h5>Update</h5></a>
+                        <a type="submit" href="#success" class="btn btn-default" data-dismiss="modal"><h5>Close</h5></a>
                     </div>
                 </div>
             </div>
@@ -84,15 +81,15 @@
         <div class="modal-content">
             <div class="modal-header modal-header-success" style="background-color: #00D5FF;">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3>Update Your Profile</h3>
+                <h3>Add A Project</h3>
             </div>
             <div class="modal-body" style="background-color:#EDE7E0">
-                <iframe src="~/Consultant/CreateProject" width="570" height="315"></iframe>
+                <iframe src="~/Consultant/CreateProject" width="570" height="370"></iframe>
             </div>
             <div class="modal-footer" style="background-color:#EDE7E0">
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10" align="center">
-                        <a type="submit" href="#success2" class="btn btn-primary" data-dismiss="modal"><h5>Update</h5></a>
+                        <a type="submit" href="#success2" class="btn btn-default" data-dismiss="modal"><h5>Close</h5></a>
                     </div>
                 </div>
             </div>
@@ -107,7 +104,7 @@
         <div class="modal-content">
             <div class="modal-header modal-header-success" style="background-color: #00D5FF;">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3>Update Your Profile</h3>
+                <h3>Update Project</h3>
             </div>
             <div class="modal-body" style="background-color:#EDE7E0">
                 <iframe src="~/Consultant/UpdateProject" width="570" height="315"></iframe>
@@ -115,7 +112,7 @@
             <div class="modal-footer" style="background-color:#EDE7E0">
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10" align="center">
-                        <a type="submit" href="#success3" class="btn btn-primary" data-dismiss="modal"><h5>Update</h5></a>
+                        <a type="submit" href="#success3" class="btn btn-default" data-dismiss="modal"><h5>Close</h5></a>
                     </div>
                 </div>
             </div>
