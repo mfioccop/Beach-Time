@@ -68,6 +68,8 @@ namespace BeachTime.Controllers
 
 		#endregion
 
+		#region UpdateUser
+
 		// GET: Admin/UpdateUser/5
 		public ActionResult UpdateUser(int id)
 		{
@@ -116,10 +118,10 @@ namespace BeachTime.Controllers
 			{
 				return PartialView("_UpdateUser");
 			}
-
-
-
 		}
+
+		#endregion
+
 
 
 
