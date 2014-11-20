@@ -29,4 +29,5 @@ namespace BeachTime.Models
 		[Required]
 		public int Id { get; set; }
 	}
+
 }
