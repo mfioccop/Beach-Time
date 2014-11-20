@@ -172,6 +172,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ConsultantViewModels.cs" />
     <Compile Include="Models\FileViewModels.cs" />
+    <Compile Include="Models\HomeViewModels.cs" />
     <Compile Include="Models\ProjectViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
