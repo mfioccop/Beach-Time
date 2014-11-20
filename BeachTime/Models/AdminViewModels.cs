@@ -8,18 +8,25 @@ namespace BeachTime.Models
 {
 	public class AdminIndexViewModel
 	{
-		public List<UserViewModel> UserViewModels { get; set; }
+		public List<AdminUserViewModel> UserViewModels { get; set; }
 	}
 
-	public class UserViewModel
+	public class AdminUserViewModel
 	{
+		[Required]
 		public string UserName { get; set; }
 
+		[Required]
 		public string FirstName { get; set; }
+
+		[Required]
 		public string LastName { get; set; }
 
+		[Required]
 		[EmailAddress]
 		public string Email { get; set; }
 
+		[Required]
+		public int Id { get; set; }
 	}
 }
