@@ -11,8 +11,8 @@
 <p>account exec dashboard stuff:</p>
 <ul>
     
-    <li>Consultants on Projects: @Model.OccupiedConsultantsCount @Html.ActionLink("[view all]", "Occupied", "Executive")</li>
-    <li>Consultants on the Beach: @Model.BeachConsultantsCount @Html.ActionLink("[view all]", "Beach", "Executive")</li>
+    <li>Consultants on Projects: @Model.OccupiedConsultantsCount @Html.ActionLink("[View All]", "Occupied", "Executive")</li>
+    <li>Consultants on the Beach: @Model.BeachConsultantsCount @Html.ActionLink("[View All]", "Beach", "Executive")</li>
     <li>Skills on the beach
     @{
         foreach (var skill in Model.SkillList)
@@ -20,7 +20,4 @@
             @skill
         }
     }</li>
-    
-
-    <li>update profile button (either opens new page OR popup window <a href="http://stackoverflow.com/questions/4803424/mvc-pop-up-windows">EXAMPLE</a> or <a href="http://www.dotnet-tricks.com/Tutorial/mvc/42R0171112-CRUD-Operations-using-jQuery-dialog-and-Entity-Framework---MVC-Razor.html">2nd EXAMPLE</a>)</li>
 </ul>
