@@ -97,10 +97,13 @@ namespace BeachTime.Controllers
 					// If that fails, then search for a user with the given email address
 					var userByEmail = await UserManager.FindByEmailAsync(model.UserName);
 
-					// Now double check that the given password matches (otherwise all the would be needed to login is an email address)
-					user = await UserManager.FindAsync(userByEmail.UserName, model.Password);
-					if (user != null)
+					if (userByEmail != null)
 					{
+						// Now double check that the given password matches (otherwise all the would be needed to login is an email address)
+						user = await UserManager.FindAsync(userByEmail.UserName, model.Password);
+						
+						if (user == null) return View(model);
+						
 						await SignInAsync(user, model.RememberMe);
 						return RedirectToLocal(returnUrl);
 					}
