@@ -39,10 +39,25 @@
             }
         </li>
 
-        <li>resume+other files list (with links to view and remove individual files)</li>
+    <li>resume+other files list (with links to view and remove individual files):</li>
+    
+    <table>
+        <tr>
+            <th>Title</th><th>Description</th><th>Link</th>
+        </tr>
+        @{
+            foreach (var item in Model.FileList)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.Description</td>
+                    <td>@item.Path</td>
+                </tr>
+            }
+        }
 
-        <li>add new file link</li>
-    </ul>
+    </table>
+    <li>@Html.ActionLink("ADD NEW FILE", "UploadFile", "Consultant")</li>
     
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10" align="center">
