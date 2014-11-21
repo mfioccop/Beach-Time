@@ -15,50 +15,49 @@
     <h3>Status: @Html.ValueForModel(Model.Status)</h3>
     <p>dashboard stuff:</p>
     <ul>
+            <li>
+                Projects:
+                @{
+                    foreach (var item in Model.Projects)
+                    {
+                        @Html.ValueForModel(item.ProjectName);
+                        @:,&nbsp;
+                    }
+                }
+            </li>
 
-        <li>
-            Projects:
+
+            <li>
+                account tags (skills):
+                @{
+                    foreach (var item in Model.SkillList)
+                    {
+                        @Html.ValueForModel(item);
+                        @:,&nbsp;
+                    }
+                }
+            </li>
+
+        <li>resume+other files list (with links to view and remove individual files):</li>
+    
+        <table>
+            <tr>
+                <th>Title</th><th>Description</th><th>Link</th>
+            </tr>
             @{
-                foreach (var item in Model.Projects)
+                foreach (var item in Model.FileList)
                 {
-                    @Html.ValueForModel(item.ProjectName);
-                    @:,&nbsp;
+                    <tr>
+                        <td>@item.Title</td>
+                        <td>@item.Description</td>
+                        <td>@item.Path</td>
+                    </tr>
                 }
             }
-        </li>
 
-
-        <li>
-            account tags (skills):
-            @{
-                foreach (var item in Model.SkillList)
-                {
-                    @Html.ValueForModel(item);
-                    @:,&nbsp;
-                }
-            }
-        </li>
-
-    <li>resume+other files list (with links to view and remove individual files):</li>
-    
-    <table>
-        <tr>
-            <th>Title</th><th>Description</th><th>Link</th>
-        </tr>
-        @{
-            foreach (var item in Model.FileList)
-            {
-                <tr>
-                    <td>@item.Title</td>
-                    <td>@item.Description</td>
-                    <td>@item.Path</td>
-                </tr>
-            }
-        }
-
-    </table>
-    <li>@Html.ActionLink("ADD NEW FILE", "UploadFile", "Consultant")</li>
-    
+        </table>
+        <li>@Html.ActionLink("ADD NEW FILE", "UploadFile", "Consultant")</li>
+    </ul>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10" align="center">
             
