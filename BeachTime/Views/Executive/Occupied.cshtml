@@ -1,0 +1,27 @@
+﻿@model BeachTime.Models.ExecutiveUserListViewModel
+@{
+    ViewBag.Title = "Beach";
+}
+
+<h2>Consultants on Projects</h2>
+
+<table>
+    <tr>
+        <th>User</th>
+        <th>Profile</th>
+    </tr>
+
+    @{
+        foreach (var item in Model.BeachConsultantViewModels)
+        {
+            <tr>
+                <td>@item.FirstName @item.LastName</td>
+
+                <td>
+                    @Html.ActionLink("Profile", "Details", "Executive", new { id = item.Id }, null)
+                </td>
+              
+            </tr>
+        }
+    }
+</table>

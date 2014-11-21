@@ -171,6 +171,7 @@
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ConsultantViewModels.cs" />
+    <Compile Include="Models\ExecutiveViewModels.cs" />
     <Compile Include="Models\FileViewModels.cs" />
     <Compile Include="Models\HomeViewModels.cs" />
     <Compile Include="Models\ProjectViewModels.cs" />
@@ -241,12 +242,13 @@
     <Content Include="Views\Consultant\Edit.cshtml" />
     <Content Include="Views\Executive\Index.cshtml" />
     <Content Include="Views\Executive\Details.cshtml" />
-    <Content Include="Views\Executive\Edit.cshtml" />
+    <Content Include="Views\Executive\Beach.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Consultant\_CreateProject.cshtml" />
     <Content Include="Views\Consultant\_UpdateProject.cshtml" />
     <Content Include="Views\Consultant\_UploadFile.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Upload.cshtml" />
+    <Content Include="Views\Executive\Occupied.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

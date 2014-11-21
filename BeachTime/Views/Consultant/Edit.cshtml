@@ -9,9 +9,11 @@
 <h3>dialog/description on updating profile</h3>
 
 <table>
-    <th>Project Name</th>
-    <th>Status</th>
-    <th>Update Project</th>
+    <tr><th>Project Name</th>
+        <th>Status</th>
+        <th>Update Project</th>
+    </tr>
+
     @{
         foreach (var item in Model.Projects)
         {
@@ -27,10 +29,10 @@
                         {
                             @:In progress
                         }
-                }
-            </td>
-            <td>@Html.ActionLink("Update", "UpdateProject", "Consultant", new { id = item.ProjectId }, null)</td>
-        </tr>
+                    }
+                </td>
+                <td>@Html.ActionLink("Update", "UpdateProject", "Consultant", new { id = item.ProjectId }, null)</td>
+            </tr>
         }
     }
 </table>
