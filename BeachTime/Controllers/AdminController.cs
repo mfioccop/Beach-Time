@@ -46,7 +46,8 @@ namespace BeachTime.Controllers
 			var users = UserManager.FindAll();
 			var indexViewmodel = new AdminIndexViewModel
 			{
-				UserViewModels = new List<AdminUserViewModel>()
+				UserViewModels = new List<AdminUserViewModel>(),
+				RequestViewModels = new List<AdminRoleRequestViewModel>()
 			};
 
 			// Populate the list of users
@@ -63,6 +64,22 @@ namespace BeachTime.Controllers
 				indexViewmodel.UserViewModels.Add(userViewModel);
 			}
 
+			// TODO: FindAll requests from database
+			var requests = new List<BeachUser>();
+
+			// Populate requests for new roles
+			foreach (var request in requests)
+			{
+				// TODO: fill in info from each request + add to RequestViewModels
+				var requestViewModel = new AdminRoleRequestViewModel()
+				{
+					UserId = 1,
+					RoleId = 1,
+					RequestId = 1
+				};
+				indexViewmodel.RequestViewModels.Add(requestViewModel);
+			}
+			
 			return View(indexViewmodel);
 		}
 
@@ -122,7 +139,79 @@ namespace BeachTime.Controllers
 
 		#endregion
 
+		#region UpdateRole
 
+		// GET: Admin/UpdateUser/5
+		public ActionResult UpdateRole(int id)
+		{
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Admin"))
+				return RedirectToAction("Login", "Account");
+
+			// TODO: Find the request in the database
+			//var request = RequestStore.FindById()
+
+			var requestViewModel = new AdminRoleRequestViewModel()
+			{
+				RequestId = 1,
+				UserId = 1,
+				RoleId = 1
+			};
+
+			// Find the user in the database and retrieve basic account information
+			// TODO: find user from the request UserId
+			//var user = UserManager.FindById(request.UserId);
+			var user = new BeachUser();
+
+
+			var userViewModel = new AdminUserViewModel()
+			{
+				FirstName = user.FirstName,
+				LastName = user.LastName,
+				Email = user.Email,
+				UserName = user.UserName,
+				Id = user.UserId
+			};
+
+			var updateRoleViewModel = new AdminUpdateRoleViewModel()
+			{
+				RequestViewModel = requestViewModel,
+				UserViewModel = userViewModel
+			};
+
+			return PartialView("_UpdateRole", updateRoleViewModel);
+		}
+
+		// POST: Admin/UpdateUser/5
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult UpdateRole(AdminUpdateRoleViewModel model)
+		{
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Admin"))
+				return RedirectToAction("Login", "Account");
+
+			try
+			{
+				
+				// TODO: update UserRoles table with new entry
+
+				var user = UserManager.FindById(model.UserViewModel.Id.ToString());
+				
+				UserManager.AddToRole(user.Id, "NEW ROLE");
+
+
+				// get RoleRequest store
+				// delete request from table
+
+
+				return RedirectToAction("Index");
+			}
+			catch
+			{
+				return PartialView("_UpdateRole");
+			}
+		}
+
+		#endregion
 
 
 	}

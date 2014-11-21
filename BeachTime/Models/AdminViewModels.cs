@@ -8,8 +8,13 @@ namespace BeachTime.Models
 {
 	public class AdminIndexViewModel
 	{
+		[Required]
 		public List<AdminUserViewModel> UserViewModels { get; set; }
+
+		[Required]
+		public List<AdminRoleRequestViewModel> RequestViewModels { get; set; }
 	}
+
 
 	public class AdminUserViewModel
 	{
@@ -28,6 +33,27 @@ namespace BeachTime.Models
 
 		[Required]
 		public int Id { get; set; }
+	}
+	
+	public class AdminRoleRequestViewModel
+	{
+		[Required]
+		public int UserId { get; set; }
+
+		[Required]
+		public int RoleId { get; set; }
+
+		[Required]
+		public int RequestId { get; set; }
+	}
+
+	public class AdminUpdateRoleViewModel
+	{
+		[Required]
+		public AdminRoleRequestViewModel RequestViewModel { get; set; }
+
+		[Required]
+		public AdminUserViewModel UserViewModel { get; set; }
 	}
 
 }
