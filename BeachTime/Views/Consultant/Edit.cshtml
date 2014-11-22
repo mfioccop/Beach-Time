@@ -12,27 +12,31 @@
     
     Please provide some information about your current project, relevant tags for skills and expertise, and upload
     a resume and other related files that Account Executive may need.
+<table>
+    <tr><th>Project Name</th>
+        <th>Status</th>
+        <th>Update Project</th>
+    </tr>
 
-        
-        @{
-            foreach (var item in Model.Projects)
-            {
-                <tr>
-                    <td>@item.ProjectName</td>
-                    <td>
-                        @{
-                            if (item.IsCompleted)
-                            {
-                                @:Completed
-                            }
-                            else
-                            {
-                                @:In progress
-                            }
+    @{
+        foreach (var item in Model.Projects)
+        {
+            <tr>
+                <td>@item.ProjectName</td>
+                <td>
+                    @{
+                        if (item.IsCompleted)
+                        {
+                            @:Completed
                         }
-                    </td>
-                </tr>
-            }
+                        else
+                        {
+                            @:In progress
+                        }
+                    }
+                </td>
+                <td>@Html.ActionLink("Update", "UpdateProject", "Consultant", new { id = item.ProjectId }, null)</td>
+            </tr>
         }
     
     
