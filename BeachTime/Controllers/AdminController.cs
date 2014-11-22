@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using BeachTime.Data;
 using BeachTime.Models;
 using Microsoft.AspNet.Identity;
@@ -59,7 +60,7 @@ namespace BeachTime.Controllers
 					LastName = beachUser.LastName,
 					Email = beachUser.Email,
 					UserName = beachUser.UserName,
-					Id = beachUser.UserId
+					UserId = beachUser.UserId
 				};
 				indexViewmodel.UserViewModels.Add(userViewModel);
 			}
@@ -68,18 +69,18 @@ namespace BeachTime.Controllers
 			var requests = new List<BeachUser>();
 
 			// Populate requests for new roles
-			foreach (var request in requests)
+			for (int ii = 0; ii < 5; ii++)
 			{
 				// TODO: fill in info from each request + add to RequestViewModels
 				var requestViewModel = new AdminRoleRequestViewModel()
 				{
+					RequestId = 1,
 					UserId = 1,
-					RoleId = 1,
-					RequestId = 1
+					RoleName = "Consultant"
 				};
 				indexViewmodel.RequestViewModels.Add(requestViewModel);
 			}
-			
+
 			return View(indexViewmodel);
 		}
 
@@ -102,7 +103,7 @@ namespace BeachTime.Controllers
 				LastName = user.LastName,
 				Email = user.Email,
 				UserName = user.UserName,
-				Id = user.UserId
+				UserId = user.UserId
 			};
 
 			return PartialView("_UpdateUser", userViewModel);
@@ -119,7 +120,7 @@ namespace BeachTime.Controllers
 			try
 			{
 				// Find the user in the database and populate it with updated data
-				var user = UserManager.FindById(model.Id.ToString());
+				var user = UserManager.FindById(model.UserId.ToString());
 				user.FirstName = model.FirstName;
 				user.LastName = model.LastName;
 				user.Email = model.Email;
@@ -141,7 +142,7 @@ namespace BeachTime.Controllers
 
 		#region UpdateRole
 
-		// GET: Admin/UpdateUser/5
+		// GET: Admin/UpdateRole/5
 		public ActionResult UpdateRole(int id)
 		{
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Admin"))
@@ -154,54 +155,73 @@ namespace BeachTime.Controllers
 			{
 				RequestId = 1,
 				UserId = 1,
-				RoleId = 1
+				RoleName = "Consultant"
 			};
 
 			// Find the user in the database and retrieve basic account information
 			// TODO: find user from the request UserId
 			//var user = UserManager.FindById(request.UserId);
-			var user = new BeachUser();
+			var user = UserManager.FindById(requestViewModel.UserId.ToString());
 
-
-			var userViewModel = new AdminUserViewModel()
+			var updateRoleViewModel = new AdminUpdateRoleViewModel()
 			{
 				FirstName = user.FirstName,
 				LastName = user.LastName,
 				Email = user.Email,
 				UserName = user.UserName,
-				Id = user.UserId
-			};
-
-			var updateRoleViewModel = new AdminUpdateRoleViewModel()
-			{
-				RequestViewModel = requestViewModel,
-				UserViewModel = userViewModel
+				RequestId = 1,
+				UserId = user.UserId,
+				RoleName = "Consultant"
 			};
 
 			return PartialView("_UpdateRole", updateRoleViewModel);
 		}
 
-		// POST: Admin/UpdateUser/5
+		// POST: Admin/Accept/5
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult UpdateRole(AdminUpdateRoleViewModel model)
+		[MultipleButton(Name = "action", Argument = "AcceptRole")]
+		public ActionResult AcceptRole(AdminUpdateRoleViewModel accept)
 		{
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Admin"))
 				return RedirectToAction("Login", "Account");
 
 			try
 			{
-				
+
 				// TODO: update UserRoles table with new entry
 
-				var user = UserManager.FindById(model.UserViewModel.Id.ToString());
-				
-				UserManager.AddToRole(user.Id, "NEW ROLE");
+				// Add user to role if they aren't already in it
+				if (!UserManager.IsInRole(accept.UserId.ToString(), accept.RoleName))
+				{
+					UserManager.AddToRole(accept.UserId.ToString(), accept.RoleName);
+				}
 
-
-				// get RoleRequest store
+				// TODO: get RoleRequest store
 				// delete request from table
 
+
+				return RedirectToAction("Index");
+			}
+			catch
+			{
+				return PartialView("_UpdateRole");
+			}
+		}
+
+		// POST: Admin/Accept/5
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		[MultipleButton(Name = "action", Argument = "DenyRole")]
+		public ActionResult DenyRole(AdminUpdateRoleViewModel model)
+		{
+			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Admin"))
+				return RedirectToAction("Login", "Account");
+
+			try
+			{
+				// TODO: get RoleRequest store
+				// delete request from table
 
 				return RedirectToAction("Index");
 			}

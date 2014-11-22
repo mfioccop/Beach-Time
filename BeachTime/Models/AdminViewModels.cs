@@ -32,7 +32,7 @@ namespace BeachTime.Models
 		public string Email { get; set; }
 
 		[Required]
-		public int Id { get; set; }
+		public int UserId { get; set; }
 	}
 	
 	public class AdminRoleRequestViewModel
@@ -41,7 +41,7 @@ namespace BeachTime.Models
 		public int UserId { get; set; }
 
 		[Required]
-		public int RoleId { get; set; }
+		public string RoleName { get; set; }
 
 		[Required]
 		public int RequestId { get; set; }
@@ -50,10 +50,26 @@ namespace BeachTime.Models
 	public class AdminUpdateRoleViewModel
 	{
 		[Required]
-		public AdminRoleRequestViewModel RequestViewModel { get; set; }
+		public string RoleName { get; set; }
 
 		[Required]
-		public AdminUserViewModel UserViewModel { get; set; }
+		public int RequestId { get; set; }
+
+		[Required]
+		public string UserName { get; set; }
+
+		[Required]
+		public string FirstName { get; set; }
+
+		[Required]
+		public string LastName { get; set; }
+
+		[Required]
+		[EmailAddress]
+		public string Email { get; set; }
+
+		[Required]
+		public int UserId { get; set; }
 	}
 
 }

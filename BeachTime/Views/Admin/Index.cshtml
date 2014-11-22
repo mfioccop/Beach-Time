@@ -21,12 +21,12 @@
         foreach (var item in Model.UserViewModels)
         {
             <tr>
-                <td>@item.Id</td>
+                <td>@item.UserId</td>
                 <td>@item.FirstName</td>
                 <td>@item.LastName</td>
                 <td>@item.UserName</td>
                 <td>@item.Email</td>
-                <td>@Html.ActionLink("UPDATE", "UpdateUser", "Admin", new { id = item.Id }, null)</td>
+                <td>@Html.ActionLink("UPDATE", "UpdateUser", "Admin", new { id = item.UserId }, null)</td>
             </tr>
         }
     }    
@@ -39,7 +39,6 @@
     <tr>
         <th>UserId</th>
         <th>Desired Role</th>
-        <th>Last Name</th>
         <th>Accept/Deny</th>
     </tr>
 
@@ -48,7 +47,7 @@
         {
             <tr>
                 <td>@item.UserId</td>
-                <td>@item.RoleId</td>
+                <td>@item.RoleName</td>
                 <td>@Html.ActionLink("ACCEPT/DENY", "UpdateRole", "Admin", new { id = item.RequestId }, null)</td>
             </tr>
         }
