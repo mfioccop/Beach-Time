@@ -1,4 +1,4 @@
-﻿
+﻿@model BeachTime.Models.HomeNavbarViewModel
 <!DOCTYPE html>
 <html>
     <head>
@@ -7,7 +7,8 @@
         <title>@ViewBag.Title - IbEACH</title>
         @Styles.Render("~/Content/css")
         @Scripts.Render("~/bundles/modernizr")
-        @model BeachTime.Models.HomeNavbarViewModel
+        
+
     
         <style>
             .modal-content {
@@ -49,7 +50,7 @@
                                 <div class="navbar-content">
                                     <div class="row">
                                         <div class="col-md-7">
-                                            <p>Html.ValueForModel(Model.FirstName) Html.ValueForModel(Model.LastName)</p>
+                                            <p>@Html.ValueForModel(Model.FirstName) @Html.ValueForModel(Model.LastName)</p>
 
                                             <div class="divider">
                                             </div>
