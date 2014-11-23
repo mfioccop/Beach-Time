@@ -9,6 +9,8 @@ IF OBJECT_ID('dbo.FileInfo', 'U') IS NOT NULL
 	DROP TABLE dbo.FileInfo;
 IF OBJECT_ID('dbo.Projects', 'U') IS NOT NULL
 	DROP TABLE dbo.Projects;
+IF OBJECT_ID('dbo.RoleChangeRequests', 'U') IS NOT NULL
+	DROP TABLE dbo.RoleChangeRequests;
 IF OBJECT_ID('dbo.Users', 'U') IS NOT NULL
 	DROP TABLE dbo.Users;
 IF OBJECT_ID('dbo.Roles', 'U') IS NOT NULL
@@ -111,3 +113,16 @@ CREATE TABLE [dbo].[UserRoles]
 );
 CREATE INDEX IX_UserRoles_UserId ON UserRoles(UserId);
 CREATE INDEX IX_UserRoles_RoleId ON UserRoles(RoleId);
+
+CREATE TABLE [dbo].[RoleChangeRequests]
+(
+	[RequestId] INT IDENTITY NOT NULL,
+	[RoleId] INT NOT NULL,
+	[UserId] INT NOT NULL,
+	[RequestDate] DATETIME2 NOT NULL,
+	CONSTRAINT [PK_RoleChangeRequest] PRIMARY KEY ([RequestId]),
+	CONSTRAINT [FK_RoleChangeRequests_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users]([UserId]) ON DELETE CASCADE,
+	CONSTRAINT [FK_RoleChangeRequests_Roles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [Roles]([RoleId]) ON DELETE CASCADE
+);
+CREATE INDEX IX_RoleChangeRequests_UserId ON RoleChangeRequests(UserId);
+CREATE INDEX IX_RoleChangeRequests_RoleId ON RoleChangeRequests(RoleId);
