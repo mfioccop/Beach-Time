@@ -11,7 +11,7 @@ using Microsoft.AspNet.Identity;
 namespace BeachTime.Data {
 	public class UserStore : IBeachUserStore, IUserLoginStore<BeachUser>, IUserPasswordStore<BeachUser>,
 		IUserSecurityStampStore<BeachUser>, IUserEmailStore<BeachUser>, IUserLockoutStore<BeachUser, string>,
-		IUserTwoFactorStore<BeachUser, string>, IUserRoleStore<BeachUser>, IUserPhoneNumberStore<BeachUser>,
+		IUserTwoFactorStore<BeachUser, string>, IBeachUserRoleStore, IUserPhoneNumberStore<BeachUser>,
 		IUserSkillStore<BeachUser, string>, IUserBeachStore {
 		private readonly string connectionString;
 
@@ -444,6 +444,14 @@ join Roles r
 			using (var con = GetConnection())
 				con.Execute(removeFromRolesQuery, new { user.UserId, roleName });
 			return Task.FromResult(0);
+		}
+
+		public void RequestRoleChange(RoleChangeRequest request) {
+			throw new NotImplementedException();
+		}
+
+		public IEnumerable<RoleChangeRequest> GetRoleChangeRequests(string userId) {
+			throw new NotImplementedException();
 		}
 
 		#endregion IUserRoleStore
