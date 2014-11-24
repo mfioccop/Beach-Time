@@ -478,6 +478,11 @@ where UserId = @userId";
 				return con.Query<RoleChangeRequest>(query, new { userId });
 		}
 
+		public IEnumerable<string> GetAllRoles() {
+			using (var con = GetConnection())
+				return con.Query<string>("select Name from Roles");
+		} 
+
 		#endregion IUserRoleStore
 
 		#region IUserPhoneNumberStore

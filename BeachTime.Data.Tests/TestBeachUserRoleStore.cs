@@ -28,5 +28,16 @@ namespace BeachTime.Data.Tests {
 			Assert.AreEqual(1, requests.Count);
 			AssertEx.PropertyValuesAreEquals(request, requests[0]);
 		}
+
+		[Test]
+		public void TestGetAllRoles() {
+			var expectedRoles = new List<string> { "Admin", "Consultant", "Executive" };
+			
+			var roles = roleStore.GetAllRoles().ToList();
+			
+			Assert.AreEqual(3, roles.Count);
+			roles.Sort();
+			Assert.That(roles, Is.EquivalentTo(expectedRoles));
+		}
 	}
 }

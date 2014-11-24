@@ -19,5 +19,11 @@ namespace BeachTime.Data {
 		/// <param name="userId"/>
 		/// <returns/>
 		IEnumerable<RoleChangeRequest> GetRoleChangeRequests(string userId);
+
+		/// <summary>
+		/// Retrieve all roles from the database
+		/// </summary>
+		/// <returns/>
+		IEnumerable<string> GetAllRoles();
 	}
 }
