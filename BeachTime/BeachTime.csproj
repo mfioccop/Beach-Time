@@ -253,6 +253,7 @@
     <Content Include="Views\Executive\Occupied.cshtml" />
     <Content Include="Views\Admin\_UpdateRole.cshtml" />
     <Content Include="Views\Admin\_UpdateUser.cshtml" />
+    <Content Include="Views\Account\RequestRole.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
