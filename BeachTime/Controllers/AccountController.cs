@@ -717,6 +717,7 @@ namespace BeachTime.Controllers
 		}
 		#endregion
 
+		#region RequestRole
 
 		// GET: Account/RequestRole
 		public ActionResult RequestRole()
@@ -744,7 +745,6 @@ namespace BeachTime.Controllers
 			return View(requestViewModel);
 		}
 
-
 		// POST: Account/RequestRole
 		[HttpPost]
 		[ValidateAntiForgeryToken]
@@ -766,6 +766,8 @@ namespace BeachTime.Controllers
 			}
 			return RedirectToAction("Index", "Home");
 		}
+
+		#endregion
 
 	}
 }
