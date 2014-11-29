@@ -1,4 +1,5 @@
 ﻿@model BeachTime.Models.HomeNavbarViewModel
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -45,16 +46,17 @@
                             Profile
                             <b class="caret"></b>
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu" style="background-color: #DFD4CA">
                             <li>
-                                <div class="navbar-content">
+                                <div class="navbar-content" style="background-color: #DFD4CA">
                                     <div class="row">
                                         <div class="col-md-7">
-                                            <p>Html.ValueForModel(Model.FirstName) Html.ValueForModel(Model.LastName)</p>
-
-                                            <div class="divider">
-                                            </div>
-                                            @Html.ActionLink("View Profile", "Index", "Consultant", null, new { @class = "btn btn-default btn-sm" })
+                                            <p>
+                                                
+                                                </p>
+                                                <div class="divider">
+                                                </div>
+                                                @Html.ActionLink("View Profile", "Index", "Consultant", null, new { @class = "btn btn-default btn-sm" })
                                         </div>
                                     </div>
                                 </div>

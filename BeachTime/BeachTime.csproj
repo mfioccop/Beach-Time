@@ -249,6 +249,7 @@
     <Content Include="Views\Consultant\_UploadFile.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Upload.cshtml" />
     <Content Include="Views\Executive\Occupied.cshtml" />
+    <Content Include="Views\Shared\_LayoutConsultant.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
