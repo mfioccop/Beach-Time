@@ -11,7 +11,7 @@ using Microsoft.AspNet.Identity;
 namespace BeachTime.Data {
 	public class UserStore : IBeachUserStore, IUserLoginStore<BeachUser>, IUserPasswordStore<BeachUser>,
 		IUserSecurityStampStore<BeachUser>, IUserEmailStore<BeachUser>, IUserLockoutStore<BeachUser, string>,
-		IUserTwoFactorStore<BeachUser, string>, IUserRoleStore<BeachUser>, IUserPhoneNumberStore<BeachUser>,
+		IUserTwoFactorStore<BeachUser, string>, IBeachUserRoleStore, IUserPhoneNumberStore<BeachUser>,
 		IUserSkillStore<BeachUser, string>, IUserBeachStore {
 		private readonly string connectionString;
 
@@ -445,6 +445,43 @@ join Roles r
 				con.Execute(removeFromRolesQuery, new { user.UserId, roleName });
 			return Task.FromResult(0);
 		}
+
+		public void RequestRoleChange(RoleChangeRequest request) {
+			if (request == null)
+				throw new ArgumentNullException("request");
+
+			const string query =
+				@"insert into RoleChangeRequests (UserId, RoleId, RequestDate)
+output Inserted.RequestId, Inserted.RequestDate
+select @userId, Roles.RoleId, SYSDATETIME()
+from Roles
+where Roles.Name = @roleName";
+
+			using (var con = GetConnection()) {
+				var output = con.Query<RoleChangeRequest>(query, request).Single();
+				request.RequestId = output.RequestId;
+				request.RequestDate = output.RequestDate;
+			}
+		}
+
+		public IEnumerable<RoleChangeRequest> GetRoleChangeRequests(string userId) {
+			if (string.IsNullOrEmpty(userId))
+				throw new ArgumentNullException("userId");
+
+			const string query = @"select rcr.RequestId, rcr.UserId, r.Name as RoleName, rcr.RequestDate
+from RoleChangeRequests rcr
+inner join Roles r
+on rcr.RoleId = r.RoleId
+where UserId = @userId";
+
+			using (var con = GetConnection())
+				return con.Query<RoleChangeRequest>(query, new { userId });
+		}
+
+		public IEnumerable<string> GetAllRoles() {
+			using (var con = GetConnection())
+				return con.Query<string>("select Name from Roles");
+		} 
 
 		#endregion IUserRoleStore
 
