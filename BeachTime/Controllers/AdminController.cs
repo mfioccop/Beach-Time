@@ -192,8 +192,9 @@ namespace BeachTime.Controllers
 					UserManager.AddToRole(accept.UserId.ToString(), accept.RoleName);
 				}
 
-				// TODO: get RoleRequest store
-				// delete request from table
+				// Remove role request from the database
+				var store = new UserStore();
+				store.RemoveRoleRequestAsync(accept.RequestId.ToString());
 
 
 				return RedirectToAction("Index");
@@ -208,15 +209,16 @@ namespace BeachTime.Controllers
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		[MultipleButton(Name = "action", Argument = "DenyRole")]
-		public ActionResult DenyRole(AdminUpdateRoleViewModel model)
+		public ActionResult DenyRole(AdminUpdateRoleViewModel reject)
 		{
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Admin"))
 				return RedirectToAction("Login", "Account");
 
 			try
 			{
-				// TODO: get RoleRequest store
-				// delete request from table
+				// Remove role request from the database
+				var store = new UserStore();
+				store.RemoveRoleRequestAsync(reject.RequestId.ToString());
 
 				return RedirectToAction("Index");
 			}

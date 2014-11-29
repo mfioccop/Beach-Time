@@ -516,7 +516,7 @@ where RequestId = @requestId";
 			const string removeRequestQuery =
 				@"delete rcr
 from RoleChangeRequests rcr
-where rcr.requetsId = @requestId";
+where rcr.requestId = @requestId";
 			using (var con = GetConnection())
 				con.Execute(removeRequestQuery, new { requestId });
 			return Task.FromResult(0);
