@@ -66,17 +66,19 @@ namespace BeachTime.Controllers
 			}
 
 			// TODO: FindAll requests from database
-			var requests = new List<BeachUser>();
+			var store = new UserStore();
+			var requests = store.GetAllRoleChangeRequests();
 
 			// Populate requests for new roles
-			for (int ii = 0; ii < 5; ii++)
+			foreach (var request in requests)
 			{
 				// TODO: fill in info from each request + add to RequestViewModels
 				var requestViewModel = new AdminRoleRequestViewModel()
 				{
-					RequestId = 1,
-					UserId = 1,
-					RoleName = "Consultant"
+					RequestId = request.RequestId,
+					UserId = request.UserId,
+					RoleName = request.RoleName,
+					RequestDate = request.RequestDate
 				};
 				indexViewmodel.RequestViewModels.Add(requestViewModel);
 			}
@@ -149,19 +151,11 @@ namespace BeachTime.Controllers
 				return RedirectToAction("Login", "Account");
 
 			// TODO: Find the request in the database
-			//var request = RequestStore.FindById()
-
-			var requestViewModel = new AdminRoleRequestViewModel()
-			{
-				RequestId = 1,
-				UserId = 1,
-				RoleName = "Consultant"
-			};
+			var store = new UserStore();
+			var request = store.GetRoleChangeRequestById(id.ToString()).First();
 
 			// Find the user in the database and retrieve basic account information
-			// TODO: find user from the request UserId
-			//var user = UserManager.FindById(request.UserId);
-			var user = UserManager.FindById(requestViewModel.UserId.ToString());
+			var user = UserManager.FindById(request.UserId.ToString());
 
 			var updateRoleViewModel = new AdminUpdateRoleViewModel()
 			{
@@ -169,9 +163,10 @@ namespace BeachTime.Controllers
 				LastName = user.LastName,
 				Email = user.Email,
 				UserName = user.UserName,
-				RequestId = 1,
+				RequestId = request.RequestId,
 				UserId = user.UserId,
-				RoleName = "Consultant"
+				RoleName = request.RoleName,
+				RequestDate = request.RequestDate
 			};
 
 			return PartialView("_UpdateRole", updateRoleViewModel);

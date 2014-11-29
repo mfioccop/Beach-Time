@@ -78,6 +78,16 @@ namespace BeachTime {
 			var beachStore = (IUserBeachStore)Store;
 			return beachStore.GetBeachedUsers();
 		}
+
+		public void RequestRoleChange(RoleChangeRequest request) {
+			var roleStore = (IBeachUserRoleStore)Store;
+			roleStore.RequestRoleChange(request);
+		}
+
+		public IEnumerable<RoleChangeRequest> GetRoleChangeRequests(string userId) {
+			var roleStore = (IBeachUserRoleStore)Store;
+			return roleStore.GetRoleChangeRequests(userId);
+		}
 	}
 
 	public class BeachSignInManager : SignInManager<BeachUser, string> {

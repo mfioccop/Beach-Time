@@ -45,6 +45,9 @@ namespace BeachTime.Models
 
 		[Required]
 		public int RequestId { get; set; }
+
+		[Required]
+		public DateTime RequestDate { get; set; }
 	}
 
 	public class AdminUpdateRoleViewModel
@@ -70,6 +73,9 @@ namespace BeachTime.Models
 
 		[Required]
 		public int UserId { get; set; }
+
+		[Required]
+		public DateTime RequestDate { get; set; }
 	}
 
 }
