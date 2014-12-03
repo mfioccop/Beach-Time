@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeachTimeTest", "BeachTimeTest\BeachTimeTest.csproj", "{C708369D-3678-4AC9-8BDD-6BFCE2824939}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeachTime", "..\..\Beach-Time\BeachTime\BeachTime.csproj", "{BA7B4907-E249-41BD-974F-E05CD82A7A0A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeachTime.Data", "..\..\Beach-Time\BeachTime.Data\BeachTime.Data.csproj", "{26145CEB-E87B-4D60-9A71-A230D7BBA83E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C708369D-3678-4AC9-8BDD-6BFCE2824939}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C708369D-3678-4AC9-8BDD-6BFCE2824939}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C708369D-3678-4AC9-8BDD-6BFCE2824939}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C708369D-3678-4AC9-8BDD-6BFCE2824939}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA7B4907-E249-41BD-974F-E05CD82A7A0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA7B4907-E249-41BD-974F-E05CD82A7A0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA7B4907-E249-41BD-974F-E05CD82A7A0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA7B4907-E249-41BD-974F-E05CD82A7A0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26145CEB-E87B-4D60-9A71-A230D7BBA83E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26145CEB-E87B-4D60-9A71-A230D7BBA83E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26145CEB-E87B-4D60-9A71-A230D7BBA83E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26145CEB-E87B-4D60-9A71-A230D7BBA83E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
