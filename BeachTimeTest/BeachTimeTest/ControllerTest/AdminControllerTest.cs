@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BeachTime.Controllers;
 using System.Web.Mvc;
 using BeachTime.Models;
-using BeachTime.Data;
 using Microsoft.AspNet.Identity;
 using Moq;
 using BeachTime;

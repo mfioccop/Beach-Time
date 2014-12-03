@@ -15,7 +15,6 @@ using Microsoft.AspNet.Identity.Owin;
 //using System.Web.HttpContext;
 using System.Net.Http;
 using BeachTime;
-using BeachTime.Data;
 using System.Windows.Forms;
 
 namespace BeachTimeTest.ControllersTest

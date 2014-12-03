@@ -120,10 +120,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Beach-Time\BeachTime.Data\BeachTime.Data.csproj">
-      <Project>{26145ceb-e87b-4d60-9a71-a230d7bba83e}</Project>
-      <Name>BeachTime.Data</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Beach-Time\BeachTime\BeachTime.csproj">
       <Project>{ba7b4907-e249-41bd-974f-e05cd82a7a0a}</Project>
       <Name>BeachTime</Name>
