@@ -42,7 +42,7 @@ namespace BeachTime.Controllers
 		{
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Admin"))
 				return RedirectToAction("Login", "Account");
-
+			
 			// Get all users and initialize the view model
 			var users = UserManager.FindAll();
 			var indexViewmodel = new AdminIndexViewModel
@@ -98,6 +98,12 @@ namespace BeachTime.Controllers
 
 			// Find the user in the database and retrieve basic account information
 			var user = UserManager.FindById(id.ToString());
+
+			// URL id doesn't match a user in the database, 404
+			if (user == null)
+			{
+				return RedirectToAction("PageNotFound", "Home");
+			}
 
 			var userViewModel = new AdminUserViewModel()
 			{
@@ -156,6 +162,12 @@ namespace BeachTime.Controllers
 
 			// Find the user in the database and retrieve basic account information
 			var user = UserManager.FindById(request.UserId.ToString());
+
+			// URL id doesn't match a user in the database, 404
+			if (user == null)
+			{
+				return RedirectToAction("PageNotFound", "Home");
+			}
 
 			var updateRoleViewModel = new AdminUpdateRoleViewModel()
 			{

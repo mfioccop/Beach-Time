@@ -75,7 +75,7 @@ namespace BeachTime.Controllers
         #endregion
 
         #region Beach
-        // GET: Executive/Beach/5
+        // GET: Executive/Beach
         public ActionResult Beach()
         {
             if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Executive"))
@@ -147,6 +147,8 @@ namespace BeachTime.Controllers
         #endregion
 
         #region Occupied
+
+		// GET: Executive/Occupied
         public ActionResult Occupied()
         {
             if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Executive"))
@@ -226,6 +228,12 @@ namespace BeachTime.Controllers
 				return RedirectToAction("Login", "Account");
 
             var user = UserManager.FindById(id.ToString());
+
+			// URL id doesn't match a user in the database, 404
+			if (user == null)
+			{
+				return RedirectToAction("PageNotFound", "Home");
+			}
 
             // Get all projects
             var projectRepo = new ProjectRepository();

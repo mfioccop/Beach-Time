@@ -106,6 +106,12 @@ namespace BeachTime.Controllers
 			// Find the user in the database and retrieve basic account information
 			var user = UserManager.FindById(User.Identity.GetUserId());
 
+			// URL id doesn't match a user in the database, 404
+			if (user == null)
+			{
+				return RedirectToAction("PageNotFound", "Home");
+			}
+
 			// Get projects for this user
 			var projectRepo = new ProjectRepository();
 			var projects = projectRepo.FindByUserId(user.UserId);
@@ -215,6 +221,12 @@ namespace BeachTime.Controllers
 
 			var projectRepo = new ProjectRepository();
 			Project project = projectRepo.FindByProjectId(id);
+
+			// URL id doesn't match a project in the database, 404
+			if (project == null)
+			{
+				return RedirectToAction("PageNotFound", "Home");
+			}
 
 			// Check that the current user owns this project before allowing an update
 			if (int.Parse(User.Identity.GetUserId()) != project.UserId)
