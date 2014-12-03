@@ -145,8 +145,15 @@ namespace BeachTime.Controllers
 		// GET: Admin/UpdateRole/5
 		public ActionResult UpdateRole(int id)
 		{
+			
 			var store = new UserStore();
 			var request = store.GetRoleChangeRequestById(id.ToString()).First();
+
+			// URL id doesn't match a user in the database, 404
+			if (request == null)
+			{
+				return RedirectToAction("PageNotFound", "Home");
+			}
 
 			// Find the user in the database and retrieve basic account information
 			var user = UserManager.FindById(request.UserId.ToString());
