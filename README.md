@@ -41,3 +41,15 @@ Please follow the [Github-flow](http://scottchacon.com/2011/08/31/github-flow.ht
 #### Unit Testing + Integration
 + We will be using [NUnit](http://www.nunit.org/) for unit-testing the application
 + For continuous integration testing we will be using [Jenkins](http://jenkins-ci.org/) (using a Github webhook to let Jenkins know when new code is pushed to the repository)
+
+### Building
+#### Connection Strings
++ Connection strings are stored in the connectionStrings.config file (not tracked). An example file is below:
+
+```
+<connectionStrings>
+    <add name="DefaultConnection"
+			providerName="System.Data.SqlClient"
+			connectionString="Data Source=(localdb)\ProjectsV12;Initial Catalog=BeachTime;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False" />
+</connectionStrings>
+```

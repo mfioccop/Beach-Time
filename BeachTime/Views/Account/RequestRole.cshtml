@@ -1,0 +1,42 @@
+﻿@model BeachTime.Models.RequestRoleViewModel
+
+@{
+    ViewBag.Title = "RequestRole";
+}
+
+<h2>Request Role Changes</h2>
+
+
+<table>
+    @{
+
+        foreach (var item in Model.RoleNameList)
+        {
+            <tr>
+                @using (@Html.BeginForm("RequestRole", "Account"))
+                {
+                    @Html.AntiForgeryToken();
+                    @Html.HiddenFor(m => m.UserId);
+                    {Model.RoleName = item;}
+                    @Html.HiddenFor(m => m.RoleName);
+                
+                <th>@item</th>
+                    <td>
+                        @if (Model.CurrentRolesList.Contains(item))
+                        {
+                            @:Permission Granted
+                        }
+                        else if (Model.AvailableRolesList.Contains(item))
+                        {
+                            <input type="submit" value="Request" />
+                        }
+                        else
+                        {
+                            @:Pending Approval
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    }
+</table>

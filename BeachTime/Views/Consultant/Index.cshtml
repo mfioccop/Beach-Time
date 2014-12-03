@@ -1,0 +1,60 @@
+﻿@model BeachTime.Models.ConsultantIndexViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Consultant Dashboard</h2>
+
+<h3>Welcome, 
+    @Html.ValueForModel(Model.FirstName) @Html.ValueForModel(Model.LastName)
+    </h3>
+
+<h3>Status: @Html.ValueForModel(Model.Status)</h3>
+<p>dashboard stuff:</p>
+<ul>
+    
+    <li>Projects: 
+    @{
+        foreach (var item in Model.Projects)
+        {
+            @Html.ValueForModel(item.ProjectName);
+            @:,&nbsp;
+            }
+    }
+    </li>
+
+
+    <li>account tags (skills):
+        @{
+            foreach (var item in Model.SkillList)
+            {
+                @Html.ValueForModel(item);
+                @:,&nbsp;
+            }
+        }
+    </li>
+
+    <li>resume+other files list (with links to view and remove individual files):</li>
+    
+    <table>
+        <tr>
+            <th>Title</th><th>Description</th><th>Link</th>
+        </tr>
+        @{
+            foreach (var item in Model.FileList)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.Description</td>
+                    <td>@item.Path</td>
+                </tr>
+            }
+        }
+
+    </table>
+    <li>@Html.ActionLink("ADD NEW FILE", "UploadFile", "Consultant")</li>
+    
+    <li>update profile button (either opens new page OR popup window <a href="http://stackoverflow.com/questions/4803424/mvc-pop-up-windows">EXAMPLE</a> or <a href="http://www.dotnet-tricks.com/Tutorial/mvc/42R0171112-CRUD-Operations-using-jQuery-dialog-and-Entity-Framework---MVC-Razor.html">2nd EXAMPLE</a>)</li>
+    <li>@Html.ActionLink("UPDATE PROFILE", "Edit", "Consultant")</li>
+</ul>

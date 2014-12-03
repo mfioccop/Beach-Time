@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BeachTime.Models
 {
@@ -37,10 +38,9 @@ namespace BeachTime.Models
 
     public class LoginViewModel
     {
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
+		[Required]
+		[Display(Name = "Username/Email")]
+		public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -53,6 +53,18 @@ namespace BeachTime.Models
 
     public class RegisterViewModel
     {
+		[Required]
+		[Display(Name = "First name")]
+		public string FirstName { get; set; }
+
+		[Required]
+		[Display(Name = "Last name")]
+		public string LastName { get; set; }
+
+		[Required]
+		[Display(Name = "Username")]
+		public string UserName { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
@@ -98,4 +110,23 @@ namespace BeachTime.Models
         [Display(Name = "Email")]
         public string Email { get; set; }
     }
+
+	public class RequestRoleViewModel
+	{
+		[Required]
+		public int UserId { get; set; }
+
+		[Required]
+		public string RoleName { get; set; }
+
+		[Required]
+		public List<string> RoleNameList { get; set; }
+
+		[Required]
+		public List<string> AvailableRolesList { get; set; }
+
+		[Required]
+		public List<string> CurrentRolesList { get; set; } 
+	}
+
 }

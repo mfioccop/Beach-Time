@@ -1,0 +1,23 @@
+﻿@model BeachTime.Models.ExecutiveIndexViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>@Model.FirstName @Model.LastName</h2>
+
+<h3>Account Executive</h3>
+
+<p>account exec dashboard stuff:</p>
+<ul>
+    
+    <li>Consultants on Projects: @Model.OccupiedConsultantsCount @Html.ActionLink("[View All]", "Occupied", "Executive")</li>
+    <li>Consultants on the Beach: @Model.BeachConsultantsCount @Html.ActionLink("[View All]", "Beach", "Executive")</li>
+    <li>Skills on the beach
+    @{
+        foreach (var skill in Model.SkillList)
+        {
+            @skill
+        }
+    }</li>
+</ul>
