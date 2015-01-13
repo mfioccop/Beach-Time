@@ -86,7 +86,16 @@ namespace BeachTime.Controllers
 				Projects = projectViewModels,
 				SkillList = UserManager.GetUserSkills(user).ToList(),
 				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project",
-				FileList = fileViewModels
+				FileList = fileViewModels,
+				Id = user.UserId,
+				Navbar = new HomeNavbarViewModel()
+				{
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					Email = user.Email,
+					Id = user.UserId,
+					Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+				}
 			};
 
 			return View(consultant);
@@ -133,7 +142,15 @@ namespace BeachTime.Controllers
 				SkillList = skills,
 
 				SkillsString = string.Join(",", skills.ToArray()),
-				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project",
+				Navbar = new HomeNavbarViewModel()
+				{
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					Email = user.Email,
+					Id = user.UserId,
+					Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+				}
 			};
 
 			return View(consultant);

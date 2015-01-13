@@ -43,10 +43,21 @@ namespace BeachTime.Controllers
 		{
 			// Get all users and initialize the view model
 			var users = UserManager.FindAll();
+
+			var store = new UserStore();
+			var user = UserManager.FindById(User.Identity.GetUserId());
 			var indexViewmodel = new AdminIndexViewModel
 			{
 				UserViewModels = new List<AdminUserViewModel>(),
-				RequestViewModels = new List<AdminRoleRequestViewModel>()
+				RequestViewModels = new List<AdminRoleRequestViewModel>(),
+				Navbar = new HomeNavbarViewModel()
+				{
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					Email = user.Email,
+					Id = user.UserId,
+					Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+				}
 			};
 
 			// Populate the list of users
@@ -58,13 +69,13 @@ namespace BeachTime.Controllers
 					LastName = beachUser.LastName,
 					Email = beachUser.Email,
 					UserName = beachUser.UserName,
-					UserId = beachUser.UserId
+					UserId = beachUser.UserId,
+					
 				};
 				indexViewmodel.UserViewModels.Add(userViewModel);
 			}
 
 			// TODO: FindAll requests from database
-			var store = new UserStore();
 			var requests = store.GetAllRoleChangeRequests();
 
 			// Populate requests for new roles

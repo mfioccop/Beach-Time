@@ -111,7 +111,7 @@ namespace BeachTime.Models
         public string Email { get; set; }
     }
 
-	public class RequestRoleViewModel
+	public class RequestRoleViewModel : NavbarViewModelBase
 	{
 		[Required]
 		public int UserId { get; set; }

@@ -1,4 +1,4 @@
-﻿@model BeachTime.Models.HomeNavbarViewModel
+﻿@model BeachTime.Models.HomeViewModel
 
 @{
     ViewBag.Title = "Home Page";
@@ -25,9 +25,14 @@
             register for the beach, upload their résumé, and tag their identities with useful metadata. Account
             executives will be able to search for available consultants based upon the provided metadata.
         </p>
-        <a href="~/Account/Register" class="btn btn-default btn-lg">Register</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="~/Account/Login" class="btn btn-default btn-lg">Login</a>
         
+        @if (!Request.IsAuthenticated)
+        {
+            
+            <a href="~/Account/Register" class="btn btn-default btn-lg">Register</a>
+            <a href="~/Account/Login" class="btn btn-default btn-lg">Login</a>
+        
+        }
     </body>
 
 

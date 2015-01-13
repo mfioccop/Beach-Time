@@ -6,6 +6,13 @@ using System.Web;
 
 namespace BeachTime.Models
 {
+
+	public abstract class NavbarViewModelBase
+	{
+		[Required]
+		public HomeNavbarViewModel Navbar { get; set; }
+	}
+
 	public class HomeNavbarViewModel
 	{
 		[Required]
@@ -25,5 +32,10 @@ namespace BeachTime.Models
 		public string Status { get; set; }
 
 
+	}
+
+	public class HomeViewModel : NavbarViewModelBase
+	{
+		
 	}
 }

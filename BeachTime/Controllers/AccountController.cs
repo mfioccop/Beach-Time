@@ -739,7 +739,15 @@ namespace BeachTime.Controllers
 				UserId = user.UserId,
 				RoleNameList = roles,
 				AvailableRolesList = roles.Except(pending).ToList(),
-				CurrentRolesList = store.GetRolesAsync(user).Result.ToList()
+				CurrentRolesList = store.GetRolesAsync(user).Result.ToList(),
+				Navbar = new HomeNavbarViewModel()
+				{
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					Email = user.Email,
+					Id = user.UserId,
+					Status = String.Empty
+				}
 			};
 
 			return View(requestViewModel);

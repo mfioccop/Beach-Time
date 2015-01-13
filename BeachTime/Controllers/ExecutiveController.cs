@@ -67,7 +67,15 @@ namespace BeachTime.Controllers
                 LastName = user.LastName,
                 OccupiedConsultantsCount = numOccupied,
                 BeachConsultantsCount = numBeach,
-                SkillList = beachSkillsList
+                SkillList = beachSkillsList,
+				Navbar = new HomeNavbarViewModel()
+				{
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					Email = user.Email,
+					Id = user.UserId,
+					Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+				}
             };
             
             return View(executive);
