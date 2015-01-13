@@ -75,5 +75,10 @@ namespace BeachTime.Controllers
 
 			return View(getHomeNavbarViewModel());
 		}
+
+		public ActionResult PageNotFound()
+		{
+			return View();
+		}
 	}
 }

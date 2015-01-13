@@ -1,4 +1,5 @@
-﻿using BeachTime.Data;
+﻿using System.Net;
+using BeachTime.Data;
 
 namespace BeachTime.Controllers
 {
@@ -22,6 +23,8 @@ namespace BeachTime.Controllers
 	[Authorize]
 	public class AccountController : Controller
 	{
+		#region UserManagerConstructor
+
 		/// <summary>
 		/// Manages user account registration and authentication
 		/// </summary>
@@ -48,17 +51,15 @@ namespace BeachTime.Controllers
 		/// </summary>
 		public BeachUserManager UserManager
 		{
-			get
-			{
-				return _userManager ?? HttpContext.GetOwinContext().GetUserManager<BeachUserManager>();
-			}
+			get { return _userManager ?? HttpContext.GetOwinContext().GetUserManager<BeachUserManager>(); }
 
-			private set
-			{
-				_userManager = value;
-			}
+			private set { _userManager = value; }
 
 		}
+
+		#endregion
+
+		#region Login
 
 		/// <summary>
 		/// GET: /Account/Login
@@ -101,9 +102,9 @@ namespace BeachTime.Controllers
 					{
 						// Now double check that the given password matches (otherwise all the would be needed to login is an email address)
 						user = await UserManager.FindAsync(userByEmail.UserName, model.Password);
-						
+
 						if (user == null) return View(model);
-						
+
 						await SignInAsync(user, model.RememberMe);
 						return RedirectToLocal(returnUrl);
 					}
@@ -119,6 +120,10 @@ namespace BeachTime.Controllers
 			// If we got this far, something failed, redisplay form
 			return View(model);
 		}
+
+		#endregion
+
+		#region Register
 
 		/// <summary>
 		/// GET: /Account/Register
@@ -142,7 +147,13 @@ namespace BeachTime.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var user = new BeachUser() { UserName = model.UserName, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName };
+				var user = new BeachUser()
+				{
+					UserName = model.UserName,
+					Email = model.Email,
+					FirstName = model.FirstName,
+					LastName = model.LastName
+				};
 				IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 				if (result.Succeeded)
 				{
@@ -169,6 +180,10 @@ namespace BeachTime.Controllers
 			// If we got this far, something failed, redisplay form
 			return View(model);
 		}
+
+		#endregion
+
+		#region EmailPassword
 
 		/// <summary>
 		/// GET: /Account/ConfirmEmail
@@ -311,30 +326,9 @@ namespace BeachTime.Controllers
 			return this.View();
 		}
 
-		/// <summary>
-		/// POST: /Account/Disassociate
-		/// </summary>
-		/// <param name="loginProvider"></param>
-		/// <param name="providerKey"></param>
-		/// <returns></returns>
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Disassociate(string loginProvider, string providerKey)
-		{
-			ManageMessageId? message = null;
-			IdentityResult result = await this.UserManager.RemoveLoginAsync(User.Identity.GetUserId(), new UserLoginInfo(loginProvider, providerKey));
-			if (result.Succeeded)
-			{
-				var user = await this.UserManager.FindByIdAsync(User.Identity.GetUserId());
-				await this.SignInAsync(user, isPersistent: false);
-				message = ManageMessageId.RemoveLoginSuccess;
-			}
-			else
-			{
-				message = ManageMessageId.Error;
-			}
-			return this.RedirectToAction("Manage", new { Message = message });
-		}
+		#endregion
+
+		#region Manage
 
 		/// <summary>
 		/// GET: /Account/Manage
@@ -344,11 +338,15 @@ namespace BeachTime.Controllers
 		public ActionResult Manage(ManageMessageId? message)
 		{
 			ViewBag.StatusMessage =
-				message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
-				: message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
-				: message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
-				: message == ManageMessageId.Error ? "An error has occurred."
-				: "";
+				message == ManageMessageId.ChangePasswordSuccess
+					? "Your password has been changed."
+					: message == ManageMessageId.SetPasswordSuccess
+						? "Your password has been set."
+						: message == ManageMessageId.RemoveLoginSuccess
+							? "The external login was removed."
+							: message == ManageMessageId.Error
+								? "An error has occurred."
+								: "";
 			ViewBag.HasLocalPassword = this.HasPassword();
 			ViewBag.ReturnUrl = Url.Action("Manage");
 			return this.View();
@@ -370,12 +368,13 @@ namespace BeachTime.Controllers
 			{
 				if (ModelState.IsValid)
 				{
-					IdentityResult result = await this.UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
+					IdentityResult result =
+						await this.UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
 					if (result.Succeeded)
 					{
 						var user = await this.UserManager.FindByIdAsync(User.Identity.GetUserId());
 						await this.SignInAsync(user, isPersistent: false);
-						return this.RedirectToAction("Manage", new { Message = ManageMessageId.ChangePasswordSuccess });
+						return this.RedirectToAction("Manage", new {Message = ManageMessageId.ChangePasswordSuccess});
 					}
 					else
 					{
@@ -397,7 +396,7 @@ namespace BeachTime.Controllers
 					IdentityResult result = await this.UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
 					if (result.Succeeded)
 					{
-						return this.RedirectToAction("Manage", new { Message = ManageMessageId.SetPasswordSuccess });
+						return this.RedirectToAction("Manage", new {Message = ManageMessageId.SetPasswordSuccess});
 					}
 					else
 					{
@@ -408,6 +407,36 @@ namespace BeachTime.Controllers
 
 			// If we got this far, something failed, redisplay form
 			return this.View(model);
+		}
+
+		#endregion
+
+		#region ExternalLogin
+
+		/// <summary>
+		/// POST: /Account/Disassociate
+		/// </summary>
+		/// <param name="loginProvider"></param>
+		/// <param name="providerKey"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> Disassociate(string loginProvider, string providerKey)
+		{
+			ManageMessageId? message = null;
+			IdentityResult result =
+				await this.UserManager.RemoveLoginAsync(User.Identity.GetUserId(), new UserLoginInfo(loginProvider, providerKey));
+			if (result.Succeeded)
+			{
+				var user = await this.UserManager.FindByIdAsync(User.Identity.GetUserId());
+				await this.SignInAsync(user, isPersistent: false);
+				message = ManageMessageId.RemoveLoginSuccess;
+			}
+			else
+			{
+				message = ManageMessageId.Error;
+			}
+			return this.RedirectToAction("Manage", new {Message = message});
 		}
 
 		/// <summary>
@@ -422,7 +451,7 @@ namespace BeachTime.Controllers
 		public ActionResult ExternalLogin(string provider, string returnUrl)
 		{
 			// Request a redirect to the external login provider
-			return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
+			return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new {ReturnUrl = returnUrl}));
 		}
 
 		/// <summary>
@@ -451,7 +480,7 @@ namespace BeachTime.Controllers
 				// If the user does not have an account, then prompt the user to create an account
 				ViewBag.ReturnUrl = returnUrl;
 				ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-				return this.View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
+				return this.View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel {Email = loginInfo.Email});
 			}
 		}
 
@@ -477,7 +506,7 @@ namespace BeachTime.Controllers
 			var loginInfo = await this.AuthenticationManager.GetExternalLoginInfoAsync(XsrfKey, User.Identity.GetUserId());
 			if (loginInfo == null)
 			{
-				return this.RedirectToAction("Manage", new { Message = ManageMessageId.Error });
+				return this.RedirectToAction("Manage", new {Message = ManageMessageId.Error});
 			}
 
 			IdentityResult result = await this.UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
@@ -486,7 +515,7 @@ namespace BeachTime.Controllers
 				return this.RedirectToAction("Manage");
 			}
 
-			return this.RedirectToAction("Manage", new { Message = ManageMessageId.Error });
+			return this.RedirectToAction("Manage", new {Message = ManageMessageId.Error});
 		}
 
 		/// <summary>
@@ -514,7 +543,7 @@ namespace BeachTime.Controllers
 					return this.View("ExternalLoginFailure");
 				}
 
-				var user = new BeachUser() { UserName = model.Email, Email = model.Email };
+				var user = new BeachUser() {UserName = model.Email, Email = model.Email};
 				IdentityResult result = await this.UserManager.CreateAsync(user);
 				if (result.Succeeded)
 				{
@@ -575,6 +604,10 @@ namespace BeachTime.Controllers
 			return (ActionResult)PartialView("_RemoveAccountPartial", linkedAccounts);
 		}
 
+		#endregion
+
+		#region IDisposable
+
 		/// <summary>
 		/// Dispose method override for IDisposable interface
 		/// </summary>
@@ -588,6 +621,8 @@ namespace BeachTime.Controllers
 			}
 			base.Dispose(disposing);
 		}
+
+		#endregion
 
 		#region Helpers
 		// Used for XSRF protection when adding external logins
@@ -681,5 +716,58 @@ namespace BeachTime.Controllers
 			}
 		}
 		#endregion
+
+		#region RequestRole
+
+		// GET: Account/RequestRole
+		public ActionResult RequestRole()
+		{
+			if (User.Identity.GetUserId() == null)
+				return RedirectToAction("Login", "Account");
+
+
+			var store = new UserStore();
+			var user = store.FindByIdAsync(User.Identity.GetUserId()).Result;
+			// Get all current requests 
+			var requests = store.GetRoleChangeRequests(User.Identity.GetUserId());
+			var pending = requests.Select(request => request.RoleName);
+			var roles = store.GetAllRoles().ToList();
+
+			var requestViewModel = new RequestRoleViewModel()
+			{
+				RoleName = String.Empty,
+				UserId = user.UserId,
+				RoleNameList = roles,
+				AvailableRolesList = roles.Except(pending).ToList(),
+				CurrentRolesList = store.GetRolesAsync(user).Result.ToList()
+			};
+
+			return View(requestViewModel);
+		}
+
+		// POST: Account/RequestRole
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult RequestRole(RequestRoleViewModel model)
+		{
+			try
+			{
+				var request = new RoleChangeRequest()
+				{
+					UserId = model.UserId,
+					RoleName = model.RoleName
+				};
+
+				UserManager.RequestRoleChange(request);
+			}
+			catch
+			{
+				return View();
+			}
+			return RedirectToAction("Index", "Home");
+		}
+
+		#endregion
+
 	}
 }

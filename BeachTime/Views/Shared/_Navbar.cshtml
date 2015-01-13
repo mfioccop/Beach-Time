@@ -1,0 +1,41 @@
+﻿@using System.Runtime.Remoting.Messaging
+@model BeachTime.Models.HomeNavbarViewModel
+
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 125%">
+        Profile
+        <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu" style="background-color: #DFD4CA">
+        <li>
+            <div class="navbar-content" style="background-color: #DFD4CA">
+                <div class="row">
+                    <div class="col-md-7">
+                        <p>
+                            @Html.ValueForModel(Model.FirstName) @Html.ValueForModel(Model.LastName) <br />
+                            Email:  duedter@gmail.com <br />
+                            Status: @Html.ValueForModel(Model.Status)
+
+                        </p>
+                        <div class="divider">
+                        </div>
+                        @Html.ActionLink("View Profile", "Index", "Consultant", null, new { @class = "btn btn-default btn-sm" })
+                    </div>
+                </div>
+            </div>
+            <div class="navbar-footer">
+                <div class="navbar-footer-content">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-default btn-sm">Change Password</a>
+                            @Html.ActionLink("Manage Account", "Manage", "Account", null, new { @class = "btn btn-default btn-sm" })
+                        </div>
+                        <div class="col-md-6">
+                            @Html.ActionLink("Sign Out", "LogOff", "Account", null, new { @class = "btn btn-default btn-sm" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</li>

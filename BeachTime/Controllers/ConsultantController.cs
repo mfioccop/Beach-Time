@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using BeachTime.Data;
 using BeachTime.Models;
 using Microsoft.AspNet.Identity;
@@ -13,6 +14,7 @@ using FileInfo = BeachTime.Data.FileInfo;
 
 namespace BeachTime.Controllers
 {
+	[AuthorizeBeachUser(Roles = "Consultant")]
 	public class ConsultantController : Controller
 	{
 		#region UserManager
@@ -40,9 +42,6 @@ namespace BeachTime.Controllers
 		// GET: Consultant
 		public ActionResult Index()
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			// Find the user in the database and retrieve basic account information
 			var user = UserManager.FindById(User.Identity.GetUserId());
 
@@ -100,11 +99,14 @@ namespace BeachTime.Controllers
 		// GET: Consultant/Edit
 		public ActionResult Edit()
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			// Find the user in the database and retrieve basic account information
 			var user = UserManager.FindById(User.Identity.GetUserId());
+
+			// URL id doesn't match a user in the database, 404
+			if (user == null)
+			{
+				return RedirectToAction("PageNotFound", "Home");
+			}
 
 			// Get projects for this user
 			var projectRepo = new ProjectRepository();
@@ -142,9 +144,6 @@ namespace BeachTime.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult Edit(ConsultantEditViewModel model)
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			try
 			{
 				// Find the user in the database and retrieve basic account information
@@ -169,9 +168,6 @@ namespace BeachTime.Controllers
 		// GET: Consultant/CreateProject
 		public ActionResult CreateProject()
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			return PartialView("_CreateProject");
 		}
 
@@ -181,9 +177,6 @@ namespace BeachTime.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult CreateProject(FormCollection collection)
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			try
 			{
 				var user = UserManager.FindById(User.Identity.GetUserId());
@@ -210,11 +203,14 @@ namespace BeachTime.Controllers
 		// GET: Consultant/UpdateProject/5
 		public ActionResult UpdateProject(int id)
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			var projectRepo = new ProjectRepository();
 			Project project = projectRepo.FindByProjectId(id);
+
+			// URL id doesn't match a project in the database, 404
+			if (project == null)
+			{
+				return RedirectToAction("PageNotFound", "Home");
+			}
 
 			// Check that the current user owns this project before allowing an update
 			if (int.Parse(User.Identity.GetUserId()) != project.UserId)
@@ -236,9 +232,6 @@ namespace BeachTime.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult UpdateProject(FormCollection collection)
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			try
 			{
 				var user = UserManager.FindById(User.Identity.GetUserId());
@@ -269,9 +262,6 @@ namespace BeachTime.Controllers
 		// GET: Consultant/UploadFile
 		public ActionResult UploadFile()
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			return PartialView("_UploadFile", new FileUploadViewModel());
 		}
 
@@ -281,9 +271,6 @@ namespace BeachTime.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult UploadFile(FileUploadViewModel model)
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			try
 			{
 				var user = UserManager.FindById(User.Identity.GetUserId());

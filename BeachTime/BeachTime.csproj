@@ -161,6 +161,7 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="AuthorizeBeachUserAttribute.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ConsultantController.cs" />
@@ -170,11 +171,13 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AdminViewModels.cs" />
     <Compile Include="Models\ConsultantViewModels.cs" />
     <Compile Include="Models\ExecutiveViewModels.cs" />
     <Compile Include="Models\FileViewModels.cs" />
     <Compile Include="Models\HomeViewModels.cs" />
     <Compile Include="Models\ProjectViewModels.cs" />
+    <Compile Include="MultipleButtonAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -249,7 +252,11 @@
     <Content Include="Views\Consultant\_UploadFile.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Upload.cshtml" />
     <Content Include="Views\Executive\Occupied.cshtml" />
-    <Content Include="Views\Shared\_LayoutConsultant.cshtml" />
+    <Content Include="Views\Admin\_UpdateRole.cshtml" />
+    <Content Include="Views\Admin\_UpdateUser.cshtml" />
+    <Content Include="Views\Account\RequestRole.cshtml" />
+    <Content Include="Views\Home\PageNotFound.cshtml" />
+    <Content Include="Views\Shared\_Navbar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
