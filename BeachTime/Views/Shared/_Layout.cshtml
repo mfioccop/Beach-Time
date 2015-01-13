@@ -40,9 +40,19 @@
 
                     @if (Request.IsAuthenticated)
                     {
+                        if(User.IsInRole("Consultant"))
+                        {
                         <li>@Html.ActionLink("Consultant Dashboard", "Index", "Consultant")</li>
-                        <li>@Html.ActionLink("Executive Dashboard", "Index", "Executive")</li>
-                        <li>@Html.ActionLink("Admin Dashboard", "Index", "Admin")</li>
+                             
+                        }
+                        if (User.IsInRole("Executive"))
+                        {
+                            <li>@Html.ActionLink("Executive Dashboard", "Index", "Executive")</li>
+                        }
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li>@Html.ActionLink("Admin Dashboard", "Index", "Admin")</li>
+                        }
                     }
                     
                 </ul>
