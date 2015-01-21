@@ -57,7 +57,8 @@ namespace BeachTime.Controllers
 				var pvm = new ProjectViewModel()
 				{
 					ProjectName = project.Name,
-					IsCompleted = project.Completed
+					IsCompleted = project.Completed,
+					ProjectId = project.ProjectId
 				};
 				projectViewModels.Add(pvm);
 			}
@@ -172,14 +173,14 @@ namespace BeachTime.Controllers
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 				return RedirectToAction("Login", "Account");
 
-			return PartialView("_CreateProject");
+			return PartialView("_CreateProject", new ProjectCreateViewModel());
 		}
 
 
 		// POST: Consultant/CreateProject
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult CreateProject(FormCollection collection)
+		public ActionResult CreateProject(ProjectCreateViewModel model)
 		{
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 				return RedirectToAction("Login", "Account");
@@ -190,8 +191,8 @@ namespace BeachTime.Controllers
 
 				var project = new Project()
 				{
-					Name = collection["ProjectName"],
-					Completed = collection["IsCompleted"].Contains("true"),
+					Name = model.ProjectName,
+					Completed = model.IsCompleted,
 					UserId = user.UserId
 				};
 
@@ -234,7 +235,7 @@ namespace BeachTime.Controllers
 		// POST: Consultant/UpdateProject
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult UpdateProject(FormCollection collection)
+		public ActionResult UpdateProject(ProjectViewModel model)
 		{
 			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
 				return RedirectToAction("Login", "Account");
@@ -245,16 +246,16 @@ namespace BeachTime.Controllers
 
 				var project = new Project()
 				{
-					Name = collection["ProjectName"],
-					Completed = collection["IsCompleted"].Contains("true"),
+					Name = model.ProjectName,
+					Completed = model.IsCompleted,
 					UserId = user.UserId,
-					ProjectId = int.Parse(collection["ProjectId"])
+					ProjectId = model.ProjectId
 				};
 
 				var projectRepo = new ProjectRepository();
 				projectRepo.Update(project);
 
-				return RedirectToAction("Edit");
+				return RedirectToAction("Index");
 			}
 			catch
 			{
