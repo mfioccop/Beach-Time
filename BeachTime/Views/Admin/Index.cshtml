@@ -1,7 +1,56 @@
-﻿
+﻿@model BeachTime.Models.AdminIndexViewModel
+
+
 @{
     ViewBag.Title = "Index";
 }
 
 <h2>Admin Dashboard</h2>
 
+<table>
+    <tr>
+        <th>UserId</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>UPDATE</th>
+    </tr>
+
+    @{
+        foreach (var item in Model.UserViewModels)
+        {
+            <tr>
+                <td>@item.UserId</td>
+                <td>@item.FirstName</td>
+                <td>@item.LastName</td>
+                <td>@item.UserName</td>
+                <td>@item.Email</td>
+                <td>@Html.ActionLink("UPDATE", "UpdateUser", "Admin", new { id = item.UserId }, null)</td>
+            </tr>
+        }
+    }    
+
+</table>
+
+
+
+<table>
+    <tr>
+        <th>UserId</th>
+        <th>Desired Role</th>
+        <th>Accept/Deny</th>
+    </tr>
+
+    @{
+        foreach (var item in Model.RequestViewModels)
+        {
+            <tr>
+                <td>@item.UserId</td>
+                <td>@item.RoleName</td>
+                <td>@Html.ActionLink("ACCEPT/DENY", "UpdateRole", "Admin", new { id = item.RequestId }, null)</td>
+            </tr>
+        }
+    }
+
+</table>

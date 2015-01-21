@@ -25,5 +25,26 @@ namespace BeachTime.Data {
 		/// </summary>
 		/// <returns/>
 		IEnumerable<string> GetAllRoles();
+
+		/// <summary>
+		/// Retrieve a role change request by request ID
+		/// </summary>
+		/// <param name="requestId"/>
+		/// <returns/>
+		IEnumerable<RoleChangeRequest> GetRoleChangeRequestById(string requestId);
+
+		/// <summary>
+		/// Retrieve all role change requests
+		/// </summary>
+		/// <returns/>
+		IEnumerable<RoleChangeRequest> GetAllRoleChangeRequests();
+
+		/// <summary>
+		/// Removes a role request by request ID
+		/// </summary>
+		/// <param name="requestId"/>
+		/// <returns/>
+		Task RemoveRoleRequestAsync(string requestId);
+
 	}
 }

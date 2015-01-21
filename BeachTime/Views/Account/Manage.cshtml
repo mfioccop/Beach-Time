@@ -23,6 +23,10 @@
             @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { Action = "LinkLogin", ReturnUrl = ViewBag.ReturnUrl })
         </section>
     </div>
+    
+    <div class="col-md-12">
+        @Html.ActionLink("VIEW/REQUEST ROLES", "RequestRole", "Account")
+    </div>
 </div>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BeachTime.Models
 {
@@ -109,4 +110,23 @@ namespace BeachTime.Models
         [Display(Name = "Email")]
         public string Email { get; set; }
     }
+
+	public class RequestRoleViewModel
+	{
+		[Required]
+		public int UserId { get; set; }
+
+		[Required]
+		public string RoleName { get; set; }
+
+		[Required]
+		public List<string> RoleNameList { get; set; }
+
+		[Required]
+		public List<string> AvailableRolesList { get; set; }
+
+		[Required]
+		public List<string> CurrentRolesList { get; set; } 
+	}
+
 }

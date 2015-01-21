@@ -478,10 +478,49 @@ where UserId = @userId";
 				return con.Query<RoleChangeRequest>(query, new { userId });
 		}
 
+		public IEnumerable<RoleChangeRequest> GetAllRoleChangeRequests()
+		{
+			const string query = @"select rcr.RequestId, rcr.UserId, r.Name as RoleName, rcr.RequestDate
+from RoleChangeRequests rcr
+inner join Roles r
+on rcr.RoleId = r.RoleId";
+
+			using (var con = GetConnection())
+				return con.Query<RoleChangeRequest>(query);
+		}
+		public IEnumerable<RoleChangeRequest> GetRoleChangeRequestById(string requestId)
+		{
+			if (string.IsNullOrEmpty(requestId))
+				throw new ArgumentNullException("requestId");
+
+			const string query = @"select rcr.RequestId, rcr.UserId, r.Name as RoleName, rcr.RequestDate
+from RoleChangeRequests rcr
+inner join Roles r
+on rcr.RoleId = r.RoleId
+where RequestId = @requestId";
+
+			using (var con = GetConnection())
+				return con.Query<RoleChangeRequest>(query, new { requestId });
+		}
+
 		public IEnumerable<string> GetAllRoles() {
 			using (var con = GetConnection())
 				return con.Query<string>("select Name from Roles");
-		} 
+		}
+
+		public Task RemoveRoleRequestAsync(string requestId)
+		{
+			if (string.IsNullOrEmpty(requestId))
+				throw new ArgumentNullException("requestId");
+
+			const string removeRequestQuery =
+				@"delete rcr
+from RoleChangeRequests rcr
+where rcr.requestId = @requestId";
+			using (var con = GetConnection())
+				con.Execute(removeRequestQuery, new { requestId });
+			return Task.FromResult(0);
+		}
 
 		#endregion IUserRoleStore
 

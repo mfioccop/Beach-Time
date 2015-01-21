@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.EnterpriseServices;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using BeachTime.Data;
 using BeachTime.Models;
 using Microsoft.AspNet.Identity;
@@ -12,6 +14,7 @@ using WebGrease.Css.Extensions;
 
 namespace BeachTime.Controllers
 {
+	[AuthorizeBeachUser(Roles = "Executive")]
     public class ExecutiveController : Controller
     {
         #region UserManager
@@ -37,9 +40,6 @@ namespace BeachTime.Controllers
         // GET: Executive
         public ActionResult Index()
         {
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Executive"))
-				return RedirectToAction("Login", "Account");
-
             // Find the user in the database and retrieve basic account information
             var user = UserManager.FindById(User.Identity.GetUserId());
 
@@ -75,12 +75,9 @@ namespace BeachTime.Controllers
         #endregion
 
         #region Beach
-        // GET: Executive/Beach/5
+        // GET: Executive/Beach
         public ActionResult Beach()
         {
-            if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Executive"))
-                return RedirectToAction("Login", "Account");
-
             // Get all consultants on the beach as ViewModels
             UserStore beachedUserStore = new UserStore();
             var beachUsers = beachedUserStore.GetBeachedUsers().ToList();
@@ -147,11 +144,10 @@ namespace BeachTime.Controllers
         #endregion
 
         #region Occupied
+
+		// GET: Executive/Occupied
         public ActionResult Occupied()
         {
-            if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Executive"))
-                return RedirectToAction("Login", "Account");
-
             // Get all consultants on working on projects as ViewModels
             UserStore beachedUserStore = new UserStore();
             var allUsers = beachedUserStore.FindAll().Result;
@@ -222,10 +218,13 @@ namespace BeachTime.Controllers
         // GET: Executive/Details/5
         public ActionResult Details(int id)
         {
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Executive"))
-				return RedirectToAction("Login", "Account");
-
             var user = UserManager.FindById(id.ToString());
+
+			// URL id doesn't match a user in the database, 404
+			if (user == null)
+			{
+				return RedirectToAction("PageNotFound", "Home");
+			}
 
             // Get all projects
             var projectRepo = new ProjectRepository();
