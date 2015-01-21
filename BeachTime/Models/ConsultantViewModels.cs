@@ -9,7 +9,7 @@ using System.Web;
 
 namespace BeachTime.Models
 {
-	public class ConsultantIndexViewModel
+	public class ConsultantIndexViewModel : NavbarViewModelBase
 	{
 		[DisplayName("First Name")]
 		public string FirstName { get; set; }
@@ -33,7 +33,7 @@ namespace BeachTime.Models
 		public List<FileIndexViewModel> FileList { get; set; }
 	}
 
-	public class ConsultantEditViewModel
+	public class ConsultantEditViewModel : NavbarViewModelBase
 	{
 
 		[DisplayName("Projects")]

@@ -4,20 +4,37 @@
     ViewBag.Title = "Index";
 }
 
-<h2>@Model.FirstName @Model.LastName</h2>
+<h2>Executive Dashboard</h2>
+<h4>@Model.FirstName @Model.LastName</h4>
 
-<h3>Account Executive</h3>
 
-<p>account exec dashboard stuff:</p>
-<ul>
-    
-    <li>Consultants on Projects: @Model.OccupiedConsultantsCount @Html.ActionLink("[View All]", "Occupied", "Executive")</li>
-    <li>Consultants on the Beach: @Model.BeachConsultantsCount @Html.ActionLink("[View All]", "Beach", "Executive")</li>
-    <li>Skills on the beach
-    @{
-        foreach (var skill in Model.SkillList)
-        {
-            @skill
-        }
-    }</li>
-</ul>
+<div class="row text-center">
+    <h3 class="">Beach Information</h3>
+    <br/>
+    <div class="col-sm-6 text-center">
+        @Html.ActionLink("Consultants on Projects: " + @Model.OccupiedConsultantsCount, "Occupied", "Executive", new { @class = "btn-success btn-lg" })
+    </div>
+    <div class="col-sm-6 text-center">
+        @Html.ActionLink("Consultants on the Beach: " + @Model.BeachConsultantsCount, "Beach", "Executive", new { @class = "btn-warning btn-lg" })
+    </div>
+
+
+</div>
+<div class="row text-center">
+    <div class="col-xs-12">
+        <br/>
+        <h4>Skills on the Beach</h4>
+        
+        <div class="row text-center">
+                
+
+            @{
+                foreach (var skill in Model.SkillList)
+                {
+                    <div class="col-xs-4">@skill</div>
+                }
+            }
+        </div>
+
+    </div>
+</div>

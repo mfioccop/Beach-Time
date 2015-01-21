@@ -6,7 +6,7 @@ using System.Web;
 
 namespace BeachTime.Models
 {
-	public class AdminIndexViewModel
+	public class AdminIndexViewModel : NavbarViewModelBase
 	{
 		[Required]
 		public List<AdminUserViewModel> UserViewModels { get; set; }
