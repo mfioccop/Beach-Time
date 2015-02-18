@@ -56,7 +56,7 @@
                 }
 
             </ul>
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-right" style="font-size:115%">
 
                 @if (Request.IsAuthenticated && Model != null)
                 {
@@ -64,7 +64,7 @@
                 }
                 else
                 {
-                    <li><a href="~/Account/Login" class="btn btn-default btn-lg">Login</a></li>
+                    <li>@Html.ActionLink("Login", "Login", "Account")</li>
 
                 }
 

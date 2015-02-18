@@ -2813,8 +2813,8 @@ fieldset[disabled] .btn-default.active {
   background-color: #666666;
 }
 .btn-primary {
-  color: #855C33;
-  background-color: #000003;
+  color: #454F7E;
+  background-color: #313B6A;
   border-color: transparent;
 }
 .btn-primary:hover,
@@ -2846,12 +2846,12 @@ fieldset[disabled] .btn-primary:active,
 .btn-primary.disabled.active,
 .btn-primary[disabled].active,
 fieldset[disabled] .btn-primary.active {
-  background-color: #000003;
+  background-color: #313B6A;
   border-color: transparent;
 }
 .btn-primary .badge {
-  color: #000003;
-  background-color: #855C33;
+  color: #454F7E;
+  background-color: #313B6A;
 }
 .btn-success {
   color: #ffffff;
@@ -3018,7 +3018,7 @@ fieldset[disabled] .btn-danger.active {
   background-color: #ffffff;
 }
 .btn-link {
-  color: #000003;
+  color: #313B6A;
   font-weight: normal;
   cursor: pointer;
   border-radius: 0;
@@ -4144,8 +4144,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar-default .navbar-nav > .open > a,
 .navbar-default .navbar-nav > .open > a:hover,
 .navbar-default .navbar-nav > .open > a:focus {
-  background-color: #eeeeee;
-  color: #212121;
+  background-color: #606992;
+  color: #313B6A;
 }
 @media (max-width: 767px) {
   .navbar-default .navbar-nav .open .dropdown-menu > li > a {
@@ -6236,44 +6236,44 @@ button.close {
   margin-top: 2px;
 }
 .btn-default {
-  background-image: -webkit-radial-gradient(circle, #000000 40%, #B89470 100%);
-  background-image: radial-gradient(circle, #000000 40%, #B89470 100%);
+  background-image: -webkit-radial-gradient(circle, #454F7E 40%, #313B6A 100%);
+  background-image: radial-gradient(circle, #454F7E 40%, #313B6A 100%);
   background-repeat: no-repeat;
   background-size: 200%;
   background-position: 50%;
   transition: background-size 2s;
-  box-shadow: 5px 5px 25px #94704D;
+  box-shadow: 5px 5px 25px #313B6A;
 }
 .btn-default:hover {
   background-size: 100%;
-  border-color: #B89470;
+  border-color: #313B6A;
 }
 .btn-default:active {
   background-color: #B89470;
-  background-image: -webkit-radial-gradient(circle, #B89470 10%, #000000 11%);
-  background-image: radial-gradient(circle, #B89470 10%, #000000 11%);
+  background-image: -webkit-radial-gradient(circle, #313B6A 10%, #454F7E 11%);
+  background-image: radial-gradient(circle, #313B6A 10%, #454F7E 11%);
   background-repeat: no-repeat;
   background-size: 1000%;
   -webkit-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
 }
 .btn-primary {
-  background-image: -webkit-radial-gradient(circle, #000000 60%, #B89470 100%);
-  background-image: radial-gradient(circle, #000000 40%, #B89470 100%);
+  background-image: -webkit-radial-gradient(circle, #454F7E 60%, #313B6A 100%);
+  background-image: radial-gradient(circle, #454F7E 40%, #313B6A 100%);
   background-repeat: no-repeat;
   background-size: 200%;
   background-position: 50%;
   transition: background-size 2s;
-  box-shadow: 5px 5px 25px #94704D;
+  box-shadow: 5px 5px 25px #313B6A;
 }
 .btn-primary:hover {
   background-size: 100%;
-  border-color: #B89470;
+  border-color: #313B6A;
 }
 .btn-primary:active {
   background-color: #B89470;
-  background-image: -webkit-radial-gradient(circle, #B89470 10%, #000000 11%);
-  background-image: radial-gradient(circle, #B89470 10%, #000000 11%);
+  background-image: -webkit-radial-gradient(circle, #313B6A 10%, #454F7E 11%);
+  background-image: radial-gradient(circle, #313B6A 10%, #454F7E 11%);
   background-repeat: no-repeat;
   background-size: 1000%;
   -webkit-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);

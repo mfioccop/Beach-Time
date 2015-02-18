@@ -76,3 +76,13 @@ textarea {
 .jumbotron {
     padding-top: 80px;
 }
+
+.profile-dropdown {
+    padding: 20px;
+    background-color: #FFE9D2;
+    
+}
+
+.navbar-text {
+    font-size: 115%;
+}
