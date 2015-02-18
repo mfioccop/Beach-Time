@@ -96,7 +96,8 @@ namespace BeachTime.Controllers
 					Email = user.Email,
 					Id = user.UserId,
 					Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
-				}
+				},
+				SkillViewModel = new ConsultantSkillViewModel()
 			};
 
 			return View(consultant);
@@ -213,7 +214,7 @@ namespace BeachTime.Controllers
 			}
 			catch
 			{
-				return View("_CreateProject");
+				return PartialView("_CreateProject");
 			}
 		}
 
@@ -367,6 +368,44 @@ namespace BeachTime.Controllers
 		}
 
 		#endregion
+
+		#region Skills
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult AddSkill(ConsultantIndexViewModel model)
+		{
+			if (model.SkillViewModel.SkillName == null)
+				return RedirectToAction("Index");
+
+			// Find the user in the database and retrieve basic account information
+			var user = UserManager.FindById(User.Identity.GetUserId());
+
+			// Get current skills and add the newest addition, then update the database
+			var currentSkills = UserManager.GetUserSkills(user);
+			currentSkills.Add(model.SkillViewModel.SkillName);
+			UserManager.SetUserSkills(user, currentSkills);
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult DeleteSkill(string name)
+		{
+			// Find the user in the database and retrieve basic account information
+			var user = UserManager.FindById(User.Identity.GetUserId());
+
+			// Get current skills and remove specified skill, then update the database
+			var currentSkills = UserManager.GetUserSkills(user);
+			currentSkills.Remove(name);
+			UserManager.SetUserSkills(user, currentSkills);
+
+			return RedirectToAction("Index");
+		}
+
+		#endregion
+
 
 	}
 }

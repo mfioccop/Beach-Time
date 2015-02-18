@@ -6,6 +6,8 @@ using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace BeachTime.Models
 {
@@ -31,6 +33,9 @@ namespace BeachTime.Models
 
 		[DisplayName("Files")]
 		public List<FileIndexViewModel> FileList { get; set; }
+
+		public ConsultantSkillViewModel SkillViewModel { get; set; }
+
 	}
 
 	public class ConsultantEditViewModel : NavbarViewModelBase
@@ -52,5 +57,9 @@ namespace BeachTime.Models
 
 	}
 
-
+	public class ConsultantSkillViewModel
+	{
+		[DisplayName("")]
+		public string SkillName { get; set; }
+	}
 }

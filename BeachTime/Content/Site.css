@@ -67,3 +67,12 @@ textarea {
     bottom: 0;
     right: 0;
 }
+
+.modal-padding {
+    padding: 30px;
+    background-color: #FFE9D2;
+}
+
+.jumbotron {
+    padding-top: 80px;
+}

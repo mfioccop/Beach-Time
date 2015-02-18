@@ -1,4 +1,5 @@
-﻿@model BeachTime.Models.ConsultantIndexViewModel
+﻿@using BeachTime.Models
+@model BeachTime.Models.ConsultantIndexViewModel
 
 @{
     ViewBag.Title = "Index";
@@ -97,72 +98,133 @@
 
     <div class="col-xs-12 col-md-3">
         <p class="text-secondary">
-            Use this area to display skills that you possess; add programming languages, frameworks, tools, and whatever else you feel comfortable using on a project.
+            Use this area to display skills that you possess; programming languages, frameworks, tools, and whatever else you feel comfortable using on a project.
+        </p>
+    </div>
+
+    <div class="col-xs-12 col-md-9">
+        
+        <div class="centered">
+
+            <table class="table table-stretch">
+                <thead>
+
+                    <tr>
+                        <th>Skill</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @{
+                        foreach (var item in Model.SkillList)
+                        {
+                            <tr>
+                                <td>@item</td>
+                                <td>
+                                    @using (Html.BeginForm("DeleteSkill", "Consultant", new { name = item} , FormMethod.Post, new {@id = "projectForm", @class = "form-horizontal", role = "form"}))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <input type="submit" class="btn btn-danger btn-sm" value="&#10006;" />
+
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                    <tr>
+                        @using (Html.BeginForm("AddSkill", "Consultant", FormMethod.Post, new { @id = "projectForm", @class = "form-horizontal", role = "form" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+
+
+                            <td>
+                                @Html.EditorFor(model => model.SkillViewModel)
+
+                            </td>
+
+                            <td>
+                                <input type="submit" class="btn btn-success btn-sm" value="&#10010;" />
+                            </td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        
+
+        
+    </div>
+
+
+</div>
+
+
+
+
+<div class="row">
+    <h3 class="text-primary">
+        <b>Files</b>
+    </h3>
+
+    <div class="col-xs-12 col-md-3">
+        <p class="text-secondary">
+            Upload your résumé and any other documents you think would be important for people to see.
         </p>
     </div>
 
     <div class="col-xs-12 col-md-9">
 
-        <table class="table-skills text-center">
-            <tbody>
+        <div class="centered">
 
-                <tr>
+            <table class="table table-stretch">
+                <thead>
+
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Download Link</th>
+                    </tr>
+                </thead>
+                <tbody>
 
                     @{
-                        for (int ii = 0; ii < Model.SkillList.Count; ii++)
+                        foreach (var item in Model.FileList)
                         {
-                            if (ii % 3 == 0)
-                            {
-                                @:</tr>
-                                @:<tr>
-                            }
-
-                            <td>
-                                <h4>
-                                    @Model.SkillList[ii]
-                                </h4>
-                            </td>
+                            <tr>
+                                <td>@item.Title</td>
+                                <td>@item.Description</td>
+                                <td><a href=@item.Path class="btn btn-sm btn-warning">&#8659;</a></td>
+                            </tr>
                         }
-
                     }
 
-                </tr>
-            </tbody>
+                    <tr>
+                        <td>
+                            @Html.ActionLink("Upload File", "UploadFile", null, new { @class = "modal-link btn btn-sm btn-success" })
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-        </table>
     </div>
 
 
 </div>
-
-
-
-
-
-<table>
-    <tr>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Link</th>
-    </tr>
-    @{
-        foreach (var item in Model.FileList)
-        {
-            <tr>
-                <td>@item.Title</td>
-                <td>@item.Description</td>
-                <td>@item.Path</td>
-            </tr>
-        }
-    }
-
-</table>
 <div class="form-group">
     <div class="col-md-offset-3 col-md-10" align="center">
         @Html.ActionLink("Create Project", "CreateProject", null, new { @class = "modal-link btn btn-default btn-lg" })
         @Html.ActionLink("Upload File", "UploadFile", null, new { @class = "modal-link btn btn-default btn-lg" })
+
     </div>
 </div>
+
 
 <script type="text/javascript">
     $(function () {
@@ -170,4 +232,5 @@
             $('#modal-container').modal('hide');
         });
     });
+
 </script>
