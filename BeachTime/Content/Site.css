@@ -1,5 +1,5 @@
 ﻿body {
-    padding-top: 50px;
+    padding-top: 0px;
     padding-bottom: 20px;
 }
 
@@ -14,4 +14,56 @@ input,
 select,
 textarea {
     max-width: 280px;
+}
+
+.text-primary {
+    color: #313B6A;
+}
+
+.text-secondary {
+    color: #454F7E;
+}
+
+.table-stretch {
+    width: 80%;
+}
+
+.table-skills > thead > tr > th,
+.table-skills > thead > tr > td,
+.table-skills > tbody > tr > th,
+.table-skills > tbody > tr > td,
+.table-skills > tfoot > tr > th,
+.table-skills > tfoot > tr > td {
+    padding: 30px;
+    border: 2px solid #313B6A;
+}
+
+
+
+.centered {
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+}
+
+.skill-block {
+    background-color: #7E86A7;
+    position: relative;
+    width: 20%;
+    margin: 1px;
+}
+
+.skill-block:before {
+    content: "";
+    display: block;
+    padding-top: 100%;
+
+}
+
+.block-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
 }

@@ -5,70 +5,165 @@
 }
 
 
-<h2>Consultant Dashboard</h2>
+<div class="row text-center">
+    <div class="col-xs-12">
+        <h2 class="text-primary">
+            <b>Consultant Dashboard</b>
+        </h2>
+        <h3 class="text-secondary">
+            @Html.ValueForModel(Model.FirstName) @Html.ValueForModel(Model.LastName)
+        </h3>
+        <h4>Status: @Html.ValueForModel(Model.Status)</h4>
 
-    <h3>
-        Welcome,
-    @Html.ValueForModel(Model.FirstName) @Html.ValueForModel(Model.LastName)
+    </div>
+
+
+</div>
+
+
+<div class="row">
+
+
+    <h3 class="text-primary">
+        <b>Projects</b>
     </h3>
 
-<h3>Status: @Html.ValueForModel(Model.Status)</h3>
-<p>dashboard stuff:</p>
+    <div class="col-xs-12 col-md-3">
+        <p class="text-secondary">
+            Add any past or current projects that you have worked on or are working on that may be useful to Account Executives when assigning new projects.
+        </p>
+    </div>
+
+    <div class="col-xs-12 col-md-9">
+        <div class="centered">
+
+
+            <table class="table table-stretch">
+                <thead>
+
+                    <tr>
+                        <th>Project Name</th>
+                        <th>Completed?</th>
+                        <th>Update Project</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+
+                    @{
+                        foreach (var item in Model.Projects)
+                        {
+                            <tr>
+                                <td>@item.ProjectId @item.ProjectName</td>
+                                <td>
+                                    @{
+                            if (item.IsCompleted)
+                            {
+                                @:<span class="text-success">&#10004;</span>
+                                }
+                            else
+                            {
+                                @:<span class="text-danger">&#10006;</span>
+                                }
+
+                                    }
+                                </td>
+                                <td>@Html.ActionLink("Update", "UpdateProject", new { id = item.ProjectId }, new { @class = "modal-link btn btn-warning btn-sm" })</td>
+                            </tr>
+                        }
+                    }
+
+                    <tr>
+                        <td>
+                            @Html.ActionLink("Create Project", "CreateProject", null, new { @class = "modal-link btn btn-sm btn-success" })
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+
+</div>
+
+<div class="row">
+    <h3 class="text-primary">
+        <b>Skills</b>
+    </h3>
+
+    <div class="col-xs-12 col-md-3">
+        <p class="text-secondary">
+            Use this area to display skills that you possess; add programming languages, frameworks, tools, and whatever else you feel comfortable using on a project.
+        </p>
+    </div>
+
+    <div class="col-xs-12 col-md-9">
+
+        <table class="table-skills text-center">
+            <tbody>
+
+                <tr>
+
+                    @{
+                        for (int ii = 0; ii < Model.SkillList.Count; ii++)
+                        {
+                            if (ii % 3 == 0)
+                            {
+                                @:</tr>
+                                @:<tr>
+                            }
+
+                            <td>
+                                <h4>
+                                    @Model.SkillList[ii]
+                                </h4>
+                            </td>
+                        }
+
+                    }
+
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+
+</div>
+
+
+
+
+
 <table>
     <tr>
-        <th>Project Name</th>
-        <th>Is Completed?</th>
-        <th>Update</th>
-    </tr>
-    @{
-        foreach (var item in Model.Projects)
-        {
-            <tr>
-                <td>@item.ProjectId @item.ProjectName</td>
-                <td>@item.IsCompleted</td>
-                <td>@Html.ActionLink("Update Project", "UpdateProject", new { id = item.ProjectId }, new { @class = "modal-link btn btn-default btn-sm" })</td>
-            </tr>
-            }
-    }
-
-</table>
-
-
-account tags (skills):
-        @{
-            foreach (var item in Model.SkillList)
-            {
-                @Html.ValueForModel(item);
-                @:,&nbsp;
-            }
-        }
-
-    
-    <table>
-        <tr>
         <th>Title</th>
         <th>Description</th>
         <th>Link</th>
-        </tr>
-        @{
-            foreach (var item in Model.FileList)
-            {
-                <tr>
-                    <td>@item.Title</td>
-                    <td>@item.Description</td>
-                    <td>@item.Path</td>
-                </tr>
-            }
+    </tr>
+    @{
+        foreach (var item in Model.FileList)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Description</td>
+                <td>@item.Path</td>
+            </tr>
         }
+    }
 
-    </table>
+</table>
 <div class="form-group">
     <div class="col-md-offset-3 col-md-10" align="center">
         @Html.ActionLink("Create Project", "CreateProject", null, new { @class = "modal-link btn btn-default btn-lg" })
         @Html.ActionLink("Upload File", "UploadFile", null, new { @class = "modal-link btn btn-default btn-lg" })
     </div>
 </div>
-    
+
 <script type="text/javascript">
     $(function () {
         $('#approve-btn').click(function () {
