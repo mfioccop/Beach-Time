@@ -18,7 +18,7 @@
 </div>
 
 
-<div class="modal-body">
+<div class="modal-body" id="projectModal">
     @using (Html.BeginForm("CreateProject", "Consultant", FormMethod.Post, new { @id = "projectForm", @class = "form-horizontal", role = "form" }))
     {
         @Html.AntiForgeryToken()
