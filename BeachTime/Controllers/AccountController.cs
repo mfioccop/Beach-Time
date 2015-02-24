@@ -70,7 +70,10 @@ namespace BeachTime.Controllers
 		public ActionResult Login(string returnUrl)
 		{
 			ViewBag.ReturnUrl = returnUrl;
-			return View();
+			return View(new LoginViewModel()
+			{
+				Navbar = new HomeNavbarViewModel()
+			});
 		}
 
 		/// <summary>
@@ -739,7 +742,15 @@ namespace BeachTime.Controllers
 				UserId = user.UserId,
 				RoleNameList = roles,
 				AvailableRolesList = roles.Except(pending).ToList(),
-				CurrentRolesList = store.GetRolesAsync(user).Result.ToList()
+				CurrentRolesList = store.GetRolesAsync(user).Result.ToList(),
+				Navbar = new HomeNavbarViewModel()
+				{
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					Email = user.Email,
+					Id = user.UserId,
+					Status = String.Empty
+				}
 			};
 
 			return View(requestViewModel);
@@ -764,7 +775,7 @@ namespace BeachTime.Controllers
 			{
 				return View();
 			}
-			return RedirectToAction("Index", "Home");
+			return RedirectToAction("RequestRole", "Account");
 		}
 
 		#endregion

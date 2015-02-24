@@ -3,55 +3,75 @@
 @{
     ViewBag.Title = "Update User Role";
 }
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h3 class="text-primary text-center"><b>User Role Request</b></h3>
+</div>
 
-<h2>User Role Request</h2>
+<div id="projectModal" class="modal-body">
 
-<h3>User Requesting Role Change:</h3>
+    <h4>User Requesting Role Change:</h4>
 
-<table>
-    <tr>
-        <th>User ID</th>
-        <td>@Model.UserId</td>
-    </tr>
-    <tr>
-        <th>First name</th>
-        <td>@Html.LabelForModel(Model.FirstName)</td>
-    </tr>
-    <tr>
-        <th>Last name</th>
-        <td>@Html.LabelForModel(Model.LastName)</td>
-    </tr>
-    <tr>
-        <th>Username</th>
-        <td>@Html.LabelForModel(Model.UserName)</td>
-    </tr>
-    <tr>
-        <th>Email</th>
-        <td>@Html.LabelForModel(Model.Email)</td>
-    </tr>
-</table>
+    <table class="table">
+        <tr>
+            <th>User ID</th>
+            <td>@Model.UserId</td>
+        </tr>
+        <tr>
+            <th>First name</th>
+            <td>@Html.LabelForModel(Model.FirstName)</td>
+        </tr>
+        <tr>
+            <th>Last name</th>
+            <td>@Html.LabelForModel(Model.LastName)</td>
+        </tr>
+        <tr>
+            <th>Username</th>
+            <td>@Html.LabelForModel(Model.UserName)</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>@Html.LabelForModel(Model.Email)</td>
+        </tr>
+    </table>
 
+    <h4>Role Requested:</h4>
 
-<h3>Role Requested:</h3>
-
-<table>
-    <tr>
-        @using (@Html.BeginForm()){
-            @Html.AntiForgeryToken()
-            
-            @Html.HiddenFor(m => m.FirstName)
-            @Html.HiddenFor(m => m.LastName)
-            @Html.HiddenFor(m => m.UserName)
-            @Html.HiddenFor(m => m.Email)
-            @Html.HiddenFor(m => m.UserId)
-            @Html.HiddenFor(m => m.RequestId)
-            @Html.HiddenFor(m => m.RoleName)
-
-
+    <table class="table">
+        <tr>
             <th>@Model.RoleName</th>
-            <td><input type="submit" name="action:AcceptRole" value="Accept"/></td>
-            <td><input type="submit" name="action:DenyRole" value="Deny" /></td>
-        }
-    </tr>
-</table>
+            <td>
+                @using (@Html.BeginForm("AcceptRole", "Admin", FormMethod.Post, new { @id = "projectForm", @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.HiddenFor(m => m.FirstName)
+                    @Html.HiddenFor(m => m.LastName)
+                    @Html.HiddenFor(m => m.UserName)
+                    @Html.HiddenFor(m => m.Email)
+                    @Html.HiddenFor(m => m.UserId)
+                    @Html.HiddenFor(m => m.RequestId)
+                    @Html.HiddenFor(m => m.RoleName)
+                    <button type="submit" name="action:AcceptRole" value="Accept" class="btn btn-success">Accept</button>
+                }
+            </td>
+            <td>
+                @using (@Html.BeginForm("DenyRole", "Admin", FormMethod.Post, new { @id = "projectForm", @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.HiddenFor(m => m.FirstName)
+                    @Html.HiddenFor(m => m.LastName)
+                    @Html.HiddenFor(m => m.UserName)
+                    @Html.HiddenFor(m => m.Email)
+                    @Html.HiddenFor(m => m.UserId)
+                    @Html.HiddenFor(m => m.RequestId)
+                    @Html.HiddenFor(m => m.RoleName)
+                    <button type="submit" name="action:AcceptRole" value="Deny" class="btn btn-danger">Deny</button>
+                }
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="modal-footer"></div>
 

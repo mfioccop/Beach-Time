@@ -256,6 +256,7 @@
     <Content Include="Views\Admin\_UpdateUser.cshtml" />
     <Content Include="Views\Account\RequestRole.cshtml" />
     <Content Include="Views\Home\PageNotFound.cshtml" />
+    <Content Include="Views\Shared\_Navbar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

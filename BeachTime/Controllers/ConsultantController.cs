@@ -56,7 +56,8 @@ namespace BeachTime.Controllers
 				var pvm = new ProjectViewModel()
 				{
 					ProjectName = project.Name,
-					IsCompleted = project.Completed
+					IsCompleted = project.Completed,
+					ProjectId = project.ProjectId
 				};
 				projectViewModels.Add(pvm);
 			}
@@ -86,7 +87,17 @@ namespace BeachTime.Controllers
 				Projects = projectViewModels,
 				SkillList = UserManager.GetUserSkills(user).ToList(),
 				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project",
-				FileList = fileViewModels
+				FileList = fileViewModels,
+				Id = user.UserId,
+				Navbar = new HomeNavbarViewModel()
+				{
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					Email = user.Email,
+					Id = user.UserId,
+					Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+				},
+				SkillViewModel = new ConsultantSkillViewModel()
 			};
 
 			return View(consultant);
@@ -133,7 +144,15 @@ namespace BeachTime.Controllers
 				SkillList = skills,
 
 				SkillsString = string.Join(",", skills.ToArray()),
-				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project",
+				Navbar = new HomeNavbarViewModel()
+				{
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					Email = user.Email,
+					Id = user.UserId,
+					Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+				}
 			};
 
 			return View(consultant);
@@ -175,7 +194,7 @@ namespace BeachTime.Controllers
 		// POST: Consultant/CreateProject
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult CreateProject(FormCollection collection)
+		public ActionResult CreateProject(ProjectCreateViewModel model)
 		{
 			try
 			{
@@ -183,8 +202,8 @@ namespace BeachTime.Controllers
 
 				var project = new Project()
 				{
-					Name = collection["ProjectName"],
-					Completed = collection["IsCompleted"].Contains("true"),
+					Name = model.ProjectName,
+					Completed = model.IsCompleted,
 					UserId = user.UserId
 				};
 
@@ -230,7 +249,7 @@ namespace BeachTime.Controllers
 		// POST: Consultant/UpdateProject
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult UpdateProject(FormCollection collection)
+		public ActionResult UpdateProject(ProjectViewModel model)
 		{
 			try
 			{
@@ -238,16 +257,16 @@ namespace BeachTime.Controllers
 
 				var project = new Project()
 				{
-					Name = collection["ProjectName"],
-					Completed = collection["IsCompleted"].Contains("true"),
+					Name = model.ProjectName,
+					Completed = model.IsCompleted,
 					UserId = user.UserId,
-					ProjectId = int.Parse(collection["ProjectId"])
+					ProjectId = model.ProjectId
 				};
 
 				var projectRepo = new ProjectRepository();
 				projectRepo.Update(project);
 
-				return RedirectToAction("Edit");
+				return RedirectToAction("Index");
 			}
 			catch
 			{
@@ -349,6 +368,44 @@ namespace BeachTime.Controllers
 		}
 
 		#endregion
+
+		#region Skills
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult AddSkill(ConsultantIndexViewModel model)
+		{
+			if (model.SkillViewModel.SkillName == null)
+				return RedirectToAction("Index");
+
+			// Find the user in the database and retrieve basic account information
+			var user = UserManager.FindById(User.Identity.GetUserId());
+
+			// Get current skills and add the newest addition, then update the database
+			var currentSkills = UserManager.GetUserSkills(user);
+			currentSkills.Add(model.SkillViewModel.SkillName);
+			UserManager.SetUserSkills(user, currentSkills);
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult DeleteSkill(string name)
+		{
+			// Find the user in the database and retrieve basic account information
+			var user = UserManager.FindById(User.Identity.GetUserId());
+
+			// Get current skills and remove specified skill, then update the database
+			var currentSkills = UserManager.GetUserSkills(user);
+			currentSkills.Remove(name);
+			UserManager.SetUserSkills(user, currentSkills);
+
+			return RedirectToAction("Index");
+		}
+
+		#endregion
+
 
 	}
 }

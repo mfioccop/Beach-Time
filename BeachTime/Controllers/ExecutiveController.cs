@@ -67,7 +67,15 @@ namespace BeachTime.Controllers
                 LastName = user.LastName,
                 OccupiedConsultantsCount = numOccupied,
                 BeachConsultantsCount = numBeach,
-                SkillList = beachSkillsList
+                SkillList = beachSkillsList,
+				Navbar = new HomeNavbarViewModel()
+				{
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					Email = user.Email,
+					Id = user.UserId,
+					Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+				}
             };
             
             return View(executive);
@@ -132,11 +140,21 @@ namespace BeachTime.Controllers
                 };
                 beachViewModelList.Add(consultant);
             }
-            
+
+	        var exec = UserManager.FindById(User.Identity.GetUserId());
+
             // Construct view model for the beach
             var executive = new ExecutiveUserListViewModel()
             {
-                BeachConsultantViewModels = beachViewModelList
+                BeachConsultantViewModels = beachViewModelList,
+				Navbar = new HomeNavbarViewModel()
+				{
+					FirstName = exec.FirstName,
+					LastName = exec.LastName,
+					Email = exec.Email,
+					Id = exec.UserId,
+					Status = UserManager.UserOnBeach(exec) ? "On the beach" : "On a project"
+				}
             };
 
             return View(executive);
@@ -204,10 +222,20 @@ namespace BeachTime.Controllers
                 occupiedViewModelList.Add(consultant);
             }
 
+			var exec = UserManager.FindById(User.Identity.GetUserId());
+
             // Construct view model for occupied users
             var executive = new ExecutiveUserListViewModel()
             {
-                BeachConsultantViewModels = occupiedViewModelList
+                BeachConsultantViewModels = occupiedViewModelList,
+				Navbar = new HomeNavbarViewModel()
+				{
+					FirstName = exec.FirstName,
+					LastName = exec.LastName,
+					Email = exec.Email,
+					Id = exec.UserId,
+					Status = UserManager.UserOnBeach(exec) ? "On the beach" : "On a project"
+				}
             };
 
             return View(executive);
@@ -259,6 +287,8 @@ namespace BeachTime.Controllers
                 fileViewModels.Add(fvm);
             }
 
+	        var exec = UserManager.FindById(User.Identity.GetUserId());
+
             // Construct view model for the consultant
             var consultant = new ConsultantIndexViewModel()
             {
@@ -268,7 +298,15 @@ namespace BeachTime.Controllers
                 Projects = projectViewModels,
                 SkillList = UserManager.GetUserSkills(user).ToList(),
                 Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project",
-                FileList = fileViewModels
+                FileList = fileViewModels,
+				Navbar = new HomeNavbarViewModel()
+				{
+					FirstName = exec.FirstName,
+					LastName = exec.LastName,
+					Email = exec.Email,
+					Id = exec.UserId,
+					Status = UserManager.UserOnBeach(exec) ? "On the beach" : "On a project"
+				}
             };
 	      
             return View(consultant);
