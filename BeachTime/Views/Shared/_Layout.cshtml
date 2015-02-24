@@ -58,7 +58,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right" style="font-size:115%">
 
-                @if (Request.IsAuthenticated && Model != null)
+                @if (Request.IsAuthenticated && Model != null && Model.Navbar != null)
                 {
                     @Html.Partial("_Navbar", Model.Navbar)
                 }
@@ -74,8 +74,6 @@
     <div class="container body-content">
         <div class="jumbotron">
             @RenderBody()
-            <hr />
-
         </div>
         <footer>
             <p>&copy; @DateTime.Now.Year - IbEACH</p>

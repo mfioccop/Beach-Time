@@ -9,7 +9,7 @@ namespace BeachTime.Models
 
 	public abstract class NavbarViewModelBase
 	{
-		[Required]
+		//[Required]
 		public HomeNavbarViewModel Navbar { get; set; }
 	}
 

@@ -17,7 +17,7 @@ namespace BeachTime.Models
         public string ReturnUrl { get; set; }
     }
 
-    public class ManageUserViewModel
+	public class ManageUserViewModel : NavbarViewModelBase
     {
         [Required]
         [DataType(DataType.Password)]
@@ -36,7 +36,7 @@ namespace BeachTime.Models
         public string ConfirmPassword { get; set; }
     }
 
-    public class LoginViewModel
+    public class LoginViewModel : NavbarViewModelBase
     {
 		[Required]
 		[Display(Name = "Username/Email")]

@@ -3,12 +3,20 @@
 @{
     ViewBag.Title = "Manage Account";
 }
-
-<h2>@ViewBag.Title.</h2>
-
-<p class="text-success">@ViewBag.StatusMessage</p>
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-xs-12">
+        <h2>@ViewBag.Title</h2>
+    </div>
+    <div class="col-xs-12">
+        <p>You're logged in as <strong>@User.Identity.GetUserName()</strong>.</p>
+
+        <p class="text-success">@ViewBag.StatusMessage</p>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-md-6">
         @if (ViewBag.HasLocalPassword)
         {
             @Html.Partial("_ChangePasswordPartial")
@@ -18,14 +26,16 @@
             @Html.Partial("_SetPasswordPartial")
         }
 
-        <section id="externalLogins">
-            @Html.Action("RemoveAccountList")
-            @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { Action = "LinkLogin", ReturnUrl = ViewBag.ReturnUrl })
-        </section>
+
     </div>
-    
-    <div class="col-md-12">
-        @Html.ActionLink("VIEW/REQUEST ROLES", "RequestRole", "Account")
+
+    <div class="col-xs-12 col-md-6">
+        <h4><b>Request Roles</b></h4>
+        <h5>
+            If you'd like to request permission to access another role (i.e. Account Executive or Admin), please click the link below to get started.
+        </h5>
+        <br/>
+        @Html.ActionLink("VIEW/REQUEST ROLES", "RequestRole", "Account", new { @class="btn btn-warning btn-lg"})
     </div>
 </div>
 @section Scripts {
