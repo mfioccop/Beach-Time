@@ -13,12 +13,11 @@
     </h3>
 
 <h3>Status: @Html.ValueForModel(Model.Status)</h3>
-<p>dashboard stuff:</p>
 <table>
     <tr>
-        <th>Project Name</th>
-        <th>Is Completed?</th>
-        <th>Update</th>
+        <th>Project Name </th>
+        <th>/ Is it Completed? </th>
+        <th>/ Update</th>
     </tr>
     @{
         foreach (var item in Model.Projects)
@@ -34,7 +33,7 @@
 </table>
 
 
-account tags (skills):
+        Account Tags (skills):
         @{
             foreach (var item in Model.SkillList)
             {
@@ -46,9 +45,9 @@ account tags (skills):
     
     <table>
         <tr>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Link</th>
+        <th>Title </th>
+        <th>/ Description </th>
+        <th>/ Link</th>
         </tr>
         @{
             foreach (var item in Model.FileList)
