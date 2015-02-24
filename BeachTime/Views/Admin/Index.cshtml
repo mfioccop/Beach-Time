@@ -93,7 +93,7 @@
                             <tr>
                                 <td>@item.UserId</td>
                                 <td>@item.RoleName</td>
-                                <td>@Html.ActionLink("ACCEPT/DENY", "UpdateRole", "Admin", new { id = item.RequestId }, null)</td>
+                                <td>@Html.ActionLink("View Request", "UpdateRole", "Admin", new { id = item.RequestId }, new { @class = "modal-link btn btn-warning btn-sm" })</td>
                             </tr>
                         }
                     }
