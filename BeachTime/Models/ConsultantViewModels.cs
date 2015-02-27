@@ -21,6 +21,9 @@ namespace BeachTime.Models
 
         [DisplayName("Id")]
         public int Id { get; set; }
+
+        [DisplayName("Email")]
+        public string Email { get; set; }
 		
 		[DisplayName("Projects")]
 		public IList<ProjectViewModel> Projects { get; set; }

@@ -84,6 +84,7 @@ namespace BeachTime.Controllers
 			{
 				FirstName = user.FirstName,
 				LastName = user.LastName,
+                Email = user.Email,
 				Projects = projectViewModels,
 				SkillList = UserManager.GetUserSkills(user).ToList(),
 				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project",

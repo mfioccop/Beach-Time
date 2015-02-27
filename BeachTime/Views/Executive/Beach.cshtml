@@ -9,6 +9,7 @@
     <tr>
         <th>User</th>
         <th>Profile</th>
+        <th>Contact</th>
     </tr>
 
     @{
@@ -16,10 +17,7 @@
         {
             <tr>
                 <td>@item.FirstName @item.LastName</td>
-
-                <td>
-                    @Html.ActionLink("Profile", "Details", "Executive", new { id = item.Id }, null)
-                </td>
+                <td>@Html.ActionLink("Profile", "Details", "Executive", new { id = item.Id }, null)</td>
             </tr>
         }
     }
