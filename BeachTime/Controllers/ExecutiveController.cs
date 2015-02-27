@@ -132,6 +132,7 @@ namespace BeachTime.Controllers
                 {
                     FirstName = user.FirstName,
                     LastName = user.LastName,
+                    Email = user.Email,
                     Id = user.UserId,
                     Projects = projectViewModels,
                     SkillList = UserManager.GetUserSkills(user).ToList(),
@@ -294,6 +295,7 @@ namespace BeachTime.Controllers
             {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                Email = user.Email,
                 Id = user.UserId,
                 Projects = projectViewModels,
                 SkillList = UserManager.GetUserSkills(user).ToList(),

@@ -42,6 +42,7 @@
                     <tr>
                         <th>User</th>
                         <th>Profile Link</th>
+                        <th>Contact</th>
                     </tr>
 
                     @{
@@ -49,10 +50,8 @@
                 {
                     <tr>
                         <td>@item.FirstName @item.LastName</td>
-
-                        <td>
-                            @Html.ActionLink("View", "Details", "Executive", new { id = item.Id }, new { @class = "btn btn-sm btn-warning" })
-                        </td>
+                        <td>@Html.ActionLink("View", "Details", "Executive", new { id = item.Id }, new { @class = "btn btn-sm btn-warning" })</td>
+                        <td><a href="mailto:@item.Email" class="btn btn-sm btn-warning">&#9993;</a></td>
                     </tr>
                 }
                     }
