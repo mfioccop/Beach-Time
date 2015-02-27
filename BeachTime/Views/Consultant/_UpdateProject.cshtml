@@ -10,7 +10,7 @@
 </div>
 
 <div id="projectModal" class="modal-body">
-    @using (Html.BeginForm("Index", "Consultant", FormMethod.Post, new { @id = "projectForm", @class = "form-horizontal", role = "form" }))
+    @using (Html.BeginForm("UpdateProject", "Consultant", FormMethod.Post, new { @id = "projectForm", @class = "form-horizontal", role = "form" }))
     {
         @Html.AntiForgeryToken()
 

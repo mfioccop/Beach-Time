@@ -86,3 +86,11 @@ textarea {
 .navbar-text {
     font-size: 115%;
 }
+
+.button-wide {
+    width: 200px;
+}
+
+.responsive-header {
+    font-size: 10vw;
+}

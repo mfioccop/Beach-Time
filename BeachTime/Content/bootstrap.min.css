@@ -1165,10 +1165,10 @@ a.text-info:hover {
   color: #771e86;
 }
 .text-warning {
-  color: #b2dbfb;
+  color: #ff9800
 }
 a.text-warning:hover {
-  color: #b2dbfb;
+  color: #e08600;
 }
 .text-danger {
   color: #e51c23;

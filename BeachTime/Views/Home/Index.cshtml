@@ -1,38 +1,83 @@
 ﻿@model BeachTime.Models.HomeViewModel
-
 @{
     ViewBag.Title = "Home Page";
 }
 
-<head>
-    <style>
-        p.border {
-              border-style: solid;
-              border-width: 2px;
-              color: #855C33;
-          }
-        p.theOther {
-            color: black;
-        }
-
-    </style>
-</head>
+<div class="row">
+    <div class="col-xs-12 text-center">
+        <h1>
+            <b class="text-primary responsive-header">
+                Beachtime
+            </b>
+        </h1>
+    </div>
 
 
-    <body>
-        <p class="border">
-            Welcome to The Beach applications! This application tracks consultants “on the beach”, or between clients. Users will
-            register for the beach, upload their résumé, and tag their identities with useful metadata. Account
-            executives will be able to search for available consultants based upon the provided metadata.
-        </p>
-        
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <h5>
+            Welcome to Beachtime!  This application allows account executives to assign new projects more accurately and efficiently.  By hosting profiles of all consultants in the office, Beachtime allows executives to quickly search through available consultants and choose one (or more) who will be the best fit for an upcoming project.
+        </h5>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-4 text-center">
+        <h3 class="text-primary">
+            <b>
+                Consultants
+            </b>
+        </h3>
+        <div class="col-xs-12">
+            Maintain a profile of past and present projects, available skillset, and useful files to help you get placed on new projects relevant to you
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-4 text-center">
+        <h3 class="text-primary">
+            <b>
+                Executives
+            </b>
+        </h3>
+        <div class="col-xs-12">
+            Track consultants on and off projects, view consultant profiles when a new project comes up, and quickly send an email to notify a consultant of a potential assignment
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-4 text-center">
+        <h3 class="text-primary">
+            <b>
+                Administration
+            </b>
+        </h3>
+        <div class="col-xs-12">
+            Manage application users and handle role requests when an employee takes on a new position
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 text-center">
+        <br />
         @if (!Request.IsAuthenticated)
         {
-            
-            <a href="~/Account/Register" class="btn btn-default btn-lg">Register</a>
-            <a href="~/Account/Login" class="btn btn-default btn-lg">Login</a>
-        
+            <h3 class="text-primary">
+                <b>
+                    Get Started:
+                </b>
+            </h3>
+            <a href="~/Account/Register" class="btn btn-success btn-lg button-wide">Register</a>
+            <a href="~/Account/Login" class="btn btn-success btn-lg button-wide">Login</a>
+
         }
-    </body>
-
-
+        else
+        {
+            <h4 class="text-primary">
+                <b>
+                    Welcome back!
+                </b>
+            </h4>
+            <h5 class="text-secondary">
+                Use the navigation bar to visit your dashboard to stay updated
+            </h5>
+        }
+    </div>
+</div>

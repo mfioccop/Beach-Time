@@ -215,7 +215,7 @@ namespace BeachTime.Controllers
 			}
 			catch
 			{
-				return PartialView("_CreateProject");
+				return View("_CreateProject");
 			}
 		}
 

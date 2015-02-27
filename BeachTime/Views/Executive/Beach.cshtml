@@ -2,23 +2,62 @@
 @{
     ViewBag.Title = "Beach";
 }
+<div class="row">
+    <div class="col-xs-12 text-center">
+        <h2>
+            <b class="text-primary">
+                The Beach
+            </b>
+        </h2>
 
-<h2>Das Beach</h2>
+    </div>
 
-<table>
-    <tr>
-        <th>User</th>
-        <th>Profile</th>
-        <th>Contact</th>
-    </tr>
+</div>
+<div class="row">
+    <h3 class="text-primary">
+        <b>Enjoying the sun <span class="text-warning">&#9728;</span></b>
+    </h3>
+    <div class="col-xs-12 col-md-4">
+        <p class="text-secondary">
+            All the consultants who don't have anything to do will appear here, so they're your primary targets when it comes to assigning a new project.
+        </p>
+    </div>
+    <div class="col-xs-12 col-md-8">
+        @{
+            if (!Model.BeachConsultantViewModels.Any())
+            {
+                <h3 class="text-success">
+                    <b>Perfect!</b>
+                </h3>
 
-    @{
-        foreach (var item in Model.BeachConsultantViewModels)
-        {
-            <tr>
-                <td>@item.FirstName @item.LastName</td>
-                <td>@Html.ActionLink("Profile", "Details", "Executive", new { id = item.Id }, null)</td>
-            </tr>
+                <p>
+                    There aren't any consultants relaxing on the beach!  To see what everyone is up to, head on over to the @Html.ActionLink("Occupied page", "Occupied", "Executive", new { @class = "btn btn-sm btn-success" })
+                </p>
+            }
+            else
+            {
+
+
+                <table class="table table-stretch">
+                    <tr>
+                        <th>User</th>
+                        <th>Profile Link</th>
+                    </tr>
+
+                    @{
+                foreach (var item in Model.BeachConsultantViewModels)
+                {
+                    <tr>
+                        <td>@item.FirstName @item.LastName</td>
+
+                        <td>
+                            @Html.ActionLink("View", "Details", "Executive", new { id = item.Id }, new { @class = "btn btn-sm btn-warning" })
+                        </td>
+                    </tr>
+                }
+                    }
+                </table>
+            }
         }
-    }
-</table>
+    </div>
+</div>

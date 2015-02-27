@@ -24,9 +24,26 @@
                 <div class="nav-divider"></div>
                 <div class="row">
                     <div class="col-xs-12">
-                        @Html.ActionLink("View Profile", "Index", "Consultant", null, new { @class = "btn btn-success btn-sm" })
+                        <h5><b>Dashboards:</b></h5>
+                        @if (Request.IsAuthenticated)
+                        {
+                            if (User.IsInRole("Consultant"))
+                            {
+                                @Html.ActionLink("Consultant", "Index", "Consultant", null, new { @class = "btn btn-success btn-sm" })
+                            }
+                            if (User.IsInRole("Executive"))
+                            {
+                                @Html.ActionLink("Executive", "Index", "Executive", null, new { @class = "btn btn-success btn-sm" })
+                            }
+                            if (User.IsInRole("Admin"))
+                            {
+                                @Html.ActionLink("Admin", "Index", "Admin", null, new { @class = "btn btn-success btn-sm" })
+                            }
+                        }
                     </div>
                     <div class="col-xs-12">
+                        <h5><b>Account:</b></h5>
+
                         @Html.ActionLink("Manage Account", "Manage", "Account", null, new { @class = "btn btn-warning btn-sm" })
                     </div>
                     <div class="col-xs-12">
