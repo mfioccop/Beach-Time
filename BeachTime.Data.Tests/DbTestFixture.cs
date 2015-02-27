@@ -7,7 +7,6 @@ using NUnit.Framework;
 
 namespace BeachTime.Data.Tests {
 
-	[TestFixture]
 	public class DbTestFixture {
 		protected AppDbContext dbContext;
 

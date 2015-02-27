@@ -7,6 +7,8 @@ IF OBJECT_ID('dbo.Skills', 'U') IS NOT NULL
 	DROP TABLE dbo.Skills;
 IF OBJECT_ID('dbo.FileInfo', 'U') IS NOT NULL
 	DROP TABLE dbo.FileInfo;
+IF OBJECT_ID('dbo.UserProjects', 'U') IS NOT NULL
+	DROP TABLE dbo.UserProjects;
 IF OBJECT_ID('dbo.Projects', 'U') IS NOT NULL
 	DROP TABLE dbo.Projects;
 IF OBJECT_ID('dbo.RoleChangeRequests', 'U') IS NOT NULL
@@ -78,13 +80,25 @@ CREATE INDEX IX_Skills_Name ON Skills(Name);
 CREATE TABLE [dbo].[Projects]
 (
 	[ProjectId] INT IDENTITY NOT NULL,
-	[UserId] INT NOT NULL,
 	[Name] VARCHAR(255) NOT NULL,
 	[Completed] BIT NOT NULL,
-	CONSTRAINT [PK_Projects] PRIMARY KEY ([ProjectId]),
-	CONSTRAINT [FK_Projects_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users]([UserId]) ON DELETE CASCADE
+	CONSTRAINT [PK_Projects] PRIMARY KEY ([ProjectId])
 );
 CREATE UNIQUE INDEX IX_Projects_Name ON Projects(Name);
+
+CREATE TABLE [dbo].[UserProjects]
+(
+	[UserId] INT NOT NULL,
+	[ProjectId] INT NOT NULL,
+	[Completed] BIT NOT NULL
+	CONSTRAINT [PK_UserProjects] PRIMARY KEY
+	(
+		[UserId],
+		[ProjectId]
+	),
+	CONSTRAINT [FK_UserProjects_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users]([UserId]) ON DELETE CASCADE,
+	CONSTRAINT [FK_UserProjects_Projects_ProjectId] FOREIGN KEY ([ProjectId]) REFERENCES [Projects]([ProjectId]) ON DELETE CASCADE
+);
 
 CREATE TABLE [dbo].[FileInfo]
 (
