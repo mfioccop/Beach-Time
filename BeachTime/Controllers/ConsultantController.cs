@@ -40,6 +40,10 @@ namespace BeachTime.Controllers
 		#region Index
 
 		// GET: Consultant
+		/// <summary>
+		/// GET: Consultant index page (dashboard).
+		/// </summary>
+		/// <returns></returns>
 		public ActionResult Index()
 		{
 			// Find the user in the database and retrieve basic account information
@@ -105,86 +109,13 @@ namespace BeachTime.Controllers
 
 		#endregion
 
-		#region Edit
-
-		// GET: Consultant/Edit
-		public ActionResult Edit()
-		{
-			// Find the user in the database and retrieve basic account information
-			var user = UserManager.FindById(User.Identity.GetUserId());
-
-			// URL id doesn't match a user in the database, 404
-			if (user == null)
-			{
-				return RedirectToAction("PageNotFound", "Home");
-			}
-
-			// Get projects for this user
-			var projectRepo = new ProjectRepository();
-			var projects = projectRepo.FindByUserId(user.UserId);
-			var projectViewModels = new List<ProjectViewModel>();
-
-			foreach (var project in projects)
-			{
-				var pvm = new ProjectViewModel()
-				{
-					ProjectName = project.Name,
-					IsCompleted = project.Completed,
-					ProjectId = project.ProjectId
-				};
-				projectViewModels.Add(pvm);
-			}
-
-			var skills = UserManager.GetUserSkills(user).ToList();
-
-			var consultant = new ConsultantEditViewModel()
-			{
-				Projects = projectViewModels,
-
-				SkillList = skills,
-
-				SkillsString = string.Join(",", skills.ToArray()),
-				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project",
-				Navbar = new HomeNavbarViewModel()
-				{
-					FirstName = user.FirstName,
-					LastName = user.LastName,
-					Email = user.Email,
-					Id = user.UserId,
-					Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
-				}
-			};
-
-			return View(consultant);
-		}
-
-		// POST: Consultant/Edit
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Edit(ConsultantEditViewModel model)
-		{
-			try
-			{
-				// Find the user in the database and retrieve basic account information
-				var user = UserManager.FindById(User.Identity.GetUserId());
-
-				// TODO: Skill tags when Jason updates input method
-				var skillsList = model.SkillsString.Split(',').ToList();
-				UserManager.SetUserSkills(user, skillsList);
-
-				return RedirectToAction("Index");
-			}
-			catch
-			{
-				return View();
-			}
-		}
-
-		#endregion
-
 		#region Projects
 
 		// GET: Consultant/CreateProject
+		/// <summary>
+		/// GET: Page for new project creation.
+		/// </summary>
+		/// <returns></returns>
 		public ActionResult CreateProject()
 		{
 			return PartialView("_CreateProject");
@@ -192,6 +123,11 @@ namespace BeachTime.Controllers
 
 
 		// POST: Consultant/CreateProject
+		/// <summary>
+		/// POST: Creates a new project.
+		/// </summary>
+		/// <param name="model">The model containing the new project's information.</param>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult CreateProject(ProjectCreateViewModel model)
@@ -220,6 +156,11 @@ namespace BeachTime.Controllers
 
 
 		// GET: Consultant/UpdateProject/5
+		/// <summary>
+		/// GET: Page for updating a project.
+		/// </summary>
+		/// <param name="id">The id of the project.</param>
+		/// <returns></returns>
 		public ActionResult UpdateProject(int id)
 		{
 			var projectRepo = new ProjectRepository();
@@ -247,6 +188,11 @@ namespace BeachTime.Controllers
 
 
 		// POST: Consultant/UpdateProject
+		/// <summary>
+		/// POST: Updates a project.
+		/// </summary>
+		/// <param name="model">The model containing the project information to update.</param>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult UpdateProject(ProjectViewModel model)
@@ -279,6 +225,10 @@ namespace BeachTime.Controllers
 		#region FileUpload
 
 		// GET: Consultant/UploadFile
+		/// <summary>
+		/// GET: Page for uploading a file.
+		/// </summary>
+		/// <returns></returns>
 		public ActionResult UploadFile()
 		{
 			return PartialView("_UploadFile", new FileUploadViewModel());
@@ -286,6 +236,11 @@ namespace BeachTime.Controllers
 
 
 		// POST: Consultant/UploadFile
+		/// <summary>
+		/// POST: Uploads a file.
+		/// </summary>
+		/// <param name="model">The model containing the file to upload.</param>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult UploadFile(FileUploadViewModel model)
@@ -317,8 +272,10 @@ namespace BeachTime.Controllers
 				{
 					// FIXES: Firefox issue where .doc files are incorrectly labeled as "application/octet-stream", which is too broad of a filetype to accept
 					//	Check the validity of file extension
-					if(!validFileExtensions.Contains(Path.GetExtension(model.FileUpload.FileName)))
+					if (!validFileExtensions.Contains(Path.GetExtension(model.FileUpload.FileName)))
+					{
 						ModelState.AddModelError("FileUpload", "Please choose a valid file type (PDF, DOC, DOCX, RTF)");
+					}
 				}
 
 				if (ModelState.IsValid)
@@ -371,6 +328,11 @@ namespace BeachTime.Controllers
 
 		#region Skills
 
+		/// <summary>
+		/// POST: Adds a skill.
+		/// </summary>
+		/// <param name="model">The model containing the user and skill list.</param>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult AddSkill(ConsultantIndexViewModel model)
@@ -389,6 +351,11 @@ namespace BeachTime.Controllers
 			return RedirectToAction("Index");
 		}
 
+		/// <summary>
+		/// POST: Deletes a skill.
+		/// </summary>
+		/// <param name="name">The name of the skill to be deleted.</param>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult DeleteSkill(string name)

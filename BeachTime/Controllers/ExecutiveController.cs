@@ -38,6 +38,10 @@ namespace BeachTime.Controllers
 
         #region Index
         // GET: Executive
+		/// <summary>
+		/// GET: Account Executive index page (dashboard)
+		/// </summary>
+		/// <returns></returns>
         public ActionResult Index()
         {
             // Find the user in the database and retrieve basic account information
@@ -84,6 +88,10 @@ namespace BeachTime.Controllers
 
         #region Beach
         // GET: Executive/Beach
+		/// <summary>
+		/// GET: Page for viewing all consultants not currently working on any projects.
+		/// </summary>
+		/// <returns></returns>
         public ActionResult Beach()
         {
             // Get all consultants on the beach as ViewModels
@@ -165,6 +173,10 @@ namespace BeachTime.Controllers
         #region Occupied
 
 		// GET: Executive/Occupied
+		/// <summary>
+		/// GET: Page for viewing all consultants working on a project.
+		/// </summary>
+		/// <returns></returns>
         public ActionResult Occupied()
         {
             // Get all consultants on working on projects as ViewModels
@@ -245,6 +257,11 @@ namespace BeachTime.Controllers
 
         #region Details
         // GET: Executive/Details/5
+		/// <summary>
+		/// GET: Page for viewing details of a consultant
+		/// </summary>
+		/// <param name="id">The userId of the consultant.</param>
+		/// <returns></returns>
         public ActionResult Details(int id)
         {
             var user = UserManager.FindById(id.ToString());

@@ -11,6 +11,9 @@ using Microsoft.AspNet.Identity.Owin;
 
 namespace BeachTime.Controllers
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	[AuthorizeBeachUser(Roles = "Admin")]
 	public class AdminController : Controller
 	{
@@ -26,6 +29,9 @@ namespace BeachTime.Controllers
 		/// <summary>
 		/// Gets the current UserManager
 		/// </summary>
+		/// <value>
+		/// The user manager.
+		/// </value>
 		public BeachUserManager UserManager
 		{
 			get { return _userManager ?? HttpContext.GetOwinContext().GetUserManager<BeachUserManager>(); }
@@ -39,6 +45,10 @@ namespace BeachTime.Controllers
 		#region Index
 
 		// GET: Admin
+		/// <summary>
+		/// GET: Admin index page (dashboard)
+		/// </summary>
+		/// <returns></returns>
 		public ActionResult Index()
 		{
 			// Get all users and initialize the view model
@@ -100,6 +110,11 @@ namespace BeachTime.Controllers
 		#region UpdateUser
 
 		// GET: Admin/UpdateUser/5
+		/// <summary>
+		/// GET: Update user page.
+		/// </summary>
+		/// <param name="id">The id of the user to update.</param>
+		/// <returns></returns>
 		public ActionResult UpdateUser(int id)
 		{
 			// Find the user in the database and retrieve basic account information
@@ -124,6 +139,11 @@ namespace BeachTime.Controllers
 		}
 
 		// POST: Admin/UpdateUser/5
+		/// <summary>
+		/// POST: Updates a user's information.
+		/// </summary>
+		/// <param name="model">The model containing user information to update.</param>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult UpdateUser(AdminUserViewModel model)
@@ -154,6 +174,11 @@ namespace BeachTime.Controllers
 		#region UpdateRole
 
 		// GET: Admin/UpdateRole/5
+		/// <summary>
+		/// GET: View a role request details.
+		/// </summary>
+		/// <param name="id">The id of the request.</param>
+		/// <returns></returns>
 		public ActionResult UpdateRole(int id)
 		{
 			
@@ -191,6 +216,11 @@ namespace BeachTime.Controllers
 		}
 
 		// POST: Admin/Accept/5
+		/// <summary>
+		/// POST: Accepts a role request.
+		/// </summary>
+		/// <param name="accept">The model containing request to accept.</param>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		[MultipleButton(Name = "action", Argument = "AcceptRole")]
@@ -217,6 +247,11 @@ namespace BeachTime.Controllers
 		}
 
 		// POST: Admin/Accept/5
+		/// <summary>
+		/// POST: Denies a role request.
+		/// </summary>
+		/// <param name="reject">The model containing request to reject.</param>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		[MultipleButton(Name = "action", Argument = "DenyRole")]
