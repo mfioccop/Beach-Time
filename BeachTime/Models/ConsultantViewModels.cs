@@ -6,10 +6,12 @@ using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace BeachTime.Models
 {
-	public class ConsultantIndexViewModel
+	public class ConsultantIndexViewModel : NavbarViewModelBase
 	{
 		[DisplayName("First Name")]
 		public string FirstName { get; set; }
@@ -19,6 +21,9 @@ namespace BeachTime.Models
 
         [DisplayName("Id")]
         public int Id { get; set; }
+
+        [DisplayName("Email")]
+        public string Email { get; set; }
 		
 		[DisplayName("Projects")]
 		public IList<ProjectViewModel> Projects { get; set; }
@@ -31,9 +36,12 @@ namespace BeachTime.Models
 
 		[DisplayName("Files")]
 		public List<FileIndexViewModel> FileList { get; set; }
+
+		public ConsultantSkillViewModel SkillViewModel { get; set; }
+
 	}
 
-	public class ConsultantEditViewModel
+	public class ConsultantEditViewModel : NavbarViewModelBase
 	{
 
 		[DisplayName("Projects")]
@@ -52,5 +60,9 @@ namespace BeachTime.Models
 
 	}
 
-
+	public class ConsultantSkillViewModel
+	{
+		[DisplayName("")]
+		public string SkillName { get; set; }
+	}
 }

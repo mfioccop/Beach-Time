@@ -4,55 +4,194 @@
     ViewBag.Title = "Index";
 }
 
-<h2>
-    @Html.ValueForModel(Model.FirstName) @Html.ValueForModel(Model.LastName)
-</h2>
+<div class="row text-center">
+    <div class="col-xs-12">
+        <h2 class="text-primary">
+            <b>Consultant Profile</b>
+        </h2>
+        <h3 class="text-secondary">
+            @Html.ValueForModel(Model.FirstName) @Html.ValueForModel(Model.LastName)
+        </h3>
+        <h4><b>Status:</b> @Html.ValueForModel(Model.Status)</h4>
+        <h5>
+            <a href="mailto:@Model.Email" class="btn button-wide btn-warning">Contact &#9993;</a>
+        </h5>
+    </div>
 
-<h3>Status: @Html.ValueForModel(Model.Status)</h3>
 
-<ul>
+</div>
 
-    <li>
-        Projects:
-        @{
-            foreach (var item in Model.Projects)
-            {
-                @Html.ValueForModel(item.ProjectName);
-            @:,&nbsp;
+
+<div class="row">
+
+
+    <h3 class="text-primary">
+        <b>Projects</b>
+    </h3>
+
+    <div class="col-xs-12 col-md-3">
+        <p class="text-secondary">
+            Past and present projects should be listed here for you to see.  Useful for viewing what past work a consultant has completed or what is currently taking up his/her time.
+        </p>
+    </div>
+
+    <div class="col-xs-12 col-md-9">
+        <div class="centered">
+            @{
+                if (!Model.Projects.Any())
+                {
+                    <h3 class="text-warning">
+                        <b>Nothing here...</b>
+                    </h3>
+
+                    <p>
+                        Either this consultant has never worked on anything...or they just forgot to add them to their profile (probably this).
+                    </p>
+                }
+                else
+                {
+
+                    <table class="table table-stretch">
+                        <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>Completed?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                    foreach (var item in Model.Projects)
+                    {
+                        <tr>
+                            <td>@item.ProjectName</td>
+                            <td>
+                                @{
+                        if (item.IsCompleted)
+                        {
+                            @:<span class="text-success">&#10004;</span>
+                                                }
+                        else
+                        {
+                            @:<span class="text-danger">&#10006;</span>
+                                                }
+
+                                }
+                            </td>
+                        </tr>
+                    }
+                            }
+                        </tbody>
+                    </table>
+                }
             }
-        }
-    </li>
 
+        </div>
+    </div>
+</div>
 
-    <li>
-        account tags (skills):
-        @{
-            foreach (var item in Model.SkillList)
-            {
-                @Html.ValueForModel(item);
-            @:,&nbsp;
+<div class="row">
+    <h3 class="text-primary">
+        <b>Skills</b>
+    </h3>
+
+    <div class="col-xs-12 col-md-3">
+        <p class="text-secondary">
+            Every skill that shows up here should be something that this consultant feels comfortable with using, so use this list to filter out consultants when assigning a project.
+        </p>
+    </div>
+    <div class="col-xs-12 col-md-9">
+        <div class="centered">
+            @{
+                if (!Model.SkillList.Any())
+                {
+                    <h3 class="text-warning">
+                        <b>Something's missing...</b>
+                    </h3>
+
+                    <p>
+                        While we're sure they do possess some useful skills, it seems they need to work on keeping an updated profile.
+                    </p>
+                }
+                else
+                {
+
+                    <table class="table table-stretch">
+                        <thead>
+                            <tr>
+                                <th>Skill</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @{
+                    foreach (var item in Model.SkillList)
+                    {
+                        <tr>
+                            <td>@item</td>
+                        </tr>
+                    }
+                            }
+                        </tbody>
+                    </table>
+                }
             }
-        }
-    </li>
 
-    <li>resume+other files list (with links to view and remove individual files):</li>
 
-    <table>
-        <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Link</th>
-        </tr>
-        @{
-            foreach (var item in Model.FileList)
-            {
-                <tr>
-                    <td>@item.Title</td>
-                    <td>@item.Description</td>
-                    <td>@item.Path</td>
-                </tr>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <h3 class="text-primary">
+        <b>Files</b>
+    </h3>
+
+    <div class="col-xs-12 col-md-3">
+        <p class="text-secondary">
+            All important documents such as résumés will live here.  Download and pass them on to clients if necessary.
+        </p>
+    </div>
+
+    <div class="col-xs-12 col-md-9">
+        <div class="centered">
+            @{
+                if (!Model.FileList.Any())
+                {
+                    <h3 class="text-warning">
+                        <b>No paper trail...</b>
+                    </h3>
+
+                    <p>
+                        This consultant hasn't uploaded anything for you to see yet, you should remind them about sharing.
+                    </p>
+                }
+                else
+                {
+
+                    <table class="table table-stretch">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Download Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                    foreach (var item in Model.FileList)
+                    {
+                        <tr>
+                            <td>@item.Title</td>
+                            <td>@item.Description</td>
+                            <td><a href=@item.Path class="btn btn-sm btn-warning">&#8659;</a></td>
+                        </tr>
+                    }
+                            }
+                        </tbody>
+                    </table>
+                }
             }
-        }
 
-    </table>
-</ul>
+        </div>
+    </div>
+</div>

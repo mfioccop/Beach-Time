@@ -5,52 +5,101 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Admin Dashboard</h2>
+<div class="row text-center">
+    <div class="col-xs-12">
+        <h2 class="text-primary">
+            <b>Admin Dashboard</b>
+        </h2>
+        <h3 class="text-secondary">
+            @Html.ValueForModel(Model.Navbar.FirstName) @Html.ValueForModel(Model.Navbar.LastName)
+        </h3>
 
-<table>
-    <tr>
-        <th>UserId</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Username</th>
-        <th>Email</th>
-        <th>UPDATE</th>
-    </tr>
+    </div>
+</div>
 
-    @{
-        foreach (var item in Model.UserViewModels)
-        {
-            <tr>
-                <td>@item.UserId</td>
-                <td>@item.FirstName</td>
-                <td>@item.LastName</td>
-                <td>@item.UserName</td>
-                <td>@item.Email</td>
-                <td>@Html.ActionLink("UPDATE", "UpdateUser", "Admin", new { id = item.UserId }, null)</td>
-            </tr>
-        }
-    }    
+<div class="row">
 
-</table>
+    <h3 class="text-primary">
+        <b>Users</b>
+    </h3>
 
+    <div class="col-xs-12 col-md-3">
+        <p class="text-secondary">
+            All users of the application are displayed here.  Click one of the links to update a particular user's information.
+        </p>
+    </div>
 
+    <div class="col-xs-12 col-md-9">
+        <div class="centered">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>UserId</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Update User</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        foreach (var item in Model.UserViewModels)
+                        {
+                            <tr>
+                                <td>@item.UserId</td>
+                                <td>@item.FirstName</td>
+                                <td>@item.LastName</td>
+                                <td>@item.UserName</td>
+                                <td>@item.Email</td>
+                                <td>@Html.ActionLink("UPDATE", "UpdateUser", "Admin", new { id = item.UserId }, new { @class = "modal-link btn btn-warning btn-sm" })</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-<table>
-    <tr>
-        <th>UserId</th>
-        <th>Desired Role</th>
-        <th>Accept/Deny</th>
-    </tr>
+<div class="row">
 
-    @{
-        foreach (var item in Model.RequestViewModels)
-        {
-            <tr>
-                <td>@item.UserId</td>
-                <td>@item.RoleName</td>
-                <td>@Html.ActionLink("ACCEPT/DENY", "UpdateRole", "Admin", new { id = item.RequestId }, null)</td>
-            </tr>
-        }
-    }
+    <h3 class="text-primary">
+        <b>Role Requests</b>
+    </h3>
 
-</table>
+    <div class="col-xs-12 col-md-3">
+        <p class="text-secondary">
+            When a user requests permission for a new role it will be displayed here.  Click on a request to view more details and accept or deny it.
+        </p>
+    </div>
+
+    <div class="col-xs-12 col-md-9">
+        <div class="centered">
+            <table class="table">
+                <thead>
+
+                    <tr>
+                        <th>UserId</th>
+                        <th>Desired Role</th>
+                        <th>Accept/Deny</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @{
+                        foreach (var item in Model.RequestViewModels)
+                        {
+                            <tr>
+                                <td>@item.UserId</td>
+                                <td>@item.RoleName</td>
+                                <td>@Html.ActionLink("View Request", "UpdateRole", "Admin", new { id = item.RequestId }, new { @class = "modal-link btn btn-warning btn-sm" })</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>

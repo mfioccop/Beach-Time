@@ -10,7 +10,7 @@ using BeachTime.Data;
 
 namespace BeachTime.Models
 {
-    public class ExecutiveIndexViewModel
+    public class ExecutiveIndexViewModel : NavbarViewModelBase
     {
         [DisplayName("First Name")]
         public string FirstName { get; set; }
@@ -29,7 +29,7 @@ namespace BeachTime.Models
 
     }
 
-    public class ExecutiveUserListViewModel
+    public class ExecutiveUserListViewModel : NavbarViewModelBase
     {
         [DisplayName("List of Consultants")]
         public List<ConsultantIndexViewModel> BeachConsultantViewModels { get; set; }

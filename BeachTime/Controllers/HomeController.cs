@@ -30,7 +30,7 @@ namespace BeachTime.Controllers
 
 		}
 
-		private HomeNavbarViewModel getHomeNavbarViewModel()
+		public HomeNavbarViewModel getHomeNavbarViewModel()
 		{
 			var navbarViewModel = new HomeNavbarViewModel()
 			{
@@ -59,21 +59,26 @@ namespace BeachTime.Controllers
 
 		public ActionResult Index()
 		{
-			return View(getHomeNavbarViewModel());
+			return View(new HomeViewModel{ Navbar = getHomeNavbarViewModel()});
 		}
 
 		public ActionResult About()
 		{
 			ViewBag.Message = "Your application description page.";
 
-			return View(getHomeNavbarViewModel());
+			return View(new HomeViewModel { Navbar = getHomeNavbarViewModel() });
 		}
 
 		public ActionResult Contact()
 		{
 			ViewBag.Message = "Your contact page.";
 
-			return View(getHomeNavbarViewModel());
+			return View(new HomeViewModel { Navbar = getHomeNavbarViewModel() });
+		}
+
+		public ActionResult PageNotFound()
+		{
+			return View();
 		}
 	}
 }

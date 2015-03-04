@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity.Owin;
 
 namespace BeachTime.Controllers
 {
+	[AuthorizeBeachUser(Roles = "Admin")]
 	public class AdminController : Controller
 	{
 
@@ -40,15 +41,23 @@ namespace BeachTime.Controllers
 		// GET: Admin
 		public ActionResult Index()
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Admin"))
-				return RedirectToAction("Login", "Account");
-
 			// Get all users and initialize the view model
 			var users = UserManager.FindAll();
+
+			var store = new UserStore();
+			var user = UserManager.FindById(User.Identity.GetUserId());
 			var indexViewmodel = new AdminIndexViewModel
 			{
 				UserViewModels = new List<AdminUserViewModel>(),
-				RequestViewModels = new List<AdminRoleRequestViewModel>()
+				RequestViewModels = new List<AdminRoleRequestViewModel>(),
+				Navbar = new HomeNavbarViewModel()
+				{
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					Email = user.Email,
+					Id = user.UserId,
+					Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+				}
 			};
 
 			// Populate the list of users
@@ -60,13 +69,13 @@ namespace BeachTime.Controllers
 					LastName = beachUser.LastName,
 					Email = beachUser.Email,
 					UserName = beachUser.UserName,
-					UserId = beachUser.UserId
+					UserId = beachUser.UserId,
+					
 				};
 				indexViewmodel.UserViewModels.Add(userViewModel);
 			}
 
 			// TODO: FindAll requests from database
-			var store = new UserStore();
 			var requests = store.GetAllRoleChangeRequests();
 
 			// Populate requests for new roles
@@ -93,11 +102,14 @@ namespace BeachTime.Controllers
 		// GET: Admin/UpdateUser/5
 		public ActionResult UpdateUser(int id)
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Admin"))
-				return RedirectToAction("Login", "Account");
-
 			// Find the user in the database and retrieve basic account information
 			var user = UserManager.FindById(id.ToString());
+
+			// URL id doesn't match a user in the database, 404
+			if (user == null)
+			{
+				return RedirectToAction("PageNotFound", "Home");
+			}
 
 			var userViewModel = new AdminUserViewModel()
 			{
@@ -116,9 +128,6 @@ namespace BeachTime.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult UpdateUser(AdminUserViewModel model)
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Admin"))
-				return RedirectToAction("Login", "Account");
-
 			try
 			{
 				// Find the user in the database and populate it with updated data
@@ -147,15 +156,24 @@ namespace BeachTime.Controllers
 		// GET: Admin/UpdateRole/5
 		public ActionResult UpdateRole(int id)
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Admin"))
-				return RedirectToAction("Login", "Account");
-
-			// TODO: Find the request in the database
+			
 			var store = new UserStore();
 			var request = store.GetRoleChangeRequestById(id.ToString()).First();
 
+			// URL id doesn't match a user in the database, 404
+			if (request == null)
+			{
+				return RedirectToAction("PageNotFound", "Home");
+			}
+
 			// Find the user in the database and retrieve basic account information
 			var user = UserManager.FindById(request.UserId.ToString());
+
+			// URL id doesn't match a user in the database, 404
+			if (user == null)
+			{
+				return RedirectToAction("PageNotFound", "Home");
+			}
 
 			var updateRoleViewModel = new AdminUpdateRoleViewModel()
 			{
@@ -178,14 +196,8 @@ namespace BeachTime.Controllers
 		[MultipleButton(Name = "action", Argument = "AcceptRole")]
 		public ActionResult AcceptRole(AdminUpdateRoleViewModel accept)
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Admin"))
-				return RedirectToAction("Login", "Account");
-
 			try
 			{
-
-				// TODO: update UserRoles table with new entry
-
 				// Add user to role if they aren't already in it
 				if (!UserManager.IsInRole(accept.UserId.ToString(), accept.RoleName))
 				{
@@ -195,7 +207,6 @@ namespace BeachTime.Controllers
 				// Remove role request from the database
 				var store = new UserStore();
 				store.RemoveRoleRequestAsync(accept.RequestId.ToString());
-
 
 				return RedirectToAction("Index");
 			}
@@ -211,9 +222,6 @@ namespace BeachTime.Controllers
 		[MultipleButton(Name = "action", Argument = "DenyRole")]
 		public ActionResult DenyRole(AdminUpdateRoleViewModel reject)
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Admin"))
-				return RedirectToAction("Login", "Account");
-
 			try
 			{
 				// Remove role request from the database

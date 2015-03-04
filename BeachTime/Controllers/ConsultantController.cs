@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using BeachTime.Data;
 using BeachTime.Models;
 using Microsoft.AspNet.Identity;
@@ -13,6 +14,7 @@ using FileInfo = BeachTime.Data.FileInfo;
 
 namespace BeachTime.Controllers
 {
+	[AuthorizeBeachUser(Roles = "Consultant")]
 	public class ConsultantController : Controller
 	{
 		#region UserManager
@@ -40,9 +42,6 @@ namespace BeachTime.Controllers
 		// GET: Consultant
 		public ActionResult Index()
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			// Find the user in the database and retrieve basic account information
 			var user = UserManager.FindById(User.Identity.GetUserId());
 
@@ -57,7 +56,8 @@ namespace BeachTime.Controllers
 				var pvm = new ProjectViewModel()
 				{
 					ProjectName = project.Name,
-					IsCompleted = project.Completed
+					IsCompleted = project.Completed,
+					ProjectId = project.ProjectId
 				};
 				projectViewModels.Add(pvm);
 			}
@@ -87,7 +87,17 @@ namespace BeachTime.Controllers
 				Projects = projectViewModels,
 				SkillList = UserManager.GetUserSkills(user).ToList(),
 				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project",
-				FileList = fileViewModels
+				FileList = fileViewModels,
+				Id = user.UserId,
+				Navbar = new HomeNavbarViewModel()
+				{
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					Email = user.Email,
+					Id = user.UserId,
+					Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+				},
+				SkillViewModel = new ConsultantSkillViewModel()
 			};
 
 			return View(consultant);
@@ -100,11 +110,14 @@ namespace BeachTime.Controllers
 		// GET: Consultant/Edit
 		public ActionResult Edit()
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			// Find the user in the database and retrieve basic account information
 			var user = UserManager.FindById(User.Identity.GetUserId());
+
+			// URL id doesn't match a user in the database, 404
+			if (user == null)
+			{
+				return RedirectToAction("PageNotFound", "Home");
+			}
 
 			// Get projects for this user
 			var projectRepo = new ProjectRepository();
@@ -131,7 +144,15 @@ namespace BeachTime.Controllers
 				SkillList = skills,
 
 				SkillsString = string.Join(",", skills.ToArray()),
-				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project",
+				Navbar = new HomeNavbarViewModel()
+				{
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					Email = user.Email,
+					Id = user.UserId,
+					Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+				}
 			};
 
 			return View(consultant);
@@ -142,9 +163,6 @@ namespace BeachTime.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult Edit(ConsultantEditViewModel model)
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			try
 			{
 				// Find the user in the database and retrieve basic account information
@@ -169,9 +187,6 @@ namespace BeachTime.Controllers
 		// GET: Consultant/CreateProject
 		public ActionResult CreateProject()
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			return PartialView("_CreateProject");
 		}
 
@@ -179,19 +194,16 @@ namespace BeachTime.Controllers
 		// POST: Consultant/CreateProject
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult CreateProject(FormCollection collection)
+		public ActionResult CreateProject(ProjectCreateViewModel model)
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			try
 			{
 				var user = UserManager.FindById(User.Identity.GetUserId());
 
 				var project = new Project()
 				{
-					Name = collection["ProjectName"],
-					Completed = collection["IsCompleted"].Contains("true"),
+					Name = model.ProjectName,
+					Completed = model.IsCompleted,
 					UserId = user.UserId
 				};
 
@@ -210,11 +222,14 @@ namespace BeachTime.Controllers
 		// GET: Consultant/UpdateProject/5
 		public ActionResult UpdateProject(int id)
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			var projectRepo = new ProjectRepository();
 			Project project = projectRepo.FindByProjectId(id);
+
+			// URL id doesn't match a project in the database, 404
+			if (project == null)
+			{
+				return RedirectToAction("PageNotFound", "Home");
+			}
 
 			// Check that the current user owns this project before allowing an update
 			if (int.Parse(User.Identity.GetUserId()) != project.UserId)
@@ -234,27 +249,24 @@ namespace BeachTime.Controllers
 		// POST: Consultant/UpdateProject
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult UpdateProject(FormCollection collection)
+		public ActionResult UpdateProject(ProjectViewModel model)
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			try
 			{
 				var user = UserManager.FindById(User.Identity.GetUserId());
 
 				var project = new Project()
 				{
-					Name = collection["ProjectName"],
-					Completed = collection["IsCompleted"].Contains("true"),
+					Name = model.ProjectName,
+					Completed = model.IsCompleted,
 					UserId = user.UserId,
-					ProjectId = int.Parse(collection["ProjectId"])
+					ProjectId = model.ProjectId
 				};
 
 				var projectRepo = new ProjectRepository();
 				projectRepo.Update(project);
 
-				return RedirectToAction("Edit");
+				return RedirectToAction("Index");
 			}
 			catch
 			{
@@ -269,9 +281,6 @@ namespace BeachTime.Controllers
 		// GET: Consultant/UploadFile
 		public ActionResult UploadFile()
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			return PartialView("_UploadFile", new FileUploadViewModel());
 		}
 
@@ -281,9 +290,6 @@ namespace BeachTime.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult UploadFile(FileUploadViewModel model)
 		{
-			if (User.Identity.GetUserId() == null || !UserManager.IsInRole(User.Identity.GetUserId(), "Consultant"))
-				return RedirectToAction("Login", "Account");
-
 			try
 			{
 				var user = UserManager.FindById(User.Identity.GetUserId());
@@ -362,6 +368,44 @@ namespace BeachTime.Controllers
 		}
 
 		#endregion
+
+		#region Skills
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult AddSkill(ConsultantIndexViewModel model)
+		{
+			if (model.SkillViewModel.SkillName == null)
+				return RedirectToAction("Index");
+
+			// Find the user in the database and retrieve basic account information
+			var user = UserManager.FindById(User.Identity.GetUserId());
+
+			// Get current skills and add the newest addition, then update the database
+			var currentSkills = UserManager.GetUserSkills(user);
+			currentSkills.Add(model.SkillViewModel.SkillName);
+			UserManager.SetUserSkills(user, currentSkills);
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult DeleteSkill(string name)
+		{
+			// Find the user in the database and retrieve basic account information
+			var user = UserManager.FindById(User.Identity.GetUserId());
+
+			// Get current skills and remove specified skill, then update the database
+			var currentSkills = UserManager.GetUserSkills(user);
+			currentSkills.Remove(name);
+			UserManager.SetUserSkills(user, currentSkills);
+
+			return RedirectToAction("Index");
+		}
+
+		#endregion
+
 
 	}
 }

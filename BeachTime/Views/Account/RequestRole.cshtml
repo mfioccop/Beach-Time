@@ -4,39 +4,57 @@
     ViewBag.Title = "RequestRole";
 }
 
-<h2>Request Role Changes</h2>
+<div class="row">
+    <div class="col-xs-12">
+        <h2>
+            <b class="text-primary">
+                Request Role Changes
+            </b>
+        </h2>
+    </div>
+    <div class="col-xs-12">
+        <h5>All roles available in the application are displayed below, along with the current status of your account with respect to each role.</h5>
+    </div>
+</div>
 
 
-<table>
-    @{
 
-        foreach (var item in Model.RoleNameList)
-        {
-            <tr>
-                @using (@Html.BeginForm("RequestRole", "Account"))
+<div class="row">
+    <div class="col-xs-12">
+        <table class="table table-stretch">
+            @{
+
+                foreach (var item in Model.RoleNameList)
                 {
-                    @Html.AntiForgeryToken();
-                    @Html.HiddenFor(m => m.UserId);
-                    {Model.RoleName = item;}
-                    @Html.HiddenFor(m => m.RoleName);
-                
-                <th>@item</th>
-                    <td>
-                        @if (Model.CurrentRolesList.Contains(item))
+                    <tr>
+                        @using (@Html.BeginForm("RequestRole", "Account"))
                         {
-                            @:Permission Granted
+                            @Html.AntiForgeryToken();
+                            @Html.HiddenFor(m => m.UserId);
+                                                  { Model.RoleName = item; }
+                                                @Html.HiddenFor(m => m.RoleName);
+
+                            <th>@item</th>
+                            <td>
+                                @if (Model.CurrentRolesList.Contains(item))
+                                {
+                                    <span class="btn btn-success disabled button-wide">Permission Granted</span>
+                                }
+                                else if (Model.AvailableRolesList.Contains(item))
+                                {
+                                    <input type="submit" value="Request" class="btn btn-warning button-wide" />
+                                }
+                                else
+                                {
+                                    <span class="btn btn-warning disabled button-wide">Pending Approval</span>
+
                         }
-                        else if (Model.AvailableRolesList.Contains(item))
-                        {
-                            <input type="submit" value="Request" />
+                            </td>
                         }
-                        else
-                        {
-                            @:Pending Approval
-                        }
-                    </td>
+                    </tr>
                 }
-            </tr>
-        }
-    }
-</table>
+            }
+        </table>
+    </div>
+
+</div>
