@@ -725,35 +725,43 @@ namespace BeachTime.Controllers
 		// GET: Account/RequestRole
 		public ActionResult RequestRole()
 		{
-			if (User.Identity.GetUserId() == null)
-				return RedirectToAction("Login", "Account");
-
-
-			var store = new UserStore();
-			var user = store.FindByIdAsync(User.Identity.GetUserId()).Result;
-			// Get all current requests 
-			var requests = store.GetRoleChangeRequests(User.Identity.GetUserId());
-			var pending = requests.Select(request => request.RoleName);
-			var roles = store.GetAllRoles().ToList();
-
-			var requestViewModel = new RequestRoleViewModel()
+			try
 			{
-				RoleName = String.Empty,
-				UserId = user.UserId,
-				RoleNameList = roles,
-				AvailableRolesList = roles.Except(pending).ToList(),
-				CurrentRolesList = store.GetRolesAsync(user).Result.ToList(),
-				Navbar = new HomeNavbarViewModel()
-				{
-					FirstName = user.FirstName,
-					LastName = user.LastName,
-					Email = user.Email,
-					Id = user.UserId,
-					Status = String.Empty
-				}
-			};
+				if (User.Identity.GetUserId() == null)
+					HttpContext.AddError(new HttpException(403, "You need to be logged in to view this page."));
 
-			return View(requestViewModel);
+
+				var store = new UserStore();
+				var user = store.FindByIdAsync(User.Identity.GetUserId()).Result;
+				// Get all current requests 
+				var requests = store.GetRoleChangeRequests(User.Identity.GetUserId());
+				var pending = requests.Select(request => request.RoleName);
+				var roles = store.GetAllRoles().ToList();
+
+				var requestViewModel = new RequestRoleViewModel()
+				{
+					RoleName = String.Empty,
+					UserId = user.UserId,
+					RoleNameList = roles,
+					AvailableRolesList = roles.Except(pending).ToList(),
+					CurrentRolesList = store.GetRolesAsync(user).Result.ToList(),
+					Navbar = new HomeNavbarViewModel()
+					{
+						FirstName = user.FirstName,
+						LastName = user.LastName,
+						Email = user.Email,
+						Id = user.UserId,
+						Status = String.Empty
+					}
+				};
+
+				return View(requestViewModel);
+			}
+			catch (Exception e)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
+			}
+			return RedirectToAction("Index", "Home");
 		}
 
 		// POST: Account/RequestRole
@@ -773,7 +781,7 @@ namespace BeachTime.Controllers
 			}
 			catch
 			{
-				return View();
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
 			}
 			return RedirectToAction("RequestRole", "Account");
 		}

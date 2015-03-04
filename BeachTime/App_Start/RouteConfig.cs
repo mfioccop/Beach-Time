@@ -50,11 +50,7 @@ namespace BeachTime
 				defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
 			);
 
-			routes.MapRoute(
-				name: "404-PageNotFound",
-				url: "{*url}",
-				defaults: new { controller = "Error", action = "Error404" }
-			);
+
 
 			routes.MapRoute(
 				name: "Default",
