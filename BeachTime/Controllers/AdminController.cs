@@ -51,58 +51,67 @@ namespace BeachTime.Controllers
 		/// <returns></returns>
 		public ActionResult Index()
 		{
-			// Get all users and initialize the view model
-			var users = UserManager.FindAll();
-
-			var store = new UserStore();
-			var user = UserManager.FindById(User.Identity.GetUserId());
-			var indexViewmodel = new AdminIndexViewModel
+			try
 			{
-				UserViewModels = new List<AdminUserViewModel>(),
-				RequestViewModels = new List<AdminRoleRequestViewModel>(),
-				Navbar = new HomeNavbarViewModel()
+				// Get all users and initialize the view model
+				var users = UserManager.FindAll();
+
+				var store = new UserStore();
+				var user = UserManager.FindById(User.Identity.GetUserId());
+				var indexViewmodel = new AdminIndexViewModel
 				{
-					FirstName = user.FirstName,
-					LastName = user.LastName,
-					Email = user.Email,
-					Id = user.UserId,
-					Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+					UserViewModels = new List<AdminUserViewModel>(),
+					RequestViewModels = new List<AdminRoleRequestViewModel>(),
+					Navbar = new HomeNavbarViewModel()
+					{
+						FirstName = user.FirstName,
+						LastName = user.LastName,
+						Email = user.Email,
+						Id = user.UserId,
+						Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+					}
+				};
+
+				// Populate the list of users
+				foreach (var beachUser in users)
+				{
+					var userViewModel = new AdminUserViewModel()
+					{
+						FirstName = beachUser.FirstName,
+						LastName = beachUser.LastName,
+						Email = beachUser.Email,
+						UserName = beachUser.UserName,
+						UserId = beachUser.UserId,
+
+					};
+					indexViewmodel.UserViewModels.Add(userViewModel);
 				}
-			};
 
-			// Populate the list of users
-			foreach (var beachUser in users)
-			{
-				var userViewModel = new AdminUserViewModel()
+				// TODO: FindAll requests from database
+				var requests = store.GetAllRoleChangeRequests();
+
+				// Populate requests for new roles
+				foreach (var request in requests)
 				{
-					FirstName = beachUser.FirstName,
-					LastName = beachUser.LastName,
-					Email = beachUser.Email,
-					UserName = beachUser.UserName,
-					UserId = beachUser.UserId,
-					
-				};
-				indexViewmodel.UserViewModels.Add(userViewModel);
+					// TODO: fill in info from each request + add to RequestViewModels
+					var requestViewModel = new AdminRoleRequestViewModel()
+					{
+						RequestId = request.RequestId,
+						UserId = request.UserId,
+						RoleName = request.RoleName,
+						RequestDate = request.RequestDate
+					};
+					indexViewmodel.RequestViewModels.Add(requestViewModel);
+				}
+
+				return View(indexViewmodel);
+			}
+			catch (Exception e)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
 			}
 
-			// TODO: FindAll requests from database
-			var requests = store.GetAllRoleChangeRequests();
-
-			// Populate requests for new roles
-			foreach (var request in requests)
-			{
-				// TODO: fill in info from each request + add to RequestViewModels
-				var requestViewModel = new AdminRoleRequestViewModel()
-				{
-					RequestId = request.RequestId,
-					UserId = request.UserId,
-					RoleName = request.RoleName,
-					RequestDate = request.RequestDate
-				};
-				indexViewmodel.RequestViewModels.Add(requestViewModel);
-			}
-
-			return View(indexViewmodel);
+			return RedirectToAction("Index", "Home");
 		}
 
 		#endregion
@@ -117,25 +126,34 @@ namespace BeachTime.Controllers
 		/// <returns></returns>
 		public ActionResult UpdateUser(int id)
 		{
-			// Find the user in the database and retrieve basic account information
-			var user = UserManager.FindById(id.ToString());
-
-			// URL id doesn't match a user in the database, 404
-			if (user == null)
+			try
 			{
-				return RedirectToAction("PageNotFound", "Home");
+				// Find the user in the database and retrieve basic account information
+				var user = UserManager.FindById(id.ToString());
+
+				// URL id doesn't match a user in the database, 404
+				if (user == null)
+				{
+					HttpContext.AddError(new HttpException(404, "Internal server error."));
+				}
+
+				var userViewModel = new AdminUserViewModel()
+				{
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					Email = user.Email,
+					UserName = user.UserName,
+					UserId = user.UserId
+				};
+
+				return PartialView("_UpdateUser", userViewModel);
+			}
+			catch (Exception e)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
 			}
 
-			var userViewModel = new AdminUserViewModel()
-			{
-				FirstName = user.FirstName,
-				LastName = user.LastName,
-				Email = user.Email,
-				UserName = user.UserName,
-				UserId = user.UserId
-			};
-
-			return PartialView("_UpdateUser", userViewModel);
+			return RedirectToAction("Index", "Home");
 		}
 
 		// POST: Admin/UpdateUser/5
@@ -165,8 +183,9 @@ namespace BeachTime.Controllers
 			}
 			catch
 			{
-				return PartialView("_UpdateUser");
+				HttpContext.AddError(new HttpException(404, "Internal server error."));
 			}
+			return RedirectToAction("Index", "Home");
 		}
 
 		#endregion
@@ -181,38 +200,46 @@ namespace BeachTime.Controllers
 		/// <returns></returns>
 		public ActionResult UpdateRole(int id)
 		{
-			
-			var store = new UserStore();
-			var request = store.GetRoleChangeRequestById(id.ToString()).First();
 
-			// URL id doesn't match a user in the database, 404
-			if (request == null)
+			try
 			{
-				return RedirectToAction("PageNotFound", "Home");
+				var store = new UserStore();
+				var request = store.GetRoleChangeRequestById(id.ToString()).First();
+
+				// URL id doesn't match a user in the database, 404
+				if (request == null)
+				{
+					return RedirectToAction("PageNotFound", "Home");
+				}
+
+				// Find the user in the database and retrieve basic account information
+				var user = UserManager.FindById(request.UserId.ToString());
+
+				// URL id doesn't match a user in the database, 404
+				if (user == null)
+				{
+					return RedirectToAction("PageNotFound", "Home");
+				}
+
+				var updateRoleViewModel = new AdminUpdateRoleViewModel()
+				{
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					Email = user.Email,
+					UserName = user.UserName,
+					RequestId = request.RequestId,
+					UserId = user.UserId,
+					RoleName = request.RoleName,
+					RequestDate = request.RequestDate
+				};
+
+				return PartialView("_UpdateRole", updateRoleViewModel);
 			}
-
-			// Find the user in the database and retrieve basic account information
-			var user = UserManager.FindById(request.UserId.ToString());
-
-			// URL id doesn't match a user in the database, 404
-			if (user == null)
+			catch (Exception e)
 			{
-				return RedirectToAction("PageNotFound", "Home");
+				HttpContext.AddError(new HttpException(404, "Internal server error."));
 			}
-
-			var updateRoleViewModel = new AdminUpdateRoleViewModel()
-			{
-				FirstName = user.FirstName,
-				LastName = user.LastName,
-				Email = user.Email,
-				UserName = user.UserName,
-				RequestId = request.RequestId,
-				UserId = user.UserId,
-				RoleName = request.RoleName,
-				RequestDate = request.RequestDate
-			};
-
-			return PartialView("_UpdateRole", updateRoleViewModel);
+			return RedirectToAction("Index", "Home");
 		}
 
 		// POST: Admin/Accept/5
