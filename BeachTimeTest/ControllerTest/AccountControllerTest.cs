@@ -90,6 +90,37 @@ namespace BeachTimeTest.ControllersTest
             Assert.AreEqual(expected, result.ViewName);
         }
 
+        [Test]
+        public async Task ForgotPasswordActionReturnsForgotPassword()
+        {
+            string expected = "";
+            AccountController controller = new AccountController();
+            ForgotPasswordViewModel model = new ForgotPasswordViewModel();
+            model.Email = "blah@blah.com";
+            var result = controller.ForgotPassword(model);
+            Assert.IsNotNull(result);
+        }
         
+        [Test]
+        public void ResetPasswordActionReturnsResetPasswordView()
+        {
+            string expected = "Error";
+            AccountController controller = new AccountController();
+            string code = null;
+            var result = controller.ResetPassword(code) as ViewResult;
+
+            Assert.AreEqual(expected, result.ViewName);
+        }
+
+        [Test]
+        public void ResetPasswordActionReturnsResetPasswordView2()
+        {
+            string expected = "";
+            AccountController controller = new AccountController();
+            string code = "123";
+            var result = controller.ResetPassword(code) as ViewResult;
+
+            Assert.AreEqual(expected, result.ViewName);
+        }
     }
 }
