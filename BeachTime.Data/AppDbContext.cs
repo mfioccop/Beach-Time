@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.Hosting;
 using Dapper;
 
@@ -15,7 +16,8 @@ namespace BeachTime.Data {
 
 		private const string ScriptPath = "Scripts";
 		private const string HostedBinPath = "bin";
-		private const string CreateScript = "CreateDatabase";
+		private const string CreateDatabaseScript = "CreateDatabase";
+		private const string CreateProceduresScript = "CreateProcedures";
 		private const string PopulateScript = "PopulateDatabase";
 
 		private static bool DapperConfigured { get; set; }
@@ -56,7 +58,8 @@ namespace BeachTime.Data {
 		}
 
 		public void ResetDatabase() {
-			ExecuteScript(CreateScript);
+			ExecuteScript(CreateDatabaseScript);
+			ExecuteScript(CreateProceduresScript);
 		}
 
 		public void PopulateWithTestData() {
@@ -68,6 +71,22 @@ namespace BeachTime.Data {
 			PopulateWithTestData();
 		}
 
+		// Split sql batches at 'GO': http://stackoverflow.com/a/18597052/3875516
+		private static IEnumerable<string> SplitSqlStatements(string sqlScript) {
+			// Split by "GO" statements
+			var statements = Regex.Split(
+					sqlScript,
+					@"^\s*GO\s* ($ | \-\- .*$)",
+					RegexOptions.Multiline |
+					RegexOptions.IgnorePatternWhitespace |
+					RegexOptions.IgnoreCase);
+
+			// Remove empties, trim, and return
+			return statements
+				.Where(x => !string.IsNullOrWhiteSpace(x))
+				.Select(x => x.Trim(' ', '\r', '\n'));
+		}
+		
 		private static string ReadSqlScript(string scriptName) {
 			string absolutePath = HostingEnvironment.IsHosted
 				? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, HostedBinPath, ScriptPath, scriptName + ".sql")
@@ -78,9 +97,10 @@ namespace BeachTime.Data {
 
 		private void ExecuteScript(string scriptName) {
 			string scriptSql = ReadSqlScript(scriptName);
-
-			using (var con = new SqlConnection(ConnectionString))
-				con.Execute(scriptSql);
+			var statements = SplitSqlStatements(scriptSql);
+			foreach (var statement in statements)
+				using (var con = new SqlConnection(ConnectionString))
+					con.Execute(statement);
 		}
 
 		public void Dispose() {
