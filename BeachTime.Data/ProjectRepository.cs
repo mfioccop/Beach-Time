@@ -35,18 +35,14 @@ namespace BeachTime.Data {
 			if (project == null)
 				throw new ArgumentNullException("project");
 
-			const string CreateQuery =
-				@"insert into Projects (
-	UserId,
-	Name,
-	Completed
-) output Inserted.ProjectId values (
-	@userId,
-	@name,
-	@completed)";
+			var p = new DynamicParameters();
+			p.Add("@userId", project.UserId);
+			p.Add("@name", project.Name);
+			p.Add("@completed", project.Completed);
 
 			using (var con = GetConnection())
-				project.ProjectId = con.Query<int>(CreateQuery, project).Single();
+				project.ProjectId = con.Query<int>("spProjectCreate", p,
+					commandType: CommandType.StoredProcedure).Single();
 		}
 
 		public void Delete(Project project) {
@@ -54,22 +50,25 @@ namespace BeachTime.Data {
 				throw new ArgumentNullException("project");
 
 				using (var con = GetConnection())
-					con.Execute("delete from Projects where ProjectId = @projectId", new { project.ProjectId });
+					con.Execute("spProjectDelete", new { project.ProjectId },
+						commandType: CommandType.StoredProcedure);
 		}
 
 		public IEnumerable<Project> FindAll() {
 			using (var con = GetConnection())
-				return con.Query<Project>("select * from Projects");
+				return con.Query<Project>("spProjectFindAll", commandType: CommandType.StoredProcedure);
 		}
 
 		public Project FindByProjectId(int projectId) {
 			using (var con = GetConnection())
-				return con.Query<Project>("select * from Projects where ProjectId = @projectId", new { projectId }).SingleOrDefault();
+				return con.Query<Project>("spProjectFindByProjectId", new { projectId },
+					commandType: CommandType.StoredProcedure).SingleOrDefault();
 		}
 
 		public IEnumerable<Project> FindByUserId(int userId) {
 			using (var con = GetConnection())
-				return con.Query<Project>("select * from Projects where UserId = @userId", new { userId });
+				return con.Query<Project>("spProjectFindByUserId", new { userId },
+					commandType: CommandType.StoredProcedure);
 		}
 
 		public Project FindByName(string projectName) {
@@ -77,22 +76,22 @@ namespace BeachTime.Data {
 				throw new ArgumentNullException("projectName");
 
 			using (var con = GetConnection())
-				return con.Query<Project>("select * from Projects where Name = @projectName", new { projectName }).SingleOrDefault();
+				return con.Query<Project>("spProjectFindByName", new { projectName },
+					commandType: CommandType.StoredProcedure).SingleOrDefault();
 		}
 
 		public void Update(Project project) {
 			if (project == null)
 				throw new ArgumentNullException("project");
 
-			const string UpdateQuery =
-				@"update Projects set
-	UserId = @userId,	
-	Name = @name,
-	Completed = @completed
-where ProjectId = @projectId";
+			var p = new DynamicParameters();
+			p.Add(@"projectId", project.ProjectId);
+			p.Add("@userId", project.UserId);
+			p.Add("@name", project.Name);
+			p.Add("@completed", project.Completed);
 
 			using (var con = GetConnection())
-				con.Execute(UpdateQuery, project);
+				con.Execute("spProjectUpdate", p, commandType: CommandType.StoredProcedure);
 		}
 	}
 }

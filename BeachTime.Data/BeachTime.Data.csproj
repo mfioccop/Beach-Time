@@ -71,6 +71,7 @@
     <Content Include="Scripts\CreateDatabase.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Scripts\CreateProcedures.sql" />
     <Content Include="Scripts\PopulateDatabase.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
