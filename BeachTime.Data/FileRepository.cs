@@ -35,20 +35,15 @@ namespace BeachTime.Data {
 			if (fileInfo == null)
 				throw new ArgumentNullException("fileInfo");
 
-			const string CreateQuery =
-				@"insert into FileInfo (
-	UserId,
-	Path,
-	Title,
-	Description
-) output Inserted.FileId values (
-	@userId,
-	@path,
-	@title,
-	@description)";
+			var p = new DynamicParameters();
+			p.Add("@userId", fileInfo.UserId);
+			p.Add("@path", fileInfo.Path);
+			p.Add("@title", fileInfo.Title);
+			p.Add(@"description", fileInfo.Description);
 
 			using (var con = GetConnection())
-				fileInfo.FileId = con.Query<int>(CreateQuery, fileInfo).Single();
+				fileInfo.FileId = con.Query<int>("spFileCreate", p,
+					commandType: CommandType.StoredProcedure).Single();
 		}
 
 		public void Delete(FileInfo fileInfo) {
@@ -56,33 +51,29 @@ namespace BeachTime.Data {
 				throw new ArgumentNullException("fileInfo");
 
 			using (var con = GetConnection())
-				con.Execute("delete from FileInfo where FileId = @fileId", new { fileInfo.FileId });
+				con.Execute("spFileDelete", new { fileInfo.FileId },
+					commandType: CommandType.StoredProcedure);
 		}
 
 		public FileInfo FindByFileId(int fileId) {
 			using (var con = GetConnection())
-				return con.Query<FileInfo>("select * from FileInfo where FileId = @fileId", new { fileId }).SingleOrDefault();
+				return con.Query<FileInfo>("spFileFindByFileId", new { fileId },
+					commandType: CommandType.StoredProcedure).SingleOrDefault();
 		}
 
 		public IEnumerable<FileInfo> FindByUserId(int userId) {
 			using (var con = GetConnection())
-				return con.Query<FileInfo>("select * from FileInfo where UserId = @userId", new { userId });
+				return con.Query<FileInfo>("spFileFindByUserId", new { userId },
+					commandType: CommandType.StoredProcedure);
 		}
 
 		public void Update(FileInfo fileInfo) {
 			if (fileInfo == null)
 				throw new ArgumentNullException("fileInfo");
 
-			const string UpdateQuery =
-				@"update FileInfo set
-	UserId = @userId,	
-	Path = @path,
-	Title = @title,
-	Description = @description
-where FileId = @fileId";
-
 			using (var con = GetConnection())
-				con.Execute(UpdateQuery, fileInfo);
+				con.Execute("spFileUpdate", fileInfo,
+					commandType: CommandType.StoredProcedure);
 		}
 	}
 }

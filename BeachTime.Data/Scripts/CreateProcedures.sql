@@ -81,3 +81,76 @@ BEGIN
 	SELECT ProjectId, UserId, Name, Completed FROM Projects WHERE Name = @name
 END
 GO
+
+-- FileInfo procedures
+IF OBJECT_ID('dbo.spFileCreate', 'P') IS NOT NULL
+	DROP PROC dbo.spFileCreate
+IF OBJECT_ID('dbo.spFileDelete', 'P') IS NOT NULL
+	DROP PROC dbo.spFileDelete
+IF OBJECT_ID('dbo.spFileUpdate', 'P') IS NOT NULL
+	DROP PROC dbo.spFileUpdate
+IF OBJECT_ID('dbo.spFileFindByFileId', 'P') IS NOT NULL
+	DROP PROC dbo.spFileFindByFileId
+IF OBJECT_ID('dbo.spFileFindByUserId', 'P') IS NOT NULL
+	DROP PROC dbo.spFileFindByUserId
+GO
+CREATE PROCEDURE [dbo].[spFileCreate]
+(
+	@userId INT,
+	@path VARCHAR(900),
+	@title VARCHAR(255),
+	@description VARCHAR(8000)
+)
+AS
+BEGIN
+	INSERT INTO FileInfo (UserId, Path, Title, Description)
+	OUTPUT inserted.FileId
+	VALUES (@userId, @path, @title, @description)
+END
+GO
+CREATE PROCEDURE [dbo].[spFileDelete]
+(
+	@fileId INT
+)
+AS
+BEGIN
+	DELETE FROM FileInfo WHERE FileId = @fileId
+END
+GO
+CREATE PROCEDURE [dbo].[spFileUpdate]
+(
+	@fileId INT,
+	@userId INT,
+	@path VARCHAR(900),
+	@title VARCHAR(255),
+	@description VARCHAR(8000)
+)
+AS
+BEGIN
+	UPDATE FileInfo
+	SET UserId = @userId, Path = @path, Title = @title, Description = @description
+	WHERE FileId = @fileId
+END
+GO
+CREATE PROCEDURE [dbo].[spFileFindByFileId]
+(
+	@fileId INT
+)
+AS
+BEGIN
+	SELECT FileId, UserId, Path, Title, Description
+	FROM FileInfo
+	WHERE FileId = @fileId
+END
+GO
+CREATE PROCEDURE [dbo].[spFileFindByUserId]
+(
+	@userId INT
+)
+AS
+BEGIN
+	SELECT FileId, UserId, Path, Title, Description
+	FROM FileInfo
+	WHERE UserId = @userId
+END
+GO
