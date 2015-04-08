@@ -35,63 +35,55 @@ namespace BeachTime.Data {
 		public void Dispose() {
 		}
 
+		// all user parameters except for @userId
+		private static DynamicParameters GetUserParameters(BeachUser beachUser) {
+			var p = new DynamicParameters();
+			p.Add("@userName", beachUser.UserName);
+			p.Add("@firstName", beachUser.FirstName);
+			p.Add("@lastName", beachUser.LastName);
+			p.Add("@email", beachUser.Email);
+			p.Add("@emailConfirmed", beachUser.EmailConfirmed);
+			p.Add("@phoneNumber", beachUser.PhoneNumber);
+			p.Add("@phoneNumberConfirmed", beachUser.PhoneNumberConfirmed);
+			p.Add("@accessFailedCount", beachUser.AccessFailedCount);
+			p.Add("@lockoutEndDateUtc", beachUser.LockoutEndDateUtc);
+			p.Add("@lockoutEnabled", beachUser.LockoutEnabled);
+			p.Add("@emailTwoFactorEnabled", beachUser.EmailTwoFactorEnabled);
+			p.Add("@googleAuthenticatorEnabled", beachUser.GoogleAuthenticatorEnabled);
+			p.Add("@googleAuthenticatorSecretKey", beachUser.GoogleAuthenticatorSecretKey);
+			p.Add("@passwordHash", beachUser.PasswordHash);
+			p.Add("@securityStamp", beachUser.SecurityStamp);
+			return p;
+		}
+
 		#region IUserStore
 
 		public Task CreateAsync(BeachUser beachUser) {
 			if (beachUser == null)
-				throw new ArgumentNullException("BeachUser");
+				throw new ArgumentNullException("beachUser");
 
-			const string createQuery =
-				@"insert into Users (
-	UserName,
-	FirstName,
-	LastName,
-	Email,
-	EmailConfirmed,
-	PhoneNumber,
-	PhoneNumberConfirmed,
-	AccessFailedCount,
-	LockoutEndDateUtc,
-	LockoutEnabled,
-	EmailTwoFactorEnabled,
-	GoogleAuthenticatorEnabled,
-	GoogleAuthenticatorSecretKey,
-	PasswordHash,
-	SecurityStamp
-) output Inserted.UserId values (
-	@userName,
-	@firstName,
-	@lastName,
-	@email,
-	@emailConfirmed,
-	@phoneNumber,
-	@phoneNumberConfirmed,
-	@accessFailedCount,
-	@lockoutEndDateUtc,
-	@lockoutEnabled,
-	@emailTwoFactorEnabled,
-	@googleAuthenticatorEnabled,
-	@googleAuthenticatorSecretKey,
-	@passwordHash,
-	@securityStamp)";
+			var p = GetUserParameters(beachUser);
 
 			using (var con = GetConnection())
-				beachUser.UserId = con.Query<int>(createQuery, beachUser).Single();
+				beachUser.UserId = con.Query<int>("spUserCreate", p,
+					commandType: CommandType.StoredProcedure).Single();
 			return Task.FromResult(0);
 		}
 
 		public Task DeleteAsync(BeachUser beachUser) {
 			if (beachUser == null)
-				throw new ArgumentNullException("BeachUser");
+				throw new ArgumentNullException("beachUser");
 
 			using (var con = GetConnection())
-				con.Execute("delete from Users where UserId = @userId", new { beachUser.UserId });
+				con.Execute("spUserDelete", new { beachUser.UserId },
+					commandType: CommandType.StoredProcedure);
 			return Task.FromResult(0);
 		}
 
 		public Task<IEnumerable<BeachUser>> FindAll() {
 			using (var con = GetConnection())
-				return Task.FromResult(con.Query<BeachUser>("select * from Users"));
+				return Task.FromResult(con.Query<BeachUser>("spUserFindAll",
+					commandType: CommandType.StoredProcedure));
 		}
 
 		public Task<BeachUser> FindByIdAsync(string userId) {
@@ -100,7 +92,8 @@ namespace BeachTime.Data {
 
 			using (var con = GetConnection())
 				return Task.FromResult(
-					con.Query<BeachUser>("select * from Users where UserId = @userId", new { userId }).SingleOrDefault());
+					con.Query<BeachUser>("spUserFindById", new { userId },
+					commandType: CommandType.StoredProcedure).SingleOrDefault());
 		}
 
 		public Task<BeachUser> FindByNameAsync(string userName) {
@@ -110,34 +103,20 @@ namespace BeachTime.Data {
 			using (var con = GetConnection())
 				return
 					Task.FromResult(
-						con.Query<BeachUser>("select * from Users where UserName = @userName", new { userName }).SingleOrDefault());
+						con.Query<BeachUser>("spUserFindByName", new { userName },
+					commandType: CommandType.StoredProcedure).SingleOrDefault());
 		}
 
 		public Task UpdateAsync(BeachUser beachUser) {
 			if (beachUser == null)
-				throw new ArgumentNullException("BeachUser");
+				throw new ArgumentNullException("beachUser");
 
-			const string updateQuery =
-				@"update Users set
-	UserName = @userName,
-	FirstName = @firstName,
-	LastName = @lastName,
-	Email = @email,
-	EmailConfirmed = @emailConfirmed,
-	PhoneNumber = @phoneNumber,
-	PhoneNumberConfirmed = @phoneNumberConfirmed,
-	AccessFailedCount = @accessFailedCount,
-	LockoutEndDateUtc = @lockoutEndDateUtc,
-	LockoutEnabled = @lockoutEnabled,
-	EmailTwoFactorEnabled = @emailTwoFactorEnabled,
-	GoogleAuthenticatorEnabled = @googleAuthenticatorEnabled,
-	GoogleAuthenticatorSecretKey = @googleAuthenticatorSecretKey,
-	PasswordHash = @passwordHash,
-	SecurityStamp = @securityStamp
-where UserId = @userId";
+			var p = GetUserParameters(beachUser);
+			p.Add("@userId", beachUser.UserId);
 
 			using (var con = GetConnection())
-				con.Execute(updateQuery, beachUser);
+				con.Execute("spUserUpdate", p,
+					commandType: CommandType.StoredProcedure);
 			return Task.FromResult(0);
 		}
 

@@ -154,3 +154,200 @@ BEGIN
 	WHERE UserId = @userId
 END
 GO
+
+-- IUserStore procedures
+IF OBJECT_ID('dbo.spUserCreate', 'P') IS NOT NULL
+	DROP PROC dbo.spUserCreate
+IF OBJECT_ID('dbo.spUserDelete', 'P') IS NOT NULL
+	DROP PROC dbo.spUserDelete
+IF OBJECT_ID('dbo.spUserFindAll', 'P') IS NOT NULL
+	DROP PROC dbo.spUserFindAll
+IF OBJECT_ID('dbo.spUserFindById', 'P') IS NOT NULL
+	DROP PROC dbo.spUserFindById
+IF OBJECT_ID('dbo.spUserFindByName', 'P') IS NOT NULL
+	DROP PROC dbo.spUserFindByName
+IF OBJECT_ID('dbo.spUserUpdate', 'P') IS NOT NULL
+	DROP PROC dbo.spUserUpdate
+GO
+CREATE PROCEDURE [dbo].[spUserCreate]
+(
+	@userName VARCHAR(255),
+	@firstName VARCHAR(255),
+	@lastName VARCHAR(255),
+	@email VARCHAR(255),
+	@emailConfirmed BIT,
+	@phoneNumber VARCHAR(16), --throws exception if phone number is truncated
+	@phoneNumberConfirmed BIT,
+	@accessFailedCount INT,
+	@lockoutEndDateUtc DATETIME2,
+	@lockoutEnabled BIT,
+	@emailTwoFactorEnabled BIT,
+	@googleAuthenticatorEnabled BIT,
+	@googleAuthenticatorSecretKey VARCHAR(32),
+	@passwordHash VARCHAR(149),
+	@securityStamp UNIQUEIDENTIFIER
+)
+AS
+BEGIN
+	INSERT INTO Users (
+		UserName,
+		FirstName,
+		LastName,
+		Email,
+		EmailConfirmed,
+		PhoneNumber,
+		PhoneNumberConfirmed,
+		AccessFailedCount,
+		LockoutEndDateUtc,
+		LockoutEnabled,
+		EmailTwoFactorEnabled,
+		GoogleAuthenticatorEnabled,
+		GoogleAuthenticatorSecretKey,
+		PasswordHash,
+		SecurityStamp
+	) OUTPUT inserted.UserId VALUES (
+		@userName,
+		@firstName,
+		@lastName,
+		@email,
+		@emailConfirmed,
+		@phoneNumber,
+		@phoneNumberConfirmed,
+		@accessFailedCount,
+		@lockoutEndDateUtc,
+		@lockoutEnabled,
+		@emailTwoFactorEnabled,
+		@googleAuthenticatorEnabled,
+		@googleAuthenticatorSecretKey,
+		@passwordHash,
+		@securityStamp
+	)
+END
+GO
+CREATE PROCEDURE [dbo].[spUserDelete]
+(
+	@userId INT
+)
+AS
+BEGIN
+	DELETE FROM Users
+	WHERE UserId = @userId
+END
+GO
+CREATE PROCEDURE [dbo].[spUserFindAll]
+AS
+BEGIN
+	SELECT
+		UserId,
+		UserName,
+		FirstName,
+		LastName,
+		Email,
+		EmailConfirmed,
+		PhoneNumber,
+		PhoneNumberConfirmed,
+		AccessFailedCount,
+		LockoutEndDateUtc,
+		LockoutEnabled,
+		EmailTwoFactorEnabled,
+		GoogleAuthenticatorEnabled,
+		GoogleAuthenticatorSecretKey,
+		PasswordHash,
+		SecurityStamp
+	FROM Users
+END
+GO
+CREATE PROCEDURE [dbo].[spUserFindById]
+(
+	@userId INT
+)
+AS
+BEGIN
+	SELECT
+		UserId,
+		UserName,
+		FirstName,
+		LastName,
+		Email,
+		EmailConfirmed,
+		PhoneNumber,
+		PhoneNumberConfirmed,
+		AccessFailedCount,
+		LockoutEndDateUtc,
+		LockoutEnabled,
+		EmailTwoFactorEnabled,
+		GoogleAuthenticatorEnabled,
+		GoogleAuthenticatorSecretKey,
+		PasswordHash,
+		SecurityStamp
+	FROM Users
+	WHERE UserId = @userId
+END
+GO
+CREATE PROCEDURE [dbo].[spUserFindByName]
+(
+	@userName VARCHAR(255)
+)
+AS
+BEGIN
+	SELECT
+		UserId,
+		UserName,
+		FirstName,
+		LastName,
+		Email,
+		EmailConfirmed,
+		PhoneNumber,
+		PhoneNumberConfirmed,
+		AccessFailedCount,
+		LockoutEndDateUtc,
+		LockoutEnabled,
+		EmailTwoFactorEnabled,
+		GoogleAuthenticatorEnabled,
+		GoogleAuthenticatorSecretKey,
+		PasswordHash,
+		SecurityStamp
+	FROM Users
+	WHERE UserName = @userName
+END
+GO
+CREATE PROCEDURE [dbo].[spUserUpdate]
+(
+	@userId INT,
+	@userName VARCHAR(255),
+	@firstName VARCHAR(255),
+	@lastName VARCHAR(255),
+	@email VARCHAR(255),
+	@emailConfirmed BIT,
+	@phoneNumber VARCHAR(16), --throws exception if phone number is truncated on update
+	@phoneNumberConfirmed BIT,
+	@accessFailedCount INT,
+	@lockoutEndDateUtc DATETIME2,
+	@lockoutEnabled BIT,
+	@emailTwoFactorEnabled BIT,
+	@googleAuthenticatorEnabled BIT,
+	@googleAuthenticatorSecretKey VARCHAR(32),
+	@passwordHash VARCHAR(149),
+	@securityStamp UNIQUEIDENTIFIER
+)
+AS
+BEGIN
+	UPDATE Users SET
+		UserName = @userName,
+		FirstName = @firstName,
+		LastName = @lastName,
+		Email = @email,
+		EmailConfirmed = @emailConfirmed,
+		PhoneNumber = @phoneNumber,
+		PhoneNumberConfirmed = @phoneNumberConfirmed,
+		AccessFailedCount = @accessFailedCount,
+		LockoutEndDateUtc = @lockoutEndDateUtc,
+		LockoutEnabled = @lockoutEnabled,
+		EmailTwoFactorEnabled = @emailTwoFactorEnabled,
+		GoogleAuthenticatorEnabled = @googleAuthenticatorEnabled,
+		GoogleAuthenticatorSecretKey = @googleAuthenticatorSecretKey,
+		PasswordHash = @passwordHash,
+		SecurityStamp = @securityStamp
+	WHERE UserId = @userId
+END
+GO
