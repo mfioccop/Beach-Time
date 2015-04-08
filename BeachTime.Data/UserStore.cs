@@ -574,17 +574,14 @@ namespace BeachTime.Data {
 				throw new ArgumentNullException("user");
 
 			using (var con = GetConnection())
-				return con.Query<int>("select count(*) from Projects where UserId = @userId and Completed = 0", new { user.UserId }).Single() == 0;
+				return con.Query<bool>("spUserBeachOn", new { user.UserId },
+					commandType: CommandType.StoredProcedure).Single();
 		}
 
 		public IEnumerable<BeachUser> GetBeachedUsers() {
-			// gotta be a better way
-			var beachedUsers = new List<BeachUser>();
-			using (var con = GetConnection()) {
-				var users = con.Query<BeachUser>("select * from Users");
-				beachedUsers.AddRange(users.Where(OnBeach));
-			}
-			return beachedUsers;
+			using (var con = GetConnection())
+				return con.Query<BeachUser>("spUserBeachGet",
+					commandType: CommandType.StoredProcedure);
 		}
 
 		#endregion IUserBeachStore

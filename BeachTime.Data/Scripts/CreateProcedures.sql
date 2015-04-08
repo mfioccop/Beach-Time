@@ -665,3 +665,63 @@ BEGIN
 	WHERE UserId = @userId
 END
 GO
+
+-- IUserBeachStore procedures
+IF OBJECT_ID('dbo.spUserBeachOn', 'P') IS NOT NULL
+	DROP PROC dbo.spUserBeachOn
+IF OBJECT_ID('dbo.spUserBeachGet', 'P') IS NOT NULL
+	DROP PROC dbo.spUserBeachGet
+GO
+CREATE PROCEDURE [dbo].[spUserBeachOn]
+(
+	@userId INT
+)
+AS
+BEGIN
+	DECLARE @unfinishedProjects INT
+	DECLARE @onBeach BIT
+
+	SELECT @unfinishedProjects = COUNT(*)
+	FROM Projects
+	WHERE UserId = @userId
+		AND Completed = 0
+
+	IF (@unfinishedProjects <> 0)
+		SET @onBeach = 0
+	ELSE
+		SET @onBeach = 1
+
+	SELECT @onBeach AS Beached
+END
+GO
+CREATE PROCEDURE [dbo].[spUserBeachGet]
+AS
+BEGIN
+	SELECT
+		UserId,
+		UserName,
+		FirstName,
+		LastName,
+		Email,
+		EmailConfirmed,
+		PhoneNumber,
+		PhoneNumberConfirmed,
+		AccessFailedCount,
+		LockoutEndDateUtc,
+		LockoutEnabled,
+		EmailTwoFactorEnabled,
+		GoogleAuthenticatorEnabled,
+		GoogleAuthenticatorSecretKey,
+		PasswordHash,
+		SecurityStamp
+	FROM Users ua
+	WHERE 0 = (
+		SELECT COUNT(*)
+		FROM Projects p
+		JOIN Users ub
+			ON ub.UserId = p.UserId
+		WHERE ua.UserId = ub.UserId
+			AND Completed = 0
+	)
+END
+GO

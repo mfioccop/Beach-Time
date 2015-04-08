@@ -171,6 +171,22 @@ namespace BeachTime.Data.Tests {
 			Assert.AreEqual(emailConfirmed, actualUser.EmailConfirmed);
 		}
 
+		[Test]
+		public async Task TestUserOnBeach() {
+			var user5 = await Store.FindByIdAsync("5");
+			var user6 = await Store.FindByIdAsync("6");
+			Assert.IsTrue(Store.OnBeach(user5));
+			Assert.IsFalse(Store.OnBeach(user6));
+		}
+
+		[Test]
+		public void TestGetBeachedUsers() {
+			var beachedUsers = Store.GetBeachedUsers();
+			var beachUsers = beachedUsers as IList<BeachUser> ?? beachedUsers.ToList();
+			Assert.IsNull(beachUsers.SingleOrDefault(u => u.UserId == 6));
+			Assert.IsNotNull(beachUsers.SingleOrDefault(u => u.UserId == 5));
+		}
+
 		private enum SqlExceptionReason {
 			CheckConstraintViolation = 547,
 			StringTooLong = 8152
