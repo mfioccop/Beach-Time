@@ -244,8 +244,8 @@ namespace BeachTime.Data {
 
 			using (var con = GetConnection())
 				return Task.FromResult(
-					con.Query<BeachUser>(
-						"select * from Users where Email = @email", new { email }).SingleOrDefault());
+					con.Query<BeachUser>("spUserEmailFind", new { email },
+						commandType: CommandType.StoredProcedure).SingleOrDefault());
 		}
 
 		public Task<string> GetEmailAsync(BeachUser user) {

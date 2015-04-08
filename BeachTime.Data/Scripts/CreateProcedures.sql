@@ -439,3 +439,35 @@ BEGIN
 		AND ProviderKey = @providerKey
 END
 GO
+
+-- IUserEmailStore procedures
+IF OBJECT_ID('dbo.spUserEmailFind', 'P') IS NOT NULL
+	DROP PROC dbo.spUserEmailFind
+GO
+CREATE PROCEDURE [dbo].[spUserEmailFind]
+(
+	@email VARCHAR(255)
+)
+AS
+BEGIN
+	SELECT
+		UserId,
+		UserName,
+		FirstName,
+		LastName,
+		Email,
+		EmailConfirmed,
+		PhoneNumber,
+		PhoneNumberConfirmed,
+		AccessFailedCount,
+		LockoutEndDateUtc,
+		LockoutEnabled,
+		EmailTwoFactorEnabled,
+		GoogleAuthenticatorEnabled,
+		GoogleAuthenticatorSecretKey,
+		PasswordHash,
+		SecurityStamp
+	FROM Users
+	WHERE Email = @email
+END
+GO
