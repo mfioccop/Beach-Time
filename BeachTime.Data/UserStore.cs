@@ -376,10 +376,13 @@ namespace BeachTime.Data {
 			if (await IsInRoleAsync(user, roleName))
 				throw new InvalidOperationException(user.UserName + " is already in role " + roleName);
 
+			var p = new DynamicParameters();
+			p.Add("@userId", user.UserId);
+			p.Add("@roleName", roleName);
+
 			using (var con = GetConnection()) {
-				con.Execute(
-					"insert into UserRoles (UserId, RoleId) select distinct @userId as UserId, RoleId from Users, Roles where Roles.Name = @roleName",
-					new { user.UserId, roleName });
+				con.Execute("spUserRoleAdd", p,
+					commandType: CommandType.StoredProcedure);
 			}
 		}
 
@@ -387,13 +390,9 @@ namespace BeachTime.Data {
 			if (user == null)
 				throw new ArgumentNullException("user");
 
-			const string getRolesQuery =
-				@"select Roles.Name
-from Roles
-join UserRoles on UserRoles.RoleId = Roles.RoleId
-where UserRoles.UserId = @userId";
 			using (var con = GetConnection())
-				return Task.FromResult((IList<string>)con.Query<string>(getRolesQuery, new { user.UserId }).ToList());
+				return Task.FromResult((IList<string>)con.Query<string>("spUserRoleGet",
+					new { user.UserId }, commandType: CommandType.StoredProcedure).ToList());
 		}
 
 		public Task<bool> IsInRoleAsync(BeachUser user, string roleName) {
@@ -411,15 +410,13 @@ where UserRoles.UserId = @userId";
 			if (string.IsNullOrEmpty(roleName))
 				throw new ArgumentNullException("roleName");
 
-			const string removeFromRolesQuery =
-				@"delete ur
-from UserRoles ur
-join Roles r
-	on r.RoleId = ur.RoleId
-	and ur.UserId = @userId
-	and r.Name = @roleName";
+			var p = new DynamicParameters();
+			p.Add("@userId", user.UserId);
+			p.Add("@roleName", roleName);
+
 			using (var con = GetConnection())
-				con.Execute(removeFromRolesQuery, new { user.UserId, roleName });
+				con.Execute("spUserRoleRemove", p,
+					commandType: CommandType.StoredProcedure);
 			return Task.FromResult(0);
 		}
 
@@ -427,15 +424,13 @@ join Roles r
 			if (request == null)
 				throw new ArgumentNullException("request");
 
-			const string query =
-				@"insert into RoleChangeRequests (UserId, RoleId, RequestDate)
-output Inserted.RequestId, Inserted.RequestDate
-select @userId, Roles.RoleId, SYSDATETIME()
-from Roles
-where Roles.Name = @roleName";
-
+			var p = new DynamicParameters();
+			p.Add("@userId", request.UserId);
+			p.Add("@roleName", request.RoleName);
+			
 			using (var con = GetConnection()) {
-				var output = con.Query<RoleChangeRequest>(query, request).Single();
+				var output = con.Query<RoleChangeRequest>("spUserRoleRequestChange", p,
+					commandType: CommandType.StoredProcedure).Single();
 				request.RequestId = output.RequestId;
 				request.RequestDate = output.RequestDate;
 			}
@@ -445,44 +440,31 @@ where Roles.Name = @roleName";
 			if (string.IsNullOrEmpty(userId))
 				throw new ArgumentNullException("userId");
 
-			const string query = @"select rcr.RequestId, rcr.UserId, r.Name as RoleName, rcr.RequestDate
-from RoleChangeRequests rcr
-inner join Roles r
-on rcr.RoleId = r.RoleId
-where UserId = @userId";
-
 			using (var con = GetConnection())
-				return con.Query<RoleChangeRequest>(query, new { userId });
+				return con.Query<RoleChangeRequest>("spUserRoleRequestGet", new { userId },
+					commandType: CommandType.StoredProcedure);
 		}
 
 		public IEnumerable<RoleChangeRequest> GetAllRoleChangeRequests()
 		{
-			const string query = @"select rcr.RequestId, rcr.UserId, r.Name as RoleName, rcr.RequestDate
-from RoleChangeRequests rcr
-inner join Roles r
-on rcr.RoleId = r.RoleId";
-
 			using (var con = GetConnection())
-				return con.Query<RoleChangeRequest>(query);
+				return con.Query<RoleChangeRequest>("spUserRoleRequestGetAll",
+					commandType: CommandType.StoredProcedure);
 		}
 		public IEnumerable<RoleChangeRequest> GetRoleChangeRequestById(string requestId)
 		{
 			if (string.IsNullOrEmpty(requestId))
 				throw new ArgumentNullException("requestId");
 
-			const string query = @"select rcr.RequestId, rcr.UserId, r.Name as RoleName, rcr.RequestDate
-from RoleChangeRequests rcr
-inner join Roles r
-on rcr.RoleId = r.RoleId
-where RequestId = @requestId";
-
 			using (var con = GetConnection())
-				return con.Query<RoleChangeRequest>(query, new { requestId });
+				return con.Query<RoleChangeRequest>("spUserRoleRequestGetById", new { requestId },
+					commandType: CommandType.StoredProcedure);
 		}
 
 		public IEnumerable<string> GetAllRoles() {
 			using (var con = GetConnection())
-				return con.Query<string>("select Name from Roles");
+				return con.Query<string>("spUserRoleGetAll",
+					commandType: CommandType.StoredProcedure);
 		}
 
 		public Task RemoveRoleRequestAsync(string requestId)
@@ -490,12 +472,9 @@ where RequestId = @requestId";
 			if (string.IsNullOrEmpty(requestId))
 				throw new ArgumentNullException("requestId");
 
-			const string removeRequestQuery =
-				@"delete rcr
-from RoleChangeRequests rcr
-where rcr.requestId = @requestId";
 			using (var con = GetConnection())
-				con.Execute(removeRequestQuery, new { requestId });
+				con.Execute("spUserRoleRequestRemove", new { requestId },
+					commandType: CommandType.StoredProcedure);
 			return Task.FromResult(0);
 		}
 

@@ -471,3 +471,148 @@ BEGIN
 	WHERE Email = @email
 END
 GO
+
+-- IUserRoleStore procedures
+IF OBJECT_ID('dbo.spUserRoleAdd', 'P') IS NOT NULL
+	DROP PROC dbo.spUserRoleAdd
+IF OBJECT_ID('dbo.spUserRoleGet', 'P') IS NOT NULL
+	DROP PROC dbo.spUserRoleGet
+IF OBJECT_ID('dbo.spUserRoleRemove', 'P') IS NOT NULL
+	DROP PROC dbo.spUserRoleRemove
+IF OBJECT_ID('dbo.spUserRoleRequestChange', 'P') IS NOT NULL
+	DROP PROC dbo.spUserRoleRequestChange
+IF OBJECT_ID('dbo.spUserRoleRequestGet', 'P') IS NOT NULL
+	DROP PROC dbo.spUserRoleRequestGet
+IF OBJECT_ID('dbo.spUserRoleRequestGetAll', 'P') IS NOT NULL
+	DROP PROC dbo.spUserRoleRequestGetAll
+IF OBJECT_ID('dbo.spUserRoleRequestGetById', 'P') IS NOT NULL
+	DROP PROC dbo.spUserRoleRequestGetById
+IF OBJECT_ID('dbo.spUserRoleGetAll', 'P') IS NOT NULL
+	DROP PROC dbo.spUserRoleGetAll
+IF OBJECT_ID('dbo.spUserRoleRequestRemove', 'P') IS NOT NULL
+	DROP PROC dbo.spUserRoleRequestRemove
+GO
+CREATE PROCEDURE [dbo].[spUserRoleAdd]
+(
+	@userId INT,
+	@roleName VARCHAR(255)
+)
+AS
+BEGIN
+	INSERT INTO UserRoles (UserId, RoleId)
+		SELECT DISTINCT @userId AS UserId, RoleId
+		FROM Users, Roles
+		WHERE Roles.Name = @roleName
+END
+GO
+CREATE PROCEDURE [dbo].[spUserRoleGet]
+(
+	@userId INT
+)
+AS
+BEGIN
+	SELECT Roles.Name
+	FROM Roles
+	JOIN UserRoles ON UserRoles.RoleId = Roles.RoleId
+	WHERE UserRoles.UserId = @userId
+END
+GO
+CREATE PROCEDURE [dbo].[spUserRoleRemove]
+(
+	@userId INT,
+	@roleName VARCHAR(255)
+)
+AS
+BEGIN
+	DELETE ur
+	FROM UserRoles ur
+	JOIN Roles r
+		ON r.RoleId = ur.RoleId
+		AND ur.UserId = @userId
+		AND r.Name = @roleName
+END
+GO
+CREATE PROCEDURE [dbo].[spUserRoleRequestChange]
+(
+	@userId INT,
+	@roleName VARCHAR(255)
+)
+AS
+BEGIN
+	INSERT INTO RoleChangeRequests (UserId, RoleId, RequestDate)
+	OUTPUT Inserted.RequestId, Inserted.RequestDate
+	SELECT @userId, Roles.RoleId, SYSDATETIME()
+	FROM Roles
+	WHERE Roles.Name = @roleName
+END
+GO
+CREATE PROCEDURE [dbo].[spUserRoleRequestGet]
+(
+	@userId INT
+)
+AS
+BEGIN
+	SELECT
+		rcr.RequestId,
+		rcr.UserId,
+		r.Name
+	AS
+		RoleName,
+		rcr.RequestDate
+	FROM RoleChangeRequests rcr
+	INNER JOIN Roles r
+	ON rcr.RoleId = r.RoleId
+	WHERE UserId = @userId
+END
+GO
+CREATE PROCEDURE [dbo].[spUserRoleRequestGetAll]
+AS
+BEGIN
+	SELECT
+		rcr.RequestId,
+		rcr.UserId,
+		r.Name
+	AS
+		RoleName,
+		rcr.RequestDate
+	FROM RoleChangeRequests rcr
+	INNER JOIN Roles r
+	ON rcr.RoleId = r.RoleId
+END
+GO
+CREATE PROCEDURE [dbo].[spUserRoleRequestGetById]
+(
+	@requestId INT
+)
+AS
+BEGIN
+	SELECT
+		rcr.RequestId,
+		rcr.UserId,
+		r.Name
+	AS
+		RoleName,
+		rcr.RequestDate
+	FROM RoleChangeRequests rcr
+	INNER JOIN Roles r
+	ON rcr.RoleId = r.RoleId
+	WHERE RequestId = @requestId
+END
+GO
+CREATE PROCEDURE [dbo].[spUserRoleGetAll]
+AS
+BEGIN
+	SELECT Name FROM Roles
+END
+GO
+CREATE PROCEDURE [dbo].[spUserRoleRequestRemove]
+(
+	@requestId INT
+)
+AS
+BEGIN
+	DELETE rcr
+	FROM RoleChangeRequests rcr
+	WHERE rcr.requestId = @requestId
+END
+GO
