@@ -351,3 +351,91 @@ BEGIN
 	WHERE UserId = @userId
 END
 GO
+
+-- IUserLoginStore procedures
+IF OBJECT_ID('dbo.spUserLoginAdd', 'P') IS NOT NULL
+	DROP PROC dbo.spUserLoginAdd
+IF OBJECT_ID('dbo.spUserLoginFind', 'P') IS NOT NULL
+	DROP PROC dbo.spUserLoginFind
+IF OBJECT_ID('dbo.spUserLoginGet', 'P') IS NOT NULL
+	DROP PROC dbo.spUserLoginGet
+IF OBJECT_ID('dbo.spUserLoginRemove', 'P') IS NOT NULL
+	DROP PROC dbo.spUserLoginRemove
+GO
+CREATE PROCEDURE [dbo].[spUserLoginAdd]
+(
+	@userId INT,
+	@loginProvider VARCHAR(255),
+	@providerKey VARCHAR(255)
+)
+AS
+BEGIN
+	INSERT INTO ExternalLogins (
+		UserId,
+		LoginProvider,
+		ProviderKey
+	) VALUES (
+		@userId,
+		@loginProvider,
+		@providerKey
+	)
+END
+GO
+CREATE PROCEDURE [dbo].[spUserLoginFind]
+(
+	@loginProvider VARCHAR(255),
+	@providerKey VARCHAR(255)
+)
+AS
+BEGIN
+	SELECT
+		u.UserId,
+		u.UserName,
+		u.FirstName,
+		u.LastName,
+		u.Email,
+		u.EmailConfirmed,
+		u.PhoneNumber,
+		u.PhoneNumberConfirmed,
+		u.AccessFailedCount,
+		u.LockoutEndDateUtc,
+		u.LockoutEnabled,
+		u.EmailTwoFactorEnabled,
+		u.GoogleAuthenticatorEnabled,
+		u.GoogleAuthenticatorSecretKey,
+		u.PasswordHash,
+		u.SecurityStamp
+	FROM Users u
+	INNER JOIN ExternalLogins l
+		ON l.UserId = u.UserId
+	WHERE l.LoginProvider = @loginProvider
+		AND l.ProviderKey = @providerKey
+END
+GO
+CREATE PROCEDURE [dbo].[spUserLoginGet]
+(
+	@userId INT
+)
+AS
+BEGIN
+	SELECT
+		LoginProvider,
+		ProviderKey
+	FROM ExternalLogins
+	WHERE UserId = @userId
+END
+GO
+CREATE PROCEDURE [dbo].[spUserLoginRemove]
+(
+	@userId INT,
+	@loginProvider VARCHAR(255),
+	@providerKey VARCHAR(255)
+)
+AS
+BEGIN
+	DELETE FROM ExternalLogins
+	WHERE UserId = @userId
+		AND LoginProvider = @loginProvider
+		AND ProviderKey = @providerKey
+END
+GO

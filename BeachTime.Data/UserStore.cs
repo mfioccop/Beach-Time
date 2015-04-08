@@ -126,19 +126,19 @@ namespace BeachTime.Data {
 
 		public Task AddLoginAsync(BeachUser beachUser, UserLoginInfo login) {
 			if (beachUser == null)
-				throw new ArgumentNullException("BeachUser");
+				throw new ArgumentNullException("beachUser");
 
 			if (login == null)
 				throw new ArgumentNullException("login");
 
+			var p = new DynamicParameters();
+			p.Add("@userId", beachUser.UserId);
+			p.Add("@loginProvider", login.LoginProvider);
+			p.Add("@providerKey", login.ProviderKey);
+
 			using (var con = GetConnection())
-				con.Execute(
-					"insert into ExternalLogins(UserId, LoginProvider, ProviderKey) values (@userId, @loginProvider, @providerKey)",
-					new {
-						userId = beachUser.UserId,
-						loginProvider = login.LoginProvider,
-						providerKey = login.ProviderKey
-					});
+				con.Execute("spUserLoginAdd", p,
+					commandType: CommandType.StoredProcedure);
 			return Task.FromResult(0);
 		}
 
@@ -148,38 +148,36 @@ namespace BeachTime.Data {
 
 			using (var con = GetConnection())
 				return Task.FromResult(
-					con.Query<BeachUser>(
-						"select u.* from Users u inner join ExternalLogins l on l.UserId = u.UserId where l.LoginProvider = @loginProvider and l.ProviderKey = @providerKey",
-						login).SingleOrDefault());
+					con.Query<BeachUser>("spUserLoginFind", login,
+						commandType: CommandType.StoredProcedure).SingleOrDefault());
 		}
 
 		public Task<IList<UserLoginInfo>> GetLoginsAsync(BeachUser beachUser) {
 			if (beachUser == null)
-				throw new ArgumentNullException("BeachUser");
+				throw new ArgumentNullException("beachUser");
 
 			using (var con = GetConnection())
-				return
-					Task.FromResult(
-						(IList<UserLoginInfo>)
-							con.Query<UserLoginInfo>("select LoginProvider, ProviderKey from ExternalLogins where UserId = @userId",
-								new { beachUser.UserId }).ToList());
+				return Task.FromResult(
+					(IList<UserLoginInfo>) con.Query<UserLoginInfo>("spUserLoginGet",
+						new { beachUser.UserId },
+							commandType: CommandType.StoredProcedure).ToList());
 		}
 
 		public Task RemoveLoginAsync(BeachUser beachUser, UserLoginInfo login) {
 			if (beachUser == null)
-				throw new ArgumentNullException("BeachUser");
+				throw new ArgumentNullException("beachUser");
 
 			if (login == null)
 				throw new ArgumentNullException("login");
 
+			var p = new DynamicParameters();
+			p.Add("@userId", beachUser.UserId);
+			p.Add("@loginProvider", login.LoginProvider);
+			p.Add("@providerKey", login.ProviderKey);
+
 			using (var con = GetConnection())
-				con.Execute(
-					"delete from ExternalLogins where UserId = @userId and LoginProvider = @loginProvider and ProviderKey = @providerKey",
-					new {
-						beachUser.UserId,
-						login.LoginProvider,
-						login.ProviderKey
-					});
+				con.Execute("spUserLoginRemove", p,
+					commandType: CommandType.StoredProcedure);
 			return Task.FromResult(0);
 		}
 
