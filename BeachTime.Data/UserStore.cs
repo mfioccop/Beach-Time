@@ -522,17 +522,9 @@ namespace BeachTime.Data {
 			if (user == null)
 				throw new ArgumentNullException("user");
 
-			const string getSkillsQuery =
-				@"select Skills.Name
-from Skills
-where Skills.UserId = @userId";
 			using (var con = GetConnection())
-				return Task.FromResult((IList<string>)con.Query<string>(getSkillsQuery, new { user.UserId }).ToList());
-		}
-
-		private struct Skill {
-			public string UserId { get; set; }
-			public string Name { get; set; }
+				return Task.FromResult((IList<string>)con.Query<string>("spUserSkillGet",
+					new { user.UserId }, commandType: CommandType.StoredProcedure).ToList());
 		}
 
 		public Task SetSkillsAsync(BeachUser user, IList<string> skills) {
@@ -541,14 +533,22 @@ where Skills.UserId = @userId";
 			if (skills == null)
 				throw new ArgumentNullException("skills");
 
-			var userSkills = new List<Skill>();
-			foreach (var skill in skills)
-				userSkills.Add(new Skill{UserId = user.Id, Name = skill});
-
 			ClearSkillsAsync(user).Wait();
 
+			//var skillsTable = SkillsToDataTable(user.UserId, skills);
+			var skillsList = new List<Skill>();
+			foreach (var skill in skills) {
+				var newSkill = new Skill();
+				newSkill.UserId = user.UserId;
+				newSkill.Name = skill;
+				skillsList.Add(newSkill);
+			}
+
+			var param = new SkillDynamicParam(skillsList);
+
 			using (var con = GetConnection())
-				con.Execute("insert into Skills values (@userId, @name)", userSkills);
+				con.Execute("spUserSkillSet", param,
+					commandType: CommandType.StoredProcedure);
 
 			return Task.FromResult(0);
 		}
@@ -558,7 +558,8 @@ where Skills.UserId = @userId";
 				throw new ArgumentNullException("user");
 
 			using (var con = GetConnection())
-				con.Execute("delete from Skills where UserId = @userId", new {user.UserId});
+				con.Execute("spUserSkillClear", new { user.UserId },
+						commandType: CommandType.StoredProcedure);
 
 			return Task.FromResult(0);
 		}
@@ -587,5 +588,47 @@ where Skills.UserId = @userId";
 		}
 
 		#endregion IUserBeachStore
+
+		#region Helpers
+		struct Skill {
+			public int UserId;
+			public string Name;
+		}
+
+		class SkillDynamicParam : Dapper.SqlMapper.IDynamicParameters {
+			IEnumerable<Skill> skills;
+			public SkillDynamicParam(IEnumerable<Skill> skills) {
+				this.skills = skills;
+			}
+
+			public void AddParameters(IDbCommand command, SqlMapper.Identity identity) {
+				var sqlCommand = (SqlCommand)command;
+				sqlCommand.CommandType = CommandType.StoredProcedure;
+
+				var skillList = new List<Microsoft.SqlServer.Server.SqlDataRecord>();
+
+				// Create an SqlMetaData object that describes our table type.
+				Microsoft.SqlServer.Server.SqlMetaData[] tvpDefinition = {
+					new Microsoft.SqlServer.Server.SqlMetaData("UserId", SqlDbType.Int),
+					new Microsoft.SqlServer.Server.SqlMetaData("Name", SqlDbType.VarChar, 255)
+				};
+
+				foreach (var skill in skills) {
+					// Create a new record, using the metadata array above.
+					var rec = new Microsoft.SqlServer.Server.SqlDataRecord(tvpDefinition);
+					rec.SetInt32(0, skill.UserId);    // Set the value.
+					rec.SetString(1, skill.Name);
+					skillList.Add(rec);      // Add it to the list.
+				}
+
+				// Add the table parameter.
+				var p = sqlCommand.Parameters.Add("@list", SqlDbType.Structured);
+				p.Direction = ParameterDirection.Input;
+				p.TypeName = "SkillList";
+				p.Value = skillList;
+
+			}
+		}
+		#endregion Helpers
 	}
 }

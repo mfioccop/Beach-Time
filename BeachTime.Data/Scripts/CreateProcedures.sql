@@ -616,3 +616,52 @@ BEGIN
 	WHERE rcr.requestId = @requestId
 END
 GO
+
+-- IUserSkillStore procedures
+IF OBJECT_ID('dbo.spUserSkillGet', 'P') IS NOT NULL
+	DROP PROC dbo.spUserSkillGet
+IF OBJECT_ID('dbo.spUserSkillSet', 'P') IS NOT NULL
+	DROP PROC dbo.spUserSkillSet
+IF OBJECT_ID('dbo.spUserSkillClear', 'P') IS NOT NULL
+	DROP PROC dbo.spUserSkillClear
+IF TYPE_ID('dbo.SkillList') IS NOT NULL
+	DROP TYPE dbo.SkillList
+GO
+CREATE PROCEDURE [dbo].[spUserSkillGet]
+(
+	@userId INT
+)
+AS
+BEGIN
+	SELECT Skills.Name
+	FROM Skills
+	WHERE Skills.UserId = @userId
+END
+GO
+CREATE TYPE [dbo].[SkillList]
+AS TABLE
+(
+	UserId INT,
+	Name VARCHAR(255)
+);
+GO
+CREATE PROCEDURE [dbo].[spUserSkillSet]
+(
+	@list AS dbo.SkillList READONLY
+)
+AS
+BEGIN
+	INSERT INTO Skills (UserId, Name)
+	SELECT UserId, Name FROM @list
+END
+GO
+CREATE PROCEDURE [dbo].[spUserSkillClear]
+(
+	@userId INT
+)
+AS
+BEGIN
+	DELETE FROM Skills
+	WHERE UserId = @userId
+END
+GO

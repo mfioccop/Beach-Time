@@ -58,6 +58,7 @@
     <Compile Include="AssertEx.cs" />
     <Compile Include="DbTestFixture.cs" />
     <Compile Include="TestBeachUserRoleStore.cs" />
+    <Compile Include="TestBeachUserSkills.cs" />
     <Compile Include="TestFileRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBeachUser.cs" />
