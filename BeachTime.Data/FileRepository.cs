@@ -71,9 +71,13 @@ namespace BeachTime.Data {
 			if (fileInfo == null)
 				throw new ArgumentNullException("fileInfo");
 
-			using (var con = GetConnection())
-				con.Execute("spFileUpdate", fileInfo,
-					commandType: CommandType.StoredProcedure);
+			using (var con = GetConnection()) {
+				var lastUpdated = con.Query<DateTime?>("spFileUpdate", fileInfo,
+					commandType: CommandType.StoredProcedure).SingleOrDefault();
+				// if update fails lastUpdated is null
+				if (lastUpdated.HasValue)
+					fileInfo.LastUpdated = lastUpdated.Value;
+			}
 		}
 	}
 }

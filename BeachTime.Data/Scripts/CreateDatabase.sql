@@ -94,6 +94,7 @@ CREATE TABLE [dbo].[FileInfo]
 	[Path] VARCHAR(900) NOT NULL,
 	[Title] VARCHAR(255) NOT NULL,
 	[Description] VARCHAR(8000) NOT NULL,
+	[LastUpdated] DATETIME2 NULL,
 	CONSTRAINT [PK_FileInfo] PRIMARY KEY ([FileId]),
 	CONSTRAINT [FK_FileInfo_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users]([UserId]) ON DELETE CASCADE,
 	CONSTRAINT [AK_FileInfo_Path] UNIQUE ([Path])

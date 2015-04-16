@@ -24,27 +24,27 @@ namespace BeachTime.Data.Tests {
 			             };
 		}
 
-		[TestCase]
+		[Test]
 		public void TestCreateId() {
 			fileRepository.Create(fileInfo);
 			Assert.True(fileInfo.FileId > 0);
 		}
 
-		[TestCase]
+		[Test]
 		public void TestCreateFind() {
 			fileRepository.Create(fileInfo);
 			var actual = fileRepository.FindByFileId(fileInfo.FileId);
 			AssertEx.PropertyValuesAreEquals(fileInfo, actual);
 		}
 
-		[TestCase]
+		[Test]
 		public void TestSingleFindUserId() {
 			fileRepository.Create(fileInfo);
 			var actual = fileRepository.FindByUserId(fileInfo.UserId).Single();
 			AssertEx.PropertyValuesAreEquals(fileInfo, actual);
 		}
 
-		[TestCase]
+		[Test]
 		public void TestMultipleFindUserId() {
 			var fileInfo2 = new FileInfo {
 				                             Description = fileInfo.Description,
@@ -63,7 +63,7 @@ namespace BeachTime.Data.Tests {
 			AssertEx.PropertyValuesAreEquals(fileInfo2, actualFile2);
 		}
 
-		[TestCase]
+		[Test]
 		public void TestUpdate() {
 			fileRepository.Create(fileInfo);
 			fileInfo.Title = "changed";
@@ -75,7 +75,20 @@ namespace BeachTime.Data.Tests {
 			AssertEx.PropertyValuesAreEquals(fileInfo, actual);
 		}
 
-		[TestCase]
+		[Test]
+		public void TestUpdateConcurrency() {
+			fileRepository.Create(fileInfo);
+			var info1 = fileRepository.FindByFileId(fileInfo.FileId);
+			var info2 = fileRepository.FindByFileId(fileInfo.FileId);
+			info1.Title = "change1";
+			info2.Title = "change2";
+			fileRepository.Update(info1);
+			fileRepository.Update(info2);
+			var actual = fileRepository.FindByFileId(fileInfo.FileId);
+			Assert.AreEqual("change1", actual.Title);
+		}
+
+		[Test]
 		public void TestDelete() {
 			fileRepository.Create(fileInfo);
 			AssertEx.PropertyValuesAreEquals(fileInfo, fileRepository.FindByFileId(fileInfo.FileId));

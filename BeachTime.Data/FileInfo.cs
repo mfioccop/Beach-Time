@@ -11,5 +11,6 @@ namespace BeachTime.Data {
 		public string Path { get; set; }
 		public string Title { get; set; }
 		public string Description { get; set; }
+		public DateTime LastUpdated { get; set; }
 	}
 }

@@ -123,13 +123,22 @@ CREATE PROCEDURE [dbo].[spFileUpdate]
 	@userId INT,
 	@path VARCHAR(900),
 	@title VARCHAR(255),
-	@description VARCHAR(8000)
+	@description VARCHAR(8000),
+	@lastUpdated DATETIME2
 )
 AS
 BEGIN
+	DECLARE @timestamps TABLE (LastUpdated DATETIME2)
+
 	UPDATE FileInfo
-	SET UserId = @userId, Path = @path, Title = @title, Description = @description
+	SET UserId = @userId, Path = @path, Title = @title, Description = @description, LastUpdated = CURRENT_TIMESTAMP
+	OUTPUT inserted.LastUpdated INTO @timestamps
 	WHERE FileId = @fileId
+		AND (LastUpdated = @lastUpdated
+			OR LastUpdated IS NULL)
+
+	SELECT TOP 1 LastUpdated
+	FROM @timestamps
 END
 GO
 CREATE PROCEDURE [dbo].[spFileFindByFileId]
@@ -138,7 +147,7 @@ CREATE PROCEDURE [dbo].[spFileFindByFileId]
 )
 AS
 BEGIN
-	SELECT FileId, UserId, Path, Title, Description
+	SELECT FileId, UserId, Path, Title, Description, LastUpdated
 	FROM FileInfo
 	WHERE FileId = @fileId
 END
@@ -149,7 +158,7 @@ CREATE PROCEDURE [dbo].[spFileFindByUserId]
 )
 AS
 BEGIN
-	SELECT FileId, UserId, Path, Title, Description
+	SELECT FileId, UserId, Path, Title, Description, LastUpdated
 	FROM FileInfo
 	WHERE UserId = @userId
 END
