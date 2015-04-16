@@ -113,10 +113,15 @@ namespace BeachTime.Data {
 
 			var p = GetUserParameters(beachUser);
 			p.Add("@userId", beachUser.UserId);
+			p.Add("@lastUpdated", beachUser.LastUpdated);
 
-			using (var con = GetConnection())
-				con.Execute("spUserUpdate", p,
-					commandType: CommandType.StoredProcedure);
+			using (var con = GetConnection()) {
+				var lastUpdated = con.Query<DateTime?>("spUserUpdate", p,
+					commandType: CommandType.StoredProcedure).SingleOrDefault();
+				// if update fails lastUpdate is null
+				if (lastUpdated.HasValue)
+					beachUser.LastUpdated = lastUpdated.Value;
+			}
 			return Task.FromResult(0);
 		}
 

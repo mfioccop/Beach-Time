@@ -253,7 +253,8 @@ BEGIN
 		GoogleAuthenticatorEnabled,
 		GoogleAuthenticatorSecretKey,
 		PasswordHash,
-		SecurityStamp
+		SecurityStamp,
+		LastUpdated
 	FROM Users
 END
 GO
@@ -279,7 +280,8 @@ BEGIN
 		GoogleAuthenticatorEnabled,
 		GoogleAuthenticatorSecretKey,
 		PasswordHash,
-		SecurityStamp
+		SecurityStamp,
+		LastUpdated
 	FROM Users
 	WHERE UserId = @userId
 END
@@ -306,7 +308,8 @@ BEGIN
 		GoogleAuthenticatorEnabled,
 		GoogleAuthenticatorSecretKey,
 		PasswordHash,
-		SecurityStamp
+		SecurityStamp,
+		LastUpdated
 	FROM Users
 	WHERE UserName = @userName
 END
@@ -328,10 +331,13 @@ CREATE PROCEDURE [dbo].[spUserUpdate]
 	@googleAuthenticatorEnabled BIT,
 	@googleAuthenticatorSecretKey VARCHAR(32),
 	@passwordHash VARCHAR(149),
-	@securityStamp UNIQUEIDENTIFIER
+	@securityStamp UNIQUEIDENTIFIER,
+	@lastUpdated DATETIME2
 )
 AS
 BEGIN
+	DECLARE @timestamps TABLE (LastUpdated DATETIME2);
+
 	UPDATE Users SET
 		UserName = @userName,
 		FirstName = @firstName,
@@ -347,8 +353,16 @@ BEGIN
 		GoogleAuthenticatorEnabled = @googleAuthenticatorEnabled,
 		GoogleAuthenticatorSecretKey = @googleAuthenticatorSecretKey,
 		PasswordHash = @passwordHash,
-		SecurityStamp = @securityStamp
+		SecurityStamp = @securityStamp,
+		LastUpdated = CURRENT_TIMESTAMP
+	OUTPUT inserted.LastUpdated
+		INTO @timestamps
 	WHERE UserId = @userId
+		AND (LastUpdated = @lastUpdated
+			OR LastUpdated IS NULL)
+
+	SELECT TOP 1 LastUpdated
+	FROM @timestamps
 END
 GO
 
@@ -404,7 +418,8 @@ BEGIN
 		u.GoogleAuthenticatorEnabled,
 		u.GoogleAuthenticatorSecretKey,
 		u.PasswordHash,
-		u.SecurityStamp
+		u.SecurityStamp,
+		u.LastUpdated
 	FROM Users u
 	INNER JOIN ExternalLogins l
 		ON l.UserId = u.UserId
@@ -466,7 +481,8 @@ BEGIN
 		GoogleAuthenticatorEnabled,
 		GoogleAuthenticatorSecretKey,
 		PasswordHash,
-		SecurityStamp
+		SecurityStamp,
+		LastUpdated
 	FROM Users
 	WHERE Email = @email
 END
@@ -713,7 +729,8 @@ BEGIN
 		GoogleAuthenticatorEnabled,
 		GoogleAuthenticatorSecretKey,
 		PasswordHash,
-		SecurityStamp
+		SecurityStamp,
+		LastUpdated
 	FROM Users ua
 	WHERE 0 = (
 		SELECT COUNT(*)

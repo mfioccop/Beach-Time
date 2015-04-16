@@ -86,6 +86,18 @@ namespace BeachTime.Data.Tests {
 			Assert.AreEqual(User1, user);
 		}
 
+		[Test]
+		public async Task TestUpdateConcurrency() {
+			var user1 = await Store.FindByIdAsync("1");
+			var user2 = await Store.FindByIdAsync("1");
+			user1.Email = "change1";
+			await Store.UpdateAsync(user1);
+			user2.Email = "change2";
+			await Store.UpdateAsync(user2);
+			var actual = await Store.FindByIdAsync("1");
+			Assert.AreEqual("change1", actual.Email);
+		}
+
 		[TestCase("asdf")]
 		[TestCase("asdf123")]
 		[TestCase("123asdf")]

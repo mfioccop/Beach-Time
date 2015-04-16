@@ -35,6 +35,7 @@ CREATE TABLE [dbo].[Users]
 	[GoogleAuthenticatorSecretKey] VARCHAR(32) NULL,
 	[PasswordHash] VARCHAR(149) NULL,
 	[SecurityStamp] UNIQUEIDENTIFIER NULL,
+	[LastUpdated] DATETIME2 NULL,
 	CONSTRAINT PK_Users PRIMARY KEY ([UserId]),
 	CONSTRAINT CK_Phone_Number CHECK ([PhoneNumber] IS NULL OR (LEFT([PhoneNumber], 1) LIKE '[0-9]' AND TRY_CAST([PhoneNumber] AS bigint) IS NOT NULL))
 );

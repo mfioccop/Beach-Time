@@ -24,6 +24,7 @@ namespace BeachTime.Data {
 		public string GoogleAuthenticatorSecretKey { get; set; }
 		public string PasswordHash { get; set; }
 		public Guid SecurityStamp { get; set; }
+		public DateTime LastUpdated { get; set; }
 
 		public string Id { get { return UserId.ToString(CultureInfo.InvariantCulture); } }
 		public bool TwoFactorEnabled { get { return EmailTwoFactorEnabled || GoogleAuthenticatorEnabled; } }
@@ -58,7 +59,8 @@ namespace BeachTime.Data {
 			       GoogleAuthenticatorEnabled.Equals(other.GoogleAuthenticatorEnabled) &&
 			       string.Equals(GoogleAuthenticatorSecretKey, other.GoogleAuthenticatorSecretKey) &&
 			       string.Equals(PasswordHash, other.PasswordHash) &&
-			       SecurityStamp.Equals(other.SecurityStamp);
+			       SecurityStamp.Equals(other.SecurityStamp) &&
+				   LastUpdated.Equals(other.LastUpdated);
 		}
 
 		public override int GetHashCode() {
@@ -79,17 +81,18 @@ namespace BeachTime.Data {
 					GoogleAuthenticatorEnabled,
 					GoogleAuthenticatorSecretKey,
 					PasswordHash,
-					SecurityStamp
+					SecurityStamp,
+					LastUpdated
 				}.GetHashCode();
 		}
 
 		public override string ToString() {
 			return
 				string.Format(
-					"UserId: {0}, UserName: {1}, FirstName: {14}, LastName: {15}, Email: {2}, EmailConfirmed: {3}, PhoneNumber: {4}, PhoneNumberConfirmed: {5}, AccessFailedCount: {6}, LockoutEndDateUtc: {7}, LockoutEnabled: {8}, EmailTwoFactorEnabled: {9}, GoogleAuthenticatorEnabled: {10}, GoogleAuthenticatorSecretKey: {11}, PasswordHash: {12}, SecurityStamp: {13}",
+					"UserId: {0}, UserName: {1}, FirstName: {14}, LastName: {15}, Email: {2}, EmailConfirmed: {3}, PhoneNumber: {4}, PhoneNumberConfirmed: {5}, AccessFailedCount: {6}, LockoutEndDateUtc: {7}, LockoutEnabled: {8}, EmailTwoFactorEnabled: {9}, GoogleAuthenticatorEnabled: {10}, GoogleAuthenticatorSecretKey: {11}, PasswordHash: {12}, SecurityStamp: {13}, LastUpdate: {14}",
 					UserId, UserName, Email, EmailConfirmed, PhoneNumber, PhoneNumberConfirmed, AccessFailedCount, LockoutEndDateUtc,
 					LockoutEnabled, EmailTwoFactorEnabled, GoogleAuthenticatorEnabled, GoogleAuthenticatorSecretKey, PasswordHash,
-					SecurityStamp, FirstName, LastName);
+					SecurityStamp, FirstName, LastName, LastUpdated);
 		}
 	}
 
