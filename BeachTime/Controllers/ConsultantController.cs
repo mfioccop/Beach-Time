@@ -46,65 +46,79 @@ namespace BeachTime.Controllers
 		/// <returns></returns>
 		public ActionResult Index()
 		{
-			// Find the user in the database and retrieve basic account information
-			var user = UserManager.FindById(User.Identity.GetUserId());
-
-			// Get all projects
-			var projectRepo = new ProjectRepository();
-			var projects = projectRepo.FindByUserId(user.UserId);
-			var projectViewModels = new List<ProjectViewModel>();
-
-			// Create the ProjectViewModels
-			foreach (var project in projects)
+			try
 			{
-				var pvm = new ProjectViewModel()
+				// Find the user in the database and retrieve basic account information
+				var user = UserManager.FindById(User.Identity.GetUserId());
+
+				if (user == null)
 				{
-					ProjectName = project.Name,
-					IsCompleted = project.Completed,
-					ProjectId = project.ProjectId
-				};
-				projectViewModels.Add(pvm);
-			}
+					HttpContext.AddError(new HttpException(403, "Not authorized."));
+					return RedirectToAction("Index", "Home");					
+				}
 
-			// Get all files
-			var fileRepo = new FileRepository();
-			var files = fileRepo.FindByUserId(user.UserId);
-			var fileViewModels = new List<FileIndexViewModel>();
+				// Get all projects
+				var projectRepo = new ProjectRepository();
+				var projects = projectRepo.FindByUserId(user.UserId);
+				var projectViewModels = new List<ProjectViewModel>();
 
-			// Create the FileIndexViewModels
-			foreach (var file in files)
-			{
-				var fvm = new FileIndexViewModel()
+				// Create the ProjectViewModels
+				foreach (var project in projects)
 				{
-					Title = file.Title,
-					Description = file.Description,
-					Path = Server.MapPath(file.Path)
-				};
-				fileViewModels.Add(fvm);
-			}
+					var pvm = new ProjectViewModel()
+					{
+						ProjectName = project.Name,
+						IsCompleted = project.Completed,
+						ProjectId = project.ProjectId
+					};
+					projectViewModels.Add(pvm);
+				}
 
-			// Construct view model for the consultant
-			var consultant = new ConsultantIndexViewModel()
-			{
-				FirstName = user.FirstName,
-				LastName = user.LastName,
-				Projects = projectViewModels,
-				SkillList = UserManager.GetUserSkills(user).ToList(),
-				Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project",
-				FileList = fileViewModels,
-				Id = user.UserId,
-				Navbar = new HomeNavbarViewModel()
+				// Get all files
+				var fileRepo = new FileRepository();
+				var files = fileRepo.FindByUserId(user.UserId);
+				var fileViewModels = new List<FileIndexViewModel>();
+
+				// Create the FileIndexViewModels
+				foreach (var file in files)
+				{
+					var fvm = new FileIndexViewModel()
+					{
+						Title = file.Title,
+						Description = file.Description,
+						Path = Server.MapPath(file.Path)
+					};
+					fileViewModels.Add(fvm);
+				}
+
+				// Construct view model for the consultant
+				var consultant = new ConsultantIndexViewModel()
 				{
 					FirstName = user.FirstName,
 					LastName = user.LastName,
-					Email = user.Email,
+					Projects = projectViewModels,
+					SkillList = UserManager.GetUserSkills(user).ToList(),
+					Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project",
+					FileList = fileViewModels,
 					Id = user.UserId,
-					Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
-				},
-				SkillViewModel = new ConsultantSkillViewModel()
-			};
+					Navbar = new HomeNavbarViewModel()
+					{
+						FirstName = user.FirstName,
+						LastName = user.LastName,
+						Email = user.Email,
+						Id = user.UserId,
+						Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
+					},
+					SkillViewModel = new ConsultantSkillViewModel()
+				};
 
-			return View(consultant);
+				return View(consultant);
+			}
+			catch (Exception e)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
+			}
+			return RedirectToAction("Index", "Home");
 		}
 
 		#endregion
@@ -150,6 +164,7 @@ namespace BeachTime.Controllers
 			}
 			catch
 			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
 				return View("_CreateProject");
 			}
 		}
@@ -163,27 +178,36 @@ namespace BeachTime.Controllers
 		/// <returns></returns>
 		public ActionResult UpdateProject(int id)
 		{
-			var projectRepo = new ProjectRepository();
-			Project project = projectRepo.FindByProjectId(id);
-
-			// URL id doesn't match a project in the database, 404
-			if (project == null)
+			try
 			{
-				return RedirectToAction("PageNotFound", "Home");
+				var projectRepo = new ProjectRepository();
+				Project project = projectRepo.FindByProjectId(id);
+
+				// URL id doesn't match a project in the database, 404
+				if (project == null)
+				{
+					HttpContext.AddError(new HttpException(404, "Page not found"));
+					return RedirectToAction("PageNotFound", "Home");
+				}
+
+				// Check that the current user owns this project before allowing an update
+				if (int.Parse(User.Identity.GetUserId()) != project.UserId)
+					return RedirectToAction("Index", "Consultant");
+
+				var projectViewModel = new ProjectViewModel()
+				{
+					ProjectName = project.Name,
+					IsCompleted = project.Completed,
+					ProjectId = project.ProjectId
+				};
+
+				return PartialView("_UpdateProject", projectViewModel);
 			}
-
-			// Check that the current user owns this project before allowing an update
-			if (int.Parse(User.Identity.GetUserId()) != project.UserId)
-				return RedirectToAction("Index", "Consultant");
-
-			var projectViewModel = new ProjectViewModel()
+			catch (Exception e)
 			{
-				ProjectName = project.Name,
-				IsCompleted = project.Completed,
-				ProjectId = project.ProjectId
-			};
-
-			return PartialView("_UpdateProject", projectViewModel);
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
+			}
+			return RedirectToAction("Index", "Home");
 		}
 
 
@@ -216,6 +240,7 @@ namespace BeachTime.Controllers
 			}
 			catch
 			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
 				return View("_UpdateProject");
 			}
 		}
@@ -308,7 +333,7 @@ namespace BeachTime.Controllers
 
 						var repository = new FileRepository();
 						repository.Create(file);
-						
+
 						return RedirectToAction("Index");
 					}
 
@@ -319,9 +344,9 @@ namespace BeachTime.Controllers
 			}
 			catch
 			{
-				ModelState.AddModelError("", "There was an error processing your file upload, please try again");
-				return PartialView("_UploadFile");
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
 			}
+			return RedirectToAction("Index", "Home");
 		}
 
 		#endregion
@@ -337,18 +362,28 @@ namespace BeachTime.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult AddSkill(ConsultantIndexViewModel model)
 		{
-			if (model.SkillViewModel.SkillName == null)
+			try
+			{
+				if (model.SkillViewModel.SkillName == null)
+				{
+					HttpContext.AddError(new HttpException(500, "Internal server error."));
+				}
+
+				// Find the user in the database and retrieve basic account information
+				var user = UserManager.FindById(User.Identity.GetUserId());
+
+				// Get current skills and add the newest addition, then update the database
+				var currentSkills = UserManager.GetUserSkills(user);
+				currentSkills.Add(model.SkillViewModel.SkillName);
+				UserManager.SetUserSkills(user, currentSkills);
+
 				return RedirectToAction("Index");
-
-			// Find the user in the database and retrieve basic account information
-			var user = UserManager.FindById(User.Identity.GetUserId());
-
-			// Get current skills and add the newest addition, then update the database
-			var currentSkills = UserManager.GetUserSkills(user);
-			currentSkills.Add(model.SkillViewModel.SkillName);
-			UserManager.SetUserSkills(user, currentSkills);
-
-			return RedirectToAction("Index");
+			}
+			catch (Exception e)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
+			}
+			return RedirectToAction("Index", "Home");
 		}
 
 		/// <summary>
@@ -360,16 +395,24 @@ namespace BeachTime.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult DeleteSkill(string name)
 		{
-			// Find the user in the database and retrieve basic account information
-			var user = UserManager.FindById(User.Identity.GetUserId());
+			try
+			{
+				// Find the user in the database and retrieve basic account information
+				var user = UserManager.FindById(User.Identity.GetUserId());
 
-			// Get current skills and remove specified skill, then update the database
-			var currentSkills = UserManager.GetUserSkills(user);
-			currentSkills.Remove(name);
-			UserManager.SetUserSkills(user, currentSkills);
+				// Get current skills and remove specified skill, then update the database
+				var currentSkills = UserManager.GetUserSkills(user);
+				currentSkills.Remove(name);
+				UserManager.SetUserSkills(user, currentSkills);
 
-			return RedirectToAction("Index");
-		}
+				return RedirectToAction("Index");
+			}
+			catch (Exception e)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
+			}
+			return RedirectToAction("Index", "Home");
+;		}
 
 		#endregion
 

@@ -39,27 +39,35 @@ namespace BeachTime.Controllers
 		/// <returns>HomeNavbarViewModel populated with the information of the current user.</returns>
 		public HomeNavbarViewModel getHomeNavbarViewModel()
 		{
-			var navbarViewModel = new HomeNavbarViewModel()
+			try
 			{
-				FirstName = String.Empty,
-				LastName = String.Empty,
-				Email = String.Empty,
-				Id = -1
-			};
+				var navbarViewModel = new HomeNavbarViewModel()
+				{
+					FirstName = String.Empty,
+					LastName = String.Empty,
+					Email = String.Empty,
+					Id = -1
+				};
 
-			// If no user is logged in, then return with the dummy user
-			if (User.Identity.GetUserId() == null) return navbarViewModel;
+				// If no user is logged in, then return with the dummy user
+				if (User.Identity.GetUserId() == null) return navbarViewModel;
 			
-			// Otherwise find the user in the database and retrieve basic account information
-			var user = UserManager.FindById(User.Identity.GetUserId());
+				// Otherwise find the user in the database and retrieve basic account information
+				var user = UserManager.FindById(User.Identity.GetUserId());
 
-			// Populate the view model with the proper info
-			navbarViewModel.FirstName = user.FirstName;
-			navbarViewModel.LastName = user.LastName;
-			navbarViewModel.Email = user.Email;
-			navbarViewModel.Id = user.UserId;
+				// Populate the view model with the proper info
+				navbarViewModel.FirstName = user.FirstName;
+				navbarViewModel.LastName = user.LastName;
+				navbarViewModel.Email = user.Email;
+				navbarViewModel.Id = user.UserId;
 
-			return navbarViewModel;
+				return navbarViewModel;
+			}
+			catch (Exception e)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
+			}
+			return new HomeNavbarViewModel();
 		}
 
 		#endregion
