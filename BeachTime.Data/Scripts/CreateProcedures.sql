@@ -16,13 +16,27 @@ IF OBJECT_ID('dbo.spProjectFindByName', 'P') IS NOT NULL
 GO
 CREATE PROCEDURE [dbo].[spProjectCreate]
 (
-	@userId INT,
 	@name VARCHAR(255),
-	@completed BIT
+	@description VARCHAR(255),
+	@code VARCHAR(255),
+	@startDate DATETIME2,
+	@endDate DATETIME2
 )
 AS
 BEGIN
-	INSERT INTO dbo.Projects (UserId, Name, Completed) OUTPUT inserted.ProjectId VALUES (@userId, @name, @completed)
+	INSERT INTO dbo.Projects (
+		Name,
+		Description,
+		Code,
+		StartDate,
+		EndDate
+	) OUTPUT inserted.ProjectId VALUES (
+		@name,
+		@description,
+		@code,
+		@startDate,
+		@endDate
+	)
 END
 GO
 CREATE PROCEDURE [dbo].[spProjectDelete]
@@ -37,21 +51,39 @@ GO
 CREATE PROCEDURE [dbo].[spProjectUpdate]
 (
 	@projectId INT,
-	@userId INT,
 	@name VARCHAR(255),
-	@completed BIT
+	@description VARCHAR(255),
+	@code VARCHAR(255),
+	@startDate DATETIME2,
+	@endDate DATETIME2,
+	@lastUpdated DATETIME2
 )
 AS
 BEGIN
+	DECLARE @timestamps TABLE (LastUpdated DATETIME2);
+
 	UPDATE Projects
-	SET UserId = @userId, Name = @name, Completed = @completed
+	SET
+		Name = @name,
+		Description = @description,
+		Code = @code,
+		StartDate = @startDate,
+		EndDate = @endDate,
+		LastUpdated = CURRENT_TIMESTAMP
+	OUTPUT inserted.LastUpdated INTO @timestamps
 	WHERE ProjectId = @projectId
+		AND (LastUpdated = @lastUpdated
+			OR LastUpdated IS NULL)
+
+	SELECT TOP 1 LastUpdated
+	FROM  @timestamps
 END
 GO
 CREATE PROCEDURE [dbo].[spProjectFindAll]
 AS
 BEGIN
-	SELECT ProjectId, UserId, Name, Completed FROM Projects
+	SELECT ProjectId, Name, Description, Code, StartDate, EndDate, LastUpdated
+	FROM Projects
 END
 GO
 CREATE PROCEDURE [dbo].[spProjectFindByProjectId]
@@ -60,7 +92,9 @@ CREATE PROCEDURE [dbo].[spProjectFindByProjectId]
 )
 AS
 BEGIN
-	SELECT ProjectId, UserId, Name, Completed FROM Projects WHERE ProjectId = @projectId
+	SELECT ProjectId, Name, Description, Code, StartDate, EndDate, LastUpdated
+	FROM Projects
+	WHERE ProjectId = @projectId
 END
 GO
 CREATE PROCEDURE [dbo].[spProjectFindByUserId]
@@ -69,7 +103,11 @@ CREATE PROCEDURE [dbo].[spProjectFindByUserId]
 )
 AS
 BEGIN
-	SELECT ProjectId, UserId, Name, Completed FROM Projects WHERE UserId = @userId
+	SELECT p.ProjectId, p.Name, p.Description, p.Code, p.StartDate, p.EndDate, p.LastUpdated
+	FROM Projects p
+	INNER JOIN Users u
+		ON u.ProjectId = p.ProjectId
+			AND u.UserId = @userId
 END
 GO
 CREATE PROCEDURE [dbo].[spProjectFindByName]
@@ -78,7 +116,9 @@ CREATE PROCEDURE [dbo].[spProjectFindByName]
 )
 AS
 BEGIN
-	SELECT ProjectId, UserId, Name, Completed FROM Projects WHERE Name = @name
+	SELECT ProjectId, Name, Description, Code, StartDate, EndDate, LastUpdated
+	FROM Projects
+	WHERE Name = @name
 END
 GO
 
@@ -194,6 +234,7 @@ CREATE PROCEDURE [dbo].[spUserCreate]
 	@googleAuthenticatorEnabled BIT,
 	@googleAuthenticatorSecretKey VARCHAR(32),
 	@passwordHash VARCHAR(149),
+	@projectId INT,
 	@securityStamp UNIQUEIDENTIFIER
 )
 AS
@@ -213,6 +254,7 @@ BEGIN
 		GoogleAuthenticatorEnabled,
 		GoogleAuthenticatorSecretKey,
 		PasswordHash,
+		ProjectId,
 		SecurityStamp
 	) OUTPUT inserted.UserId VALUES (
 		@userName,
@@ -229,6 +271,7 @@ BEGIN
 		@googleAuthenticatorEnabled,
 		@googleAuthenticatorSecretKey,
 		@passwordHash,
+		@projectId,
 		@securityStamp
 	)
 END
@@ -263,6 +306,7 @@ BEGIN
 		GoogleAuthenticatorSecretKey,
 		PasswordHash,
 		SecurityStamp,
+		ProjectId,
 		LastUpdated
 	FROM Users
 END
@@ -290,6 +334,7 @@ BEGIN
 		GoogleAuthenticatorSecretKey,
 		PasswordHash,
 		SecurityStamp,
+		ProjectId,
 		LastUpdated
 	FROM Users
 	WHERE UserId = @userId
@@ -318,6 +363,7 @@ BEGIN
 		GoogleAuthenticatorSecretKey,
 		PasswordHash,
 		SecurityStamp,
+		ProjectId,
 		LastUpdated
 	FROM Users
 	WHERE UserName = @userName
@@ -341,6 +387,7 @@ CREATE PROCEDURE [dbo].[spUserUpdate]
 	@googleAuthenticatorSecretKey VARCHAR(32),
 	@passwordHash VARCHAR(149),
 	@securityStamp UNIQUEIDENTIFIER,
+	@projectId INT,
 	@lastUpdated DATETIME2
 )
 AS
@@ -363,6 +410,7 @@ BEGIN
 		GoogleAuthenticatorSecretKey = @googleAuthenticatorSecretKey,
 		PasswordHash = @passwordHash,
 		SecurityStamp = @securityStamp,
+		ProjectId = @projectId,
 		LastUpdated = CURRENT_TIMESTAMP
 	OUTPUT inserted.LastUpdated
 		INTO @timestamps
@@ -428,6 +476,7 @@ BEGIN
 		u.GoogleAuthenticatorSecretKey,
 		u.PasswordHash,
 		u.SecurityStamp,
+		u.ProjectId,
 		u.LastUpdated
 	FROM Users u
 	INNER JOIN ExternalLogins l
@@ -491,6 +540,7 @@ BEGIN
 		GoogleAuthenticatorSecretKey,
 		PasswordHash,
 		SecurityStamp,
+		ProjectId,
 		LastUpdated
 	FROM Users
 	WHERE Email = @email
@@ -692,32 +742,8 @@ END
 GO
 
 -- IUserBeachStore procedures
-IF OBJECT_ID('dbo.spUserBeachOn', 'P') IS NOT NULL
-	DROP PROC dbo.spUserBeachOn
 IF OBJECT_ID('dbo.spUserBeachGet', 'P') IS NOT NULL
 	DROP PROC dbo.spUserBeachGet
-GO
-CREATE PROCEDURE [dbo].[spUserBeachOn]
-(
-	@userId INT
-)
-AS
-BEGIN
-	DECLARE @unfinishedProjects INT
-	DECLARE @onBeach BIT
-
-	SELECT @unfinishedProjects = COUNT(*)
-	FROM Projects
-	WHERE UserId = @userId
-		AND Completed = 0
-
-	IF (@unfinishedProjects <> 0)
-		SET @onBeach = 0
-	ELSE
-		SET @onBeach = 1
-
-	SELECT @onBeach AS Beached
-END
 GO
 CREATE PROCEDURE [dbo].[spUserBeachGet]
 AS
@@ -739,15 +765,9 @@ BEGIN
 		GoogleAuthenticatorSecretKey,
 		PasswordHash,
 		SecurityStamp,
+		ProjectId,
 		LastUpdated
-	FROM Users ua
-	WHERE 0 = (
-		SELECT COUNT(*)
-		FROM Projects p
-		JOIN Users ub
-			ON ub.UserId = p.UserId
-		WHERE ua.UserId = ub.UserId
-			AND Completed = 0
-	)
+	FROM Users
+	WHERE ProjectId IS NULL
 END
 GO

@@ -19,9 +19,11 @@ namespace BeachTime.Data.Tests {
 		[Test]
 		public void TestCreateProject() {
 			var expected = new Project {
-				Completed = true,
 				Name = "a project",
-				UserId = 1
+				Description = "a description",
+				Code = "a code",
+				StartDate = DateTime.Now,
+				EndDate = DateTime.Now.AddMonths(2)
 			};
 			projectRepository.Create(expected);
 			var actual = projectRepository.FindByProjectId(expected.ProjectId);
@@ -47,7 +49,10 @@ namespace BeachTime.Data.Tests {
 		public void TestUpdate() {
 			var expected = projectRepository.FindByProjectId(1);
 			expected.Name = "name1";
-			expected.Completed = !expected.Completed;
+			expected.Description = "desc1";
+			expected.Code = "code1";
+			expected.StartDate = DateTime.Now.AddDays(1);
+			expected.EndDate = DateTime.Now.AddDays(2);
 			projectRepository.Update(expected);
 			var actual = projectRepository.FindByProjectId(1);
 			AssertEx.PropertyValuesAreEquals(expected, actual);

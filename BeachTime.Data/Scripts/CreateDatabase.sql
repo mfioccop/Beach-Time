@@ -7,16 +7,29 @@ IF OBJECT_ID('dbo.Skills', 'U') IS NOT NULL
 	DROP TABLE dbo.Skills;
 IF OBJECT_ID('dbo.FileInfo', 'U') IS NOT NULL
 	DROP TABLE dbo.FileInfo;
-IF OBJECT_ID('dbo.Projects', 'U') IS NOT NULL
-	DROP TABLE dbo.Projects;
 IF OBJECT_ID('dbo.RoleChangeRequests', 'U') IS NOT NULL
 	DROP TABLE dbo.RoleChangeRequests;
 IF OBJECT_ID('dbo.Users', 'U') IS NOT NULL
 	DROP TABLE dbo.Users;
+IF OBJECT_ID('dbo.Projects', 'U') IS NOT NULL
+	DROP TABLE dbo.Projects;
 IF OBJECT_ID('dbo.Roles', 'U') IS NOT NULL
 	DROP TABLE dbo.Roles;
 
 -- create tables
+CREATE TABLE [dbo].[Projects]
+(
+	[ProjectId] INT IDENTITY NOT NULL,
+	[Name] VARCHAR(255) NOT NULL,
+	[Description] VARCHAR(255) NOT NULL,
+	[Code] VARCHAR(255) NOT NULL,
+	[StartDate] DATETIME2 NULL,
+	[EndDate] DATETIME2 NULL,
+	[LastUpdated] DATETIME2 NULL,
+	CONSTRAINT [PK_Projects] PRIMARY KEY ([ProjectId])
+);
+CREATE UNIQUE INDEX IX_Projects_Name ON Projects(Name);
+
 CREATE TABLE [dbo].[Users]
 (
 	[UserId] INT IDENTITY NOT NULL,
@@ -35,8 +48,10 @@ CREATE TABLE [dbo].[Users]
 	[GoogleAuthenticatorSecretKey] VARCHAR(32) NULL,
 	[PasswordHash] VARCHAR(149) NULL,
 	[SecurityStamp] UNIQUEIDENTIFIER NULL,
+	[ProjectId] INT NULL,
 	[LastUpdated] DATETIME2 NULL,
 	CONSTRAINT PK_Users PRIMARY KEY ([UserId]),
+	CONSTRAINT FK_Users_Projects_ProjectId FOREIGN KEY ([ProjectId]) REFERENCES [Projects]([ProjectId]) ON DELETE CASCADE,
 	CONSTRAINT CK_Phone_Number CHECK ([PhoneNumber] IS NULL OR (LEFT([PhoneNumber], 1) LIKE '[0-9]' AND TRY_CAST([PhoneNumber] AS bigint) IS NOT NULL))
 );
 
@@ -75,17 +90,6 @@ CREATE TABLE [dbo].[Skills]
 	CONSTRAINT [FK_Skills_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users]([UserId]) ON DELETE CASCADE
 );
 CREATE INDEX IX_Skills_Name ON Skills(Name);
-
-CREATE TABLE [dbo].[Projects]
-(
-	[ProjectId] INT IDENTITY NOT NULL,
-	[UserId] INT NOT NULL,
-	[Name] VARCHAR(255) NOT NULL,
-	[Completed] BIT NOT NULL,
-	CONSTRAINT [PK_Projects] PRIMARY KEY ([ProjectId]),
-	CONSTRAINT [FK_Projects_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users]([UserId]) ON DELETE CASCADE
-);
-CREATE UNIQUE INDEX IX_Projects_Name ON Projects(Name);
 
 CREATE TABLE [dbo].[FileInfo]
 (

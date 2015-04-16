@@ -53,6 +53,7 @@ namespace BeachTime.Data {
 			p.Add("@googleAuthenticatorSecretKey", beachUser.GoogleAuthenticatorSecretKey);
 			p.Add("@passwordHash", beachUser.PasswordHash);
 			p.Add("@securityStamp", beachUser.SecurityStamp);
+			p.Add("@projectId", beachUser.ProjectId);
 			return p;
 		}
 
@@ -578,9 +579,7 @@ namespace BeachTime.Data {
 			if (user == null)
 				throw new ArgumentNullException("user");
 
-			using (var con = GetConnection())
-				return con.Query<bool>("spUserBeachOn", new { user.UserId },
-					commandType: CommandType.StoredProcedure).Single();
+			return !user.ProjectId.HasValue;
 		}
 
 		public IEnumerable<BeachUser> GetBeachedUsers() {

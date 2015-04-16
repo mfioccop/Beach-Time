@@ -36,9 +36,11 @@ namespace BeachTime.Data {
 				throw new ArgumentNullException("project");
 
 			var p = new DynamicParameters();
-			p.Add("@userId", project.UserId);
 			p.Add("@name", project.Name);
-			p.Add("@completed", project.Completed);
+			p.Add("@description", project.Description);
+			p.Add("@code", project.Code);
+			p.Add("@startDate", project.StartDate);
+			p.Add("@endDate", project.EndDate);
 
 			using (var con = GetConnection())
 				project.ProjectId = con.Query<int>("spProjectCreate", p,
@@ -84,14 +86,14 @@ namespace BeachTime.Data {
 			if (project == null)
 				throw new ArgumentNullException("project");
 
-			var p = new DynamicParameters();
-			p.Add(@"projectId", project.ProjectId);
-			p.Add("@userId", project.UserId);
-			p.Add("@name", project.Name);
-			p.Add("@completed", project.Completed);
+			using (var con = GetConnection()) {
+				var lastUpdated = con.Query<DateTime?>("spProjectUpdate", project,
+					commandType: CommandType.StoredProcedure).SingleOrDefault();
+				// if update fails lastUpdate is null
+				if (lastUpdated.HasValue)
+					project.LastUpdated = lastUpdated.Value;
 
-			using (var con = GetConnection())
-				con.Execute("spProjectUpdate", p, commandType: CommandType.StoredProcedure);
+			}
 		}
 	}
 }
