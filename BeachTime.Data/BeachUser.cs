@@ -24,7 +24,7 @@ namespace BeachTime.Data {
 		public string GoogleAuthenticatorSecretKey { get; set; }
 		public string PasswordHash { get; set; }
 		public Guid SecurityStamp { get; set; }
-		public DateTime LastUpdated { get; set; }
+		public DateTime? LastUpdated { get; set; }
 
 		public string Id { get { return UserId.ToString(CultureInfo.InvariantCulture); } }
 		public bool TwoFactorEnabled { get { return EmailTwoFactorEnabled || GoogleAuthenticatorEnabled; } }
