@@ -58,6 +58,13 @@ namespace BeachTime.Controllers
 
 				var store = new UserStore();
 				var user = UserManager.FindById(User.Identity.GetUserId());
+
+				if (user == null)
+				{
+					HttpContext.AddError(new HttpException(403, "Not authorized."));
+					return RedirectToAction("Index", "Home");
+				}
+
 				var indexViewmodel = new AdminIndexViewModel
 				{
 					UserViewModels = new List<AdminUserViewModel>(),
@@ -134,7 +141,8 @@ namespace BeachTime.Controllers
 				// URL id doesn't match a user in the database, 404
 				if (user == null)
 				{
-					HttpContext.AddError(new HttpException(404, "Internal server error."));
+					HttpContext.AddError(new HttpException(404, "Page not found."));
+					return RedirectToAction("Index");
 				}
 
 				var userViewModel = new AdminUserViewModel()
@@ -148,12 +156,16 @@ namespace BeachTime.Controllers
 
 				return PartialView("_UpdateUser", userViewModel);
 			}
+			catch (InvalidOperationException ioe)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));				
+			}
 			catch (Exception e)
 			{
 				HttpContext.AddError(new HttpException(500, "Internal server error."));
 			}
 
-			return RedirectToAction("Index", "Home");
+			return RedirectToAction("Index");
 		}
 
 		// POST: Admin/UpdateUser/5
@@ -183,9 +195,9 @@ namespace BeachTime.Controllers
 			}
 			catch
 			{
-				HttpContext.AddError(new HttpException(404, "Internal server error."));
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
 			}
-			return RedirectToAction("Index", "Home");
+			return RedirectToAction("Index");
 		}
 
 		#endregion
@@ -204,11 +216,12 @@ namespace BeachTime.Controllers
 			try
 			{
 				var store = new UserStore();
-				var request = store.GetRoleChangeRequestById(id.ToString()).First();
+				var request = store.GetRoleChangeRequestById(id.ToString()).First();	// Throws InvalidOperationException if no results for that id
 
 				// URL id doesn't match a user in the database, 404
 				if (request == null)
 				{
+					HttpContext.AddError(new HttpException(404, "Page not found."));
 					return RedirectToAction("PageNotFound", "Home");
 				}
 
@@ -218,6 +231,7 @@ namespace BeachTime.Controllers
 				// URL id doesn't match a user in the database, 404
 				if (user == null)
 				{
+					HttpContext.AddError(new HttpException(404, "Page not found."));
 					return RedirectToAction("PageNotFound", "Home");
 				}
 
@@ -235,11 +249,16 @@ namespace BeachTime.Controllers
 
 				return PartialView("_UpdateRole", updateRoleViewModel);
 			}
+			catch (InvalidOperationException ioe)
+			{
+				HttpContext.AddError(new HttpException(404, "Page not found."));
+			}
 			catch (Exception e)
 			{
-				HttpContext.AddError(new HttpException(404, "Internal server error."));
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
 			}
-			return RedirectToAction("Index", "Home");
+
+			return RedirectToAction("Index");
 		}
 
 		// POST: Admin/Accept/5
@@ -261,19 +280,29 @@ namespace BeachTime.Controllers
 					UserManager.AddToRole(accept.UserId.ToString(), accept.RoleName);
 				}
 
-				// Remove role request from the database
-				var store = new UserStore();
-				store.RemoveRoleRequestAsync(accept.RequestId.ToString());
+				try
+				{
+					// Remove role request from the database
+					var store = new UserStore();
+					store.RemoveRoleRequestAsync(accept.RequestId.ToString());
+				}
+				catch (ArgumentNullException e)
+				{
+					Console.WriteLine(e);
+					HttpContext.AddError(new HttpException(500, "Internal server error."));
+					return RedirectToAction("Error500", "Error");
+				}
 
 				return RedirectToAction("Index");
 			}
-			catch
+			catch (Exception e)
 			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
 				return PartialView("_UpdateRole");
 			}
 		}
 
-		// POST: Admin/Accept/5
+		// POST: Admin/Deny/5
 		/// <summary>
 		/// POST: Denies a role request.
 		/// </summary>
@@ -292,8 +321,20 @@ namespace BeachTime.Controllers
 
 				return RedirectToAction("Index");
 			}
-			catch
+			catch (ArgumentNullException ane)
 			{
+				HttpContext.AddError(new HttpException(404, "Page not found."));
+				return RedirectToAction("Index");
+
+			}
+			catch (InvalidOperationException ioe)
+			{
+				HttpContext.AddError(new HttpException(404, "Page not found."));
+				return RedirectToAction("Index");
+			}
+			catch (Exception e)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
 				return PartialView("_UpdateRole");
 			}
 		}

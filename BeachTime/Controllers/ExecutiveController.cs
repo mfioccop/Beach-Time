@@ -15,10 +15,10 @@ using WebGrease.Css.Extensions;
 namespace BeachTime.Controllers
 {
 	[AuthorizeBeachUser(Roles = "Executive")]
-    public class ExecutiveController : Controller
-    {
-        #region UserManager
-        /// <summary>
+	public class ExecutiveController : Controller
+	{
+		#region UserManager
+		/// <summary>
 		/// Manages user account registration and authentication
 		/// </summary>
 		private BeachUserManager _userManager;
@@ -34,20 +34,26 @@ namespace BeachTime.Controllers
 			private set { _userManager = value; }
 
 		}
-        #endregion
+		#endregion
 
-        #region Index
-        // GET: Executive
+		#region Index
+		// GET: Executive
 		/// <summary>
 		/// GET: Account Executive index page (dashboard)
 		/// </summary>
 		/// <returns></returns>
-        public ActionResult Index()
-        {
+		public ActionResult Index()
+		{
 			try
 			{
 				// Find the user in the database and retrieve basic account information
 				var user = UserManager.FindById(User.Identity.GetUserId());
+
+				if (user == null)
+				{
+					HttpContext.AddError(new HttpException(403, "Not authorized."));
+					return RedirectToAction("Index", "Home");
+				}
 
 				// Get all consultants on the beach
 				UserStore beachedUserStore = new UserStore();
@@ -57,7 +63,7 @@ namespace BeachTime.Controllers
 				// Get all consultants on projects
 				var occupiedUsers = beachedUserStore.FindAll().Result;
 				int numOccupied = occupiedUsers.Count() - numBeach;
-            
+
 				// Get all skills on the beach
 				List<string> beachSkillsList = new List<string>();
 				foreach (var consultant in beachUsers)
@@ -83,7 +89,7 @@ namespace BeachTime.Controllers
 						Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project"
 					}
 				};
-            
+
 				return View(executive);
 			}
 			catch (Exception e)
@@ -91,20 +97,20 @@ namespace BeachTime.Controllers
 				HttpContext.AddError(new HttpException(500, "Internal server error."));
 			}
 			return RedirectToAction("Index", "Home");
-        }
-        #endregion
+		}
+		#endregion
 
-        #region Beach
-        // GET: Executive/Beach
+		#region Beach
+		// GET: Executive/Beach
 		/// <summary>
 		/// GET: Page for viewing all consultants not currently working on any projects.
 		/// </summary>
 		/// <returns></returns>
-        public ActionResult Beach()
-        {
+		public ActionResult Beach()
+		{
 			try
 			{
-// Get all consultants on the beach as ViewModels
+				// Get all consultants on the beach as ViewModels
 				UserStore beachedUserStore = new UserStore();
 				var beachUsers = beachedUserStore.GetBeachedUsers().ToList();
 				var beachViewModelList = new List<ConsultantIndexViewModel>();
@@ -129,7 +135,7 @@ namespace BeachTime.Controllers
 					}
 
 					// Get all files
-                
+
 					var files = fileRepo.FindByUserId(user.UserId);
 					var fileViewModels = new List<FileIndexViewModel>();
 
@@ -183,21 +189,21 @@ namespace BeachTime.Controllers
 				HttpContext.AddError(new HttpException(500, "Internal server error."));
 			}
 			return RedirectToAction("Index", "Home");
-        }
-        #endregion
+		}
+		#endregion
 
-        #region Occupied
+		#region Occupied
 
 		// GET: Executive/Occupied
 		/// <summary>
 		/// GET: Page for viewing all consultants working on a project.
 		/// </summary>
 		/// <returns></returns>
-        public ActionResult Occupied()
-        {
+		public ActionResult Occupied()
+		{
 			try
 			{
-// Get all consultants on working on projects as ViewModels
+				// Get all consultants on working on projects as ViewModels
 				UserStore beachedUserStore = new UserStore();
 				var allUsers = beachedUserStore.FindAll().Result;
 				var beachUsers = beachedUserStore.GetBeachedUsers();
@@ -254,6 +260,12 @@ namespace BeachTime.Controllers
 				}
 
 				var exec = UserManager.FindById(User.Identity.GetUserId());
+				
+				if (exec == null)
+				{
+					HttpContext.AddError(new HttpException(403, "Not authorized."));
+					return RedirectToAction("Index", "Home");
+				}
 
 				// Construct view model for occupied users
 				var executive = new ExecutiveUserListViewModel()
@@ -276,18 +288,18 @@ namespace BeachTime.Controllers
 				HttpContext.AddError(new HttpException(500, "Internal server error."));
 			}
 			return RedirectToAction("Index", "Home");
-        }
-        #endregion
+		}
+		#endregion
 
-        #region Details
-        // GET: Executive/Details/5
+		#region Details
+		// GET: Executive/Details/5
 		/// <summary>
 		/// GET: Page for viewing details of a consultant
 		/// </summary>
 		/// <param name="id">The userId of the consultant.</param>
 		/// <returns></returns>
-        public ActionResult Details(int id)
-        {
+		public ActionResult Details(int id)
+		{
 			try
 			{
 				var user = UserManager.FindById(id.ToString());
@@ -353,15 +365,19 @@ namespace BeachTime.Controllers
 						Status = UserManager.UserOnBeach(exec) ? "On the beach" : "On a project"
 					}
 				};
-	      
+
 				return View(consultant);
+			}
+			catch (InvalidOperationException ioe)
+			{
+				HttpContext.AddError(new HttpException(404, "No consultant with that ID exists."));				
 			}
 			catch (Exception e)
 			{
 				HttpContext.AddError(new HttpException(500, "Internal server error."));
 			}
 			return RedirectToAction("Index", "Home");
-        }
-    }
-        #endregion
+		}
+	}
+		#endregion
 }

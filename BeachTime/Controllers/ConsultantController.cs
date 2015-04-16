@@ -51,6 +51,12 @@ namespace BeachTime.Controllers
 				// Find the user in the database and retrieve basic account information
 				var user = UserManager.FindById(User.Identity.GetUserId());
 
+				if (user == null)
+				{
+					HttpContext.AddError(new HttpException(403, "Not authorized."));
+					return RedirectToAction("Index", "Home");					
+				}
+
 				// Get all projects
 				var projectRepo = new ProjectRepository();
 				var projects = projectRepo.FindByUserId(user.UserId);
@@ -158,6 +164,7 @@ namespace BeachTime.Controllers
 			}
 			catch
 			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
 				return View("_CreateProject");
 			}
 		}
@@ -179,6 +186,7 @@ namespace BeachTime.Controllers
 				// URL id doesn't match a project in the database, 404
 				if (project == null)
 				{
+					HttpContext.AddError(new HttpException(404, "Page not found"));
 					return RedirectToAction("PageNotFound", "Home");
 				}
 
@@ -232,6 +240,7 @@ namespace BeachTime.Controllers
 			}
 			catch
 			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
 				return View("_UpdateProject");
 			}
 		}
