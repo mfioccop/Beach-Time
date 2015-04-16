@@ -199,6 +199,27 @@ namespace BeachTime.Data.Tests {
 			Assert.IsNotNull(beachUsers.SingleOrDefault(u => u.UserId == 5));
 		}
 
+		[Test]
+		public async Task TestAddToProject() {
+			var projectStore = new ProjectRepository(dbContext.ConnectionStringName);
+			var project = projectStore.FindByProjectId(1);
+			var user = await Store.FindByIdAsync("1");
+			Assert.IsFalse(user.ProjectId.HasValue);
+			Store.AddProject(user, project);
+			var actual = await Store.FindByIdAsync("1");
+			Assert.AreEqual(project.ProjectId, user.ProjectId.Value);
+		}
+
+		[Test]
+		public async Task TestRemoveFromProject() {
+			var projectStore = new ProjectRepository(dbContext.ConnectionStringName);
+			var user = await Store.FindByIdAsync("6");
+			Assert.IsTrue(user.ProjectId.HasValue);
+			Store.RemoveProject(user);
+			var actual = await Store.FindByIdAsync("6");
+			Assert.IsFalse(actual.ProjectId.HasValue);
+		}
+
 		private enum SqlExceptionReason {
 			CheckConstraintViolation = 547,
 			StringTooLong = 8152

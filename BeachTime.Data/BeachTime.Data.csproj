@@ -51,6 +51,7 @@
     <Compile Include="BeachUser.cs" />
     <Compile Include="FileInfo.cs" />
     <Compile Include="FileRepository.cs" />
+    <Compile Include="IBeachUserProjectStore.cs" />
     <Compile Include="IBeachUserRoleStore.cs" />
     <Compile Include="IBeachUserStore.cs" />
     <Compile Include="IFileRepository.cs" />

@@ -67,10 +67,10 @@ namespace BeachTime.Data {
 					commandType: CommandType.StoredProcedure).SingleOrDefault();
 		}
 
-		public IEnumerable<Project> FindByUserId(int userId) {
+		public Project FindByUserId(int userId) {
 			using (var con = GetConnection())
 				return con.Query<Project>("spProjectFindByUserId", new { userId },
-					commandType: CommandType.StoredProcedure);
+					commandType: CommandType.StoredProcedure).SingleOrDefault();
 		}
 
 		public Project FindByName(string projectName) {
