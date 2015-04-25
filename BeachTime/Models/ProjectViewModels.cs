@@ -39,26 +39,6 @@ namespace BeachTime.Models
 	public class ProjectViewModel
 	{
 		/// <summary>
-		/// Gets or sets the name of the project.
-		/// </summary>
-		/// <value>
-		/// The name of the project.
-		/// </value>
-		[Required]
-		[Display(Name = "Project Name")]
-		public string ProjectName { get; set; }
-
-		/// <summary>
-		/// Gets or sets a value indicating whether this instance is completed.
-		/// </summary>
-		/// <value>
-		/// <c>true</c> if this instance is completed; otherwise, <c>false</c>.
-		/// </value>
-		[Required]
-		[Display(Name = "Completed?")]
-		public bool IsCompleted { get; set; }
-
-		/// <summary>
 		/// Gets or sets the project identifier.
 		/// </summary>
 		/// <value>
@@ -67,5 +47,66 @@ namespace BeachTime.Models
 		[Required]
 		[Display(Name = "Project ID")]		
 		public int ProjectId { get; set; }
+
+		/// <summary>
+		/// Gets or sets the name of the project.
+		/// </summary>
+		/// <value>
+		/// The name of the project.
+		/// </value>
+		[Required]
+		[Display(Name = "Project Name")]
+		public string Name { get; set; }
+
+		/// <summary>
+		/// Gets or sets the description.
+		/// </summary>
+		/// <value>
+		/// The description of the project.
+		/// </value>
+		[Required]
+		[Display(Name = "Description")]
+		public string Description { get; set; }
+
+		/// <summary>
+		/// Gets or sets the code.
+		/// </summary>
+		/// <value>
+		/// The project code.
+		/// </value>
+		[Required]
+		[Display(Name = "Project Code")]
+		public string Code { get; set; }
+
+		/// <summary>
+		/// Gets or sets the start date.
+		/// </summary>
+		/// <value>
+		/// The start date.
+		/// </value>
+		[Required]
+		[Display(Name = "Start Date")]
+		public DateTime StartDate { get; set; }
+
+		/// <summary>
+		/// Gets or sets the end date.
+		/// </summary>
+		/// <value>
+		/// The expected end date of the project.
+		/// </value>
+		[Required]
+		[Display(Name = "End Date")]
+		public DateTime EndDate { get; set; }
+
+		/// <summary>
+		/// Gets or sets the last updated.
+		/// </summary>
+		/// <value>
+		/// The time when the project was last updated in the database.
+		/// </value>
+		[Required]
+		[Display(Name = "Last Updated")]
+		public DateTime LastUpdated { get; set; }
+
 	}
 }

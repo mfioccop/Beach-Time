@@ -51,20 +51,23 @@ namespace BeachTime.Controllers
 
 			// Get all projects
 			var projectRepo = new ProjectRepository();
-			var projects = projectRepo.FindByUserId(user.UserId);
+			var project = projectRepo.FindByUserId(user.UserId);
 			var projectViewModels = new List<ProjectViewModel>();
 
 			// Create the ProjectViewModels
-			foreach (var project in projects)
+
+			var pvm = new ProjectViewModel()
 			{
-				var pvm = new ProjectViewModel()
-				{
-					ProjectName = project.Name,
-					IsCompleted = project.Completed,
-					ProjectId = project.ProjectId
-				};
-				projectViewModels.Add(pvm);
-			}
+				ProjectId = project.ProjectId,
+				Name = project.Name,
+				Code = project.Code,
+				Description = project.Description,
+				StartDate = project.StartDate.GetValueOrDefault(),
+				EndDate = project.EndDate.GetValueOrDefault(),
+				LastUpdated = project.LastUpdated.GetValueOrDefault()
+
+			};
+
 
 			// Get all files
 			var fileRepo = new FileRepository();
@@ -308,7 +311,7 @@ namespace BeachTime.Controllers
 
 						var repository = new FileRepository();
 						repository.Create(file);
-						
+
 						return RedirectToAction("Index");
 					}
 
