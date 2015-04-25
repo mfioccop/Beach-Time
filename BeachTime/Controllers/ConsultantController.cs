@@ -46,8 +46,16 @@ namespace BeachTime.Controllers
 		/// <returns></returns>
 		public ActionResult Index()
 		{
+			try
+			{
 			// Find the user in the database and retrieve basic account information
 			var user = UserManager.FindById(User.Identity.GetUserId());
+
+				if (user == null)
+				{
+					HttpContext.AddError(new HttpException(403, "Not authorized."));
+					return RedirectToAction("Index", "Home");					
+				}
 
 			// Get all projects
 			var projectRepo = new ProjectRepository();
@@ -56,8 +64,8 @@ namespace BeachTime.Controllers
 
 			// Create the ProjectViewModels
 
-			var pvm = new ProjectViewModel()
-			{
+				var pvm = new ProjectViewModel()
+				{
 				ProjectId = project.ProjectId,
 				Name = project.Name,
 				Code = project.Code,
@@ -66,7 +74,7 @@ namespace BeachTime.Controllers
 				EndDate = project.EndDate.GetValueOrDefault(),
 				LastUpdated = project.LastUpdated.GetValueOrDefault()
 
-			};
+				};
 
 
 			// Get all files
@@ -108,6 +116,12 @@ namespace BeachTime.Controllers
 			};
 
 			return View(consultant);
+		}
+			catch (Exception e)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
+			}
+			return RedirectToAction("Index", "Home");
 		}
 
 		#endregion
@@ -153,6 +167,7 @@ namespace BeachTime.Controllers
 			}
 			catch
 			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
 				return View("_CreateProject");
 			}
 		}
@@ -166,12 +181,15 @@ namespace BeachTime.Controllers
 		/// <returns></returns>
 		public ActionResult UpdateProject(int id)
 		{
+			try
+			{
 			var projectRepo = new ProjectRepository();
 			Project project = projectRepo.FindByProjectId(id);
 
 			// URL id doesn't match a project in the database, 404
 			if (project == null)
 			{
+					HttpContext.AddError(new HttpException(404, "Page not found"));
 				return RedirectToAction("PageNotFound", "Home");
 			}
 
@@ -187,6 +205,12 @@ namespace BeachTime.Controllers
 			};
 
 			return PartialView("_UpdateProject", projectViewModel);
+		}
+			catch (Exception e)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
+			}
+			return RedirectToAction("Index", "Home");
 		}
 
 
@@ -219,6 +243,7 @@ namespace BeachTime.Controllers
 			}
 			catch
 			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
 				return View("_UpdateProject");
 			}
 		}
@@ -311,7 +336,7 @@ namespace BeachTime.Controllers
 
 						var repository = new FileRepository();
 						repository.Create(file);
-
+						
 						return RedirectToAction("Index");
 					}
 
@@ -322,9 +347,9 @@ namespace BeachTime.Controllers
 			}
 			catch
 			{
-				ModelState.AddModelError("", "There was an error processing your file upload, please try again");
-				return PartialView("_UploadFile");
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
 			}
+			return RedirectToAction("Index", "Home");
 		}
 
 		#endregion
@@ -340,8 +365,12 @@ namespace BeachTime.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult AddSkill(ConsultantIndexViewModel model)
 		{
+			try
+			{
 			if (model.SkillViewModel.SkillName == null)
-				return RedirectToAction("Index");
+				{
+					HttpContext.AddError(new HttpException(500, "Internal server error."));
+				}
 
 			// Find the user in the database and retrieve basic account information
 			var user = UserManager.FindById(User.Identity.GetUserId());
@@ -353,6 +382,12 @@ namespace BeachTime.Controllers
 
 			return RedirectToAction("Index");
 		}
+			catch (Exception e)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
+			}
+			return RedirectToAction("Index", "Home");
+		}
 
 		/// <summary>
 		/// POST: Deletes a skill.
@@ -363,6 +398,8 @@ namespace BeachTime.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult DeleteSkill(string name)
 		{
+			try
+			{
 			// Find the user in the database and retrieve basic account information
 			var user = UserManager.FindById(User.Identity.GetUserId());
 
@@ -373,6 +410,12 @@ namespace BeachTime.Controllers
 
 			return RedirectToAction("Index");
 		}
+			catch (Exception e)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
+			}
+			return RedirectToAction("Index", "Home");
+;		}
 
 		#endregion
 

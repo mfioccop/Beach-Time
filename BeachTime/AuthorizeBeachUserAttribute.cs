@@ -87,5 +87,9 @@ namespace BeachTime
 			return true;
 		}
 
+		protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
+		{
+			filterContext.Result = new RedirectResult("Error/Error403");
+		}
 	}
 }
