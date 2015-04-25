@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -69,6 +70,15 @@ namespace BeachTime.Controllers
 				{
 					UserViewModels = new List<AdminUserViewModel>(),
 					RequestViewModels = new List<AdminRoleRequestViewModel>(),
+					NewUserViewModel = new RegisterViewModel()
+					{
+						FirstName = "",
+						LastName = "",
+						UserName = "",
+						Email = "",
+						Password = "",
+						ConfirmPassword = ""
+					},
 					Navbar = new HomeNavbarViewModel()
 					{
 						FirstName = user.FirstName,
@@ -342,5 +352,40 @@ namespace BeachTime.Controllers
 		#endregion
 
 
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> AddNewUser(RegisterViewModel model)
+		{
+			if (model == null)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error"));
+				return RedirectToAction("Index");
+			}
+
+			try
+			{
+				if (ModelState.IsValid)
+				{
+					var user = new BeachUser()
+					{
+						UserName = model.UserName,
+						Email = model.Email,
+						FirstName = model.FirstName,
+						LastName = model.LastName
+					};
+					IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+
+				}
+			}
+			catch (Exception e)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error"));
+				return RedirectToAction("Index");				
+			}
+
+			// If we got this far, something failed, redisplay form
+			return View("Index");
+		}
 	}
 }

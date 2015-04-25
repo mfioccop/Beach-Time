@@ -28,6 +28,16 @@ namespace BeachTime.Models
 		/// </value>
 		[Required]
 		public List<AdminRoleRequestViewModel> RequestViewModels { get; set; }
+
+
+		/// <summary>
+		/// Gets or sets the register new user view model.
+		/// </summary>
+		/// <value>
+		/// The register new user view model.
+		/// </value>
+		[Required]
+		public RegisterViewModel NewUserViewModel { get; set; }
 	}
 
 
