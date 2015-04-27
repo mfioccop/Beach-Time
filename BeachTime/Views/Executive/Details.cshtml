@@ -24,144 +24,146 @@
 
 
 <div class="row">
+    <div class="col-xs-12 col-lg-4">
 
 
-    <h3 class="text-primary">
-        <b>Projects</b>
-    </h3>
+        <h3 class="text-primary">
+            <b>Current Project</b>
+        </h3>
 
-    <div class="col-xs-12 col-md-3">
-        <p class="text-secondary">
-            Past and present projects should be listed here for you to see.  Useful for viewing what past work a consultant has completed or what is currently taking up his/her time.
-        </p>
-    </div>
+        <div class="row">
+            <p class="text-secondary">
+                Past and present projects should be listed here for you to see.  Useful for viewing what past work a consultant has completed or what is currently taking up his/her time.
+            </p>
+        </div>
 
-    <div class="col-xs-12 col-md-9">
-        <div class="centered">
-            @{
-                if (Model.Project == null || Model.Project.ProjectId == -1)
-                {
-                    <h3 class="text-warning">
-                        <b>Nothing here...</b>
-                    </h3>
+        <div class="row">
+            <div class="centered">
+                @{
+                    if (Model.Project == null || Model.Project.ProjectId == -1)
+                    {
+                        <h4 class="text-warning">
+                            <b>Nothing here...</b>
+                        </h4>
 
-                    <p>
-                        This consultant isn't actively working on a project.  Be sure to contact them if you have a new project that requires their skills!
-                    </p>
+                        <p>
+                            This consultant isn't actively working on a project.  Be sure to contact them if you have a new project that requires their skills!
+                        </p>
+                    }
+                    else
+                    {
+                        @Html.Partial("_ProjectPartialView", Model.Project)
+                    }
                 }
-                else
-                {
-                    @Html.Partial("_ProjectPartialView", Model.Project)
-                }
-            }
 
+            </div>
         </div>
     </div>
-</div>
 
-<div class="row">
-    <h3 class="text-primary">
-        <b>Skills</b>
-    </h3>
+    <div class="col-xs-12 col-lg-4">
+        <h3 class="text-primary">
+            <b>Skills</b>
+        </h3>
 
-    <div class="col-xs-12 col-md-3">
-        <p class="text-secondary">
-            Every skill that shows up here should be something that this consultant feels comfortable with using, so use this list to filter out consultants when assigning a project.
-        </p>
-    </div>
-    <div class="col-xs-12 col-md-9">
-        <div class="centered">
-            @{
-                if (!Model.SkillList.Any())
-                {
-                    <h3 class="text-warning">
-                        <b>Something's missing...</b>
-                    </h3>
-
-                    <p>
-                        While we're sure they do possess some useful skills, it seems they need to work on keeping an updated profile.
-                    </p>
-                }
-                else
-                {
-
-                    <table class="table table-stretch">
-                        <thead>
-                            <tr>
-                                <th>Skill</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            @{
-                    foreach (string item in Model.SkillList)
+        <div class="row">
+            <p class="text-secondary">
+                Every skill that shows up here should be something that this consultant feels comfortable with using, so use this list to filter out consultants when assigning a project.
+            </p>
+        </div>
+        <div class="row">
+            <div class="centered">
+                @{
+                    if (!Model.SkillList.Any())
                     {
-                        <tr>
-                            <td>@item</td>
-                        </tr>
+                        <h4 class="text-warning">
+                            <b>Something's missing...</b>
+                        </h4>
+
+                        <p>
+                            While we're sure they do possess some useful skills, it seems they need to work on keeping an updated profile.
+                        </p>
                     }
-                            }
-                        </tbody>
-                    </table>
+                    else
+                    {
+
+                        <table class="table table-stretch">
+                            <thead>
+                                <tr>
+                                    <th>Skill</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @{
+                        foreach (string item in Model.SkillList)
+                        {
+                            <tr>
+                                <td>@item</td>
+                            </tr>
+                        }
+                                }
+                            </tbody>
+                        </table>
+                    }
                 }
-            }
 
 
+            </div>
         </div>
     </div>
-</div>
 
-<div class="row">
-    <h3 class="text-primary">
-        <b>Files</b>
-    </h3>
+    <div class="col-xs-12 col-lg-4">
+        <h3 class="text-primary">
+            <b>Files</b>
+        </h3>
 
-    <div class="col-xs-12 col-md-3">
-        <p class="text-secondary">
-            All important documents such as résumés will live here.  Download and pass them on to clients if necessary.
-        </p>
-    </div>
+        <div class="row">
+            <p class="text-secondary">
+                All important documents such as résumés will live here. Download and pass them on to clients if necessary.
+            </p>
+        </div>
 
-    <div class="col-xs-12 col-md-9">
-        <div class="centered">
-            @{
-                if (!Model.FileList.Any())
-                {
-                    <h3 class="text-warning">
-                        <b>No paper trail...</b>
-                    </h3>
-
-                    <p>
-                        This consultant hasn't uploaded anything for you to see yet, you should remind them about sharing.
-                    </p>
-                }
-                else
-                {
-
-                    <table class="table table-stretch">
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Download Link</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @{
-                    foreach (FileIndexViewModel item in Model.FileList)
+        <div class="row">
+            <div class="centered">
+                @{
+                    if (!Model.FileList.Any())
                     {
-                        <tr>
-                            <td>@item.Title</td>
-                            <td>@item.Description</td>
-                            <td><a href=@item.Path class="btn btn-sm btn-warning">&#8659;</a></td>
-                        </tr>
-                    }
-                            }
-                        </tbody>
-                    </table>
-                }
-            }
+                        <h4 class="text-warning">
+                            <b>No paper trail...</b>
+                        </h4>
 
+                        <p>
+                            This consultant hasn't uploaded anything for you to see yet, you should remind them about sharing.
+                        </p>
+                    }
+                    else
+                    {
+
+                        <table class="table table-stretch">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Download Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                        foreach (FileIndexViewModel item in Model.FileList)
+                        {
+                            <tr>
+                                <td>@item.Title</td>
+                                <td>@item.Description</td>
+                                <td><a href=@item.Path class="btn btn-sm btn-warning">&#8659;</a></td>
+                            </tr>
+                        }
+                                }
+                            </tbody>
+                        </table>
+                    }
+                }
+
+            </div>
         </div>
     </div>
 </div>

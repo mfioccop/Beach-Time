@@ -57,16 +57,37 @@ namespace BeachTime.Controllers
 
 				// Get all consultants on the beach
 				UserStore beachedUserStore = new UserStore();
-				IEnumerable<BeachUser> beachUsers = beachedUserStore.GetBeachedUsers();
-				int numBeach = beachUsers.Count();
+				List<BeachUser> beachUsers = beachedUserStore.GetBeachedUsers().ToList();
+
+				List<BeachUser> beachList = new List<BeachUser>(beachUsers);
+
+				foreach (BeachUser beached in beachUsers)
+				{
+					if (!beachedUserStore.IsInRoleAsync(beached, "Consultant").Result)
+					{
+						beachList.Remove(beached);
+					}
+				}
+
+				int numBeach = beachList.Count();
 
 				// Get all consultants on projects
-				IEnumerable<BeachUser> occupiedUsers = beachedUserStore.FindAll().Result;
-				int numOccupied = occupiedUsers.Count() - numBeach;
+				List<BeachUser> occupiedUsers = beachedUserStore.FindAll().Result.ToList();
+				List<BeachUser> occupiedList = new List<BeachUser>(occupiedUsers);
+
+				foreach (BeachUser occupied in occupiedUsers)
+				{
+					if (!beachedUserStore.IsInRoleAsync(occupied, "Consultant").Result)
+					{
+						occupiedList.Remove(occupied);
+					}
+				}
+
+				int numOccupied = occupiedList.Count() - numBeach;
 
 				// Get all skills on the beach
 				List<string> beachSkillsList = new List<string>();
-				foreach (BeachUser consultant in beachUsers)
+				foreach (BeachUser consultant in beachList)
 				{
 					BeachUser consultantManager = UserManager.FindById(consultant.Id);
 					beachSkillsList.AddRange(UserManager.GetUserSkills(consultantManager).ToList());
@@ -119,6 +140,11 @@ namespace BeachTime.Controllers
 
 				foreach (BeachUser user in beachUsers)
 				{
+					// If the user is not a consultant, don't bother adding them to the beach
+					if (!beachedUserStore.IsInRoleAsync(user, "Consultant").Result)
+					{
+						continue;
+					}
 					// Get this user's current project
 					Project project = projectRepo.FindByUserId(user.UserId);
 					
@@ -231,6 +257,11 @@ namespace BeachTime.Controllers
 
 				foreach (BeachUser user in occupiedUsers)
 				{
+					// If the user is not a consultant, don't bother adding them to the list of occupied
+					if (!beachedUserStore.IsInRoleAsync(user, "Consultant").Result)
+					{
+						continue;
+					}
 					// Get this user's current project
 					Project project = projectRepo.FindByUserId(user.UserId);
 
