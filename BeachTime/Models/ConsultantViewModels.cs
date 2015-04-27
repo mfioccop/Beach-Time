@@ -8,6 +8,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using BeachTime.Data;
 
 namespace BeachTime.Models
 {
@@ -58,8 +59,8 @@ namespace BeachTime.Models
 		/// <value>
 		/// The projects.
 		/// </value>
-		[DisplayName("Projects")]
-		public IList<ProjectViewModel> Projects { get; set; }
+		[DisplayName("Current Project")]
+		public ProjectViewModel Project { get; set; }
 
 		/// <summary>
 		/// Gets or sets the skill list.
@@ -96,6 +97,22 @@ namespace BeachTime.Models
 		/// </value>
 		public ConsultantSkillViewModel SkillViewModel { get; set; }
 
+
+		/// <summary>
+		/// Gets or sets the available projects.
+		/// </summary>
+		/// <value>
+		/// The available projects.
+		/// </value>
+		public List<ProjectViewModel> AvailableProjects { get; set; }
+
+		/// <summary>
+		/// Gets or sets the project select list items.
+		/// </summary>
+		/// <value>
+		/// The project select list items.
+		/// </value>
+		public List<SelectListItem> ProjectSelectListItems { get; set; } 
 	}
 
 	/// <summary>

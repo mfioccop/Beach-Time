@@ -38,50 +38,19 @@
     <div class="col-xs-12 col-md-9">
         <div class="centered">
             @{
-                if (!Model.Projects.Any())
+                if (Model.Project == null || Model.Project.ProjectId == -1)
                 {
                     <h3 class="text-warning">
                         <b>Nothing here...</b>
                     </h3>
 
                     <p>
-                        Either this consultant has never worked on anything...or they just forgot to add them to their profile (probably this).
+                        This consultant isn't actively working on a project.  Be sure to contact them if you have a new project that requires their skills!
                     </p>
                 }
                 else
                 {
-
-                    <table class="table table-stretch">
-                        <thead>
-                            <tr>
-                                <th>Project Name</th>
-                                <th>Completed?</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @{
-                    foreach (var item in Model.Projects)
-                    {
-                        <tr>
-                            <td>@item.ProjectName</td>
-                            <td>
-                                @{
-                        if (item.IsCompleted)
-                        {
-                            @:<span class="text-success">&#10004;</span>
-                                                }
-                        else
-                        {
-                            @:<span class="text-danger">&#10006;</span>
-                                                }
-
-                                }
-                            </td>
-                        </tr>
-                    }
-                            }
-                        </tbody>
-                    </table>
+                    @Html.Partial("_ProjectPartialView", Model.Project)
                 }
             }
 

@@ -1403,6 +1403,12 @@ pre code {
 	width: 1170px;
   }
 }
+
+@media(min-width: 1700px) {
+    .container {
+        width: 1670px;
+    }
+}
 .container-fluid {
   margin-right: auto;
   margin-left: auto;

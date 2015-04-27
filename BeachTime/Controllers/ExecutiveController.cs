@@ -119,23 +119,40 @@ namespace BeachTime.Controllers
 
 				foreach (var user in beachUsers)
 				{
-					// Get all projects
-					var projects = projectRepo.FindByUserId(user.UserId);
-					var projectViewModels = new List<ProjectViewModel>();
+					// Get this user's current project
+					var project = projectRepo.FindByUserId(user.UserId);
+					
+					// Create the ProjectViewModel for the project
+					ProjectViewModel pvm;
 
-					// Create the ProjectViewModels
-					foreach (var project in projects)
+					if (project != null)
 					{
-						var pvm = new ProjectViewModel()
+						pvm = new ProjectViewModel()
 						{
-							ProjectName = project.Name,
-							IsCompleted = project.Completed
+							ProjectId = project.ProjectId,
+							Name = project.Name,
+							Code = project.Code,
+							Description = project.Description,
+							StartDate = project.StartDate.GetValueOrDefault(),
+							EndDate = project.EndDate.GetValueOrDefault(),
+							LastUpdated = project.LastUpdated.GetValueOrDefault()
 						};
-						projectViewModels.Add(pvm);
+					}
+					else // dummy view model 
+					{
+						pvm = new ProjectViewModel()
+						{
+							ProjectId = -1,
+							Name = "No project",
+							Code = "NO_PROJ",
+							Description = "No project",
+							StartDate = DateTime.Today,
+							EndDate = DateTime.Today,
+							LastUpdated = DateTime.Today,
+						};
 					}
 
 					// Get all files
-
 					var files = fileRepo.FindByUserId(user.UserId);
 					var fileViewModels = new List<FileIndexViewModel>();
 
@@ -158,7 +175,7 @@ namespace BeachTime.Controllers
 						LastName = user.LastName,
 						Email = user.Email,
 						Id = user.UserId,
-						Projects = projectViewModels,
+						Project = pvm,
 						SkillList = UserManager.GetUserSkills(user).ToList(),
 						Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project",
 						FileList = fileViewModels
@@ -214,19 +231,38 @@ namespace BeachTime.Controllers
 
 				foreach (var user in occupiedUsers)
 				{
-					// Get all projects
-					var projects = projectRepo.FindByUserId(user.UserId);
-					var projectViewModels = new List<ProjectViewModel>();
+					// Get this user's current project
+					var project = projectRepo.FindByUserId(user.UserId);
 
-					// Create the ProjectViewModels
-					foreach (var project in projects)
+
+					// Create the ProjectViewModel for the project
+					ProjectViewModel pvm;
+
+					if (project != null)
 					{
-						var pvm = new ProjectViewModel()
+						pvm = new ProjectViewModel()
 						{
-							ProjectName = project.Name,
-							IsCompleted = project.Completed
+							ProjectId = project.ProjectId,
+							Name = project.Name,
+							Code = project.Code,
+							Description = project.Description,
+							StartDate = project.StartDate.GetValueOrDefault(),
+							EndDate = project.EndDate.GetValueOrDefault(),
+							LastUpdated = project.LastUpdated.GetValueOrDefault()
 						};
-						projectViewModels.Add(pvm);
+					}
+					else // dummy view model 
+					{
+						pvm = new ProjectViewModel()
+						{
+							ProjectId = -1,
+							Name = "No project",
+							Code = "NO_PROJ",
+							Description = "No project",
+							StartDate = DateTime.Today,
+							EndDate = DateTime.Today,
+							LastUpdated = DateTime.Today,
+						};
 					}
 
 					// Get all files
@@ -251,7 +287,7 @@ namespace BeachTime.Controllers
 						FirstName = user.FirstName,
 						LastName = user.LastName,
 						Id = user.UserId,
-						Projects = projectViewModels,
+						Project = pvm,
 						SkillList = UserManager.GetUserSkills(user).ToList(),
 						Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project",
 						FileList = fileViewModels
@@ -260,7 +296,7 @@ namespace BeachTime.Controllers
 				}
 
 				var exec = UserManager.FindById(User.Identity.GetUserId());
-				
+
 				if (exec == null)
 				{
 					HttpContext.AddError(new HttpException(403, "Not authorized."));
@@ -302,6 +338,7 @@ namespace BeachTime.Controllers
 		{
 			try
 			{
+				HttpContext.ClearError();
 				var user = UserManager.FindById(id.ToString());
 
 				// URL id doesn't match a user in the database, 404
@@ -312,18 +349,37 @@ namespace BeachTime.Controllers
 
 				// Get all projects
 				var projectRepo = new ProjectRepository();
-				var projects = projectRepo.FindByUserId(user.UserId);
-				var projectViewModels = new List<ProjectViewModel>();
+				// Get this user's current project
+				var project = projectRepo.FindByUserId(user.UserId);
 
-				// Create the ProjectViewModels
-				foreach (var project in projects)
+				// Create the ProjectViewModel for the project
+				ProjectViewModel pvm;
+
+				if (project != null)
 				{
-					var pvm = new ProjectViewModel()
+					pvm = new ProjectViewModel()
 					{
-						ProjectName = project.Name,
-						IsCompleted = project.Completed
+						ProjectId = project.ProjectId,
+						Name = project.Name,
+						Code = project.Code,
+						Description = project.Description,
+						StartDate = project.StartDate.GetValueOrDefault(),
+						EndDate = project.EndDate.GetValueOrDefault(),
+						LastUpdated = project.LastUpdated.GetValueOrDefault()
 					};
-					projectViewModels.Add(pvm);
+				}
+				else // dummy view model 
+				{
+					pvm = new ProjectViewModel()
+					{
+						ProjectId = -1,
+						Name = "No project",
+						Code = "NO_PROJ",
+						Description = "No project",
+						StartDate = DateTime.Today,
+						EndDate = DateTime.Today,
+						LastUpdated = DateTime.Today,
+					};
 				}
 
 				// Get all files
@@ -352,7 +408,7 @@ namespace BeachTime.Controllers
 					LastName = user.LastName,
 					Email = user.Email,
 					Id = user.UserId,
-					Projects = projectViewModels,
+					Project = pvm,
 					SkillList = UserManager.GetUserSkills(user).ToList(),
 					Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project",
 					FileList = fileViewModels,
@@ -370,7 +426,7 @@ namespace BeachTime.Controllers
 			}
 			catch (InvalidOperationException ioe)
 			{
-				HttpContext.AddError(new HttpException(404, "No consultant with that ID exists."));				
+				HttpContext.AddError(new HttpException(404, "No consultant with that ID exists."));
 			}
 			catch (Exception e)
 			{

@@ -23,6 +23,11 @@
 
 </head>
 <body>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
     <div class="navbar navbar-default navbar-fixed-top">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -33,7 +38,7 @@
             @Html.ActionLink("IbEACH", "Index", "Home", new { area = "" }, new { @class = "navbar-brand", @style = "font-family:Aharoni; font-size: 250%" })
         </div>
         <div class="navbar-collapse collapse ">
-            <ul class="nav navbar-nav" style="font-size:115%">
+            <ul class="nav navbar-nav" style="font-size: 115%">
                 <li>@Html.ActionLink("Home", "Index", "Home")</li>
                 <li>@Html.ActionLink("About", "About", "Home")</li>
                 <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
@@ -56,7 +61,7 @@
                 }
 
             </ul>
-            <ul class="nav navbar-nav navbar-right" style="font-size:115%">
+            <ul class="nav navbar-nav navbar-right" style="font-size: 115%">
 
                 @if (Request.IsAuthenticated && Model != null && Model.Navbar != null)
                 {
@@ -81,9 +86,7 @@
 
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+
 
     <div id="modal-container" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-content">

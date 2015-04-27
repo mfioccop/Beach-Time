@@ -46,7 +46,8 @@ namespace BeachTime.Controllers
 					FirstName = String.Empty,
 					LastName = String.Empty,
 					Email = String.Empty,
-					Id = -1
+					Id = -1,
+					Status = String.Empty
 				};
 
 				// If no user is logged in, then return with the dummy user
@@ -60,6 +61,7 @@ namespace BeachTime.Controllers
 				navbarViewModel.LastName = user.LastName;
 				navbarViewModel.Email = user.Email;
 				navbarViewModel.Id = user.UserId;
+				navbarViewModel.Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project";
 
 				return navbarViewModel;
 			}
