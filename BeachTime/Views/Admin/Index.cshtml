@@ -1,4 +1,5 @@
-﻿@model BeachTime.Models.AdminIndexViewModel
+﻿@using BeachTime.Models
+@model BeachTime.Models.AdminIndexViewModel
 
 
 @{
@@ -44,7 +45,7 @@
                 </thead>
                 <tbody>
                     @{
-                        foreach (var item in Model.UserViewModels)
+                        foreach (AdminUserViewModel item in Model.UserViewModels)
                         {
                             <tr>
                                 <td>@item.UserId</td>
@@ -88,7 +89,7 @@
                 <tbody>
 
                     @{
-                        foreach (var item in Model.RequestViewModels)
+                        foreach (AdminRoleRequestViewModel item in Model.RequestViewModels)
                         {
                             <tr>
                                 <td>@item.UserId</td>

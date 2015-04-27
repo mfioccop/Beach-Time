@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Web;
@@ -56,8 +57,8 @@ namespace BeachTime
 				return false;
 			}
 
-			var principal = httpContext.User;
-			var userManager = HttpContext.Current.GetOwinContext().GetUserManager<BeachUserManager>();
+			IPrincipal principal = httpContext.User;
+			BeachUserManager userManager = HttpContext.Current.GetOwinContext().GetUserManager<BeachUserManager>();
 			
 			// If the principal or user manager doesn't exist, we can't find the user; not authorized
 			if (principal == null || !principal.Identity.IsAuthenticated || userManager == null)
@@ -65,7 +66,7 @@ namespace BeachTime
 				return false;
 			}
 			
-			var user = userManager.FindById(principal.Identity.GetUserId());
+			BeachUser user = userManager.FindById(principal.Identity.GetUserId());
 
 			// If user doesn't exist, not authorized
 			if (user == null)
@@ -73,9 +74,9 @@ namespace BeachTime
 				return false;
 			}
 			
-			var store = new UserStore();
-			var userRoles = store.GetRolesAsync(user).Result;
-			var authorizedRoles = Roles.Split(',');
+			UserStore store = new UserStore();
+			IList<string> userRoles = store.GetRolesAsync(user).Result;
+			string[] authorizedRoles = Roles.Split(',');
 
 			// If the user does not belong to ANY of the required roles, not authorized
 			if (authorizedRoles.Except(userRoles).Any())

@@ -90,7 +90,7 @@ namespace BeachTime.Controllers
 			if (ModelState.IsValid)
 			{
 				// First search for a user by username/password
-				var user = await UserManager.FindAsync(model.UserName, model.Password);
+				BeachUser user = await UserManager.FindAsync(model.UserName, model.Password);
 				if (user != null)
 				{
 					await SignInAsync(user, model.RememberMe);
@@ -99,7 +99,7 @@ namespace BeachTime.Controllers
 				else
 				{
 					// If that fails, then search for a user with the given email address
-					var userByEmail = await UserManager.FindByEmailAsync(model.UserName);
+					BeachUser userByEmail = await UserManager.FindByEmailAsync(model.UserName);
 
 					if (userByEmail != null)
 					{
@@ -150,7 +150,7 @@ namespace BeachTime.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var user = new BeachUser()
+				BeachUser user = new BeachUser()
 				{
 					UserName = model.UserName,
 					Email = model.Email,
@@ -237,7 +237,7 @@ namespace BeachTime.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var user = await UserManager.FindByNameAsync(model.Email);
+				BeachUser user = await UserManager.FindByNameAsync(model.Email);
 				if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
 				{
 					ModelState.AddModelError("", "The user either does not exist or is not confirmed.");
@@ -295,7 +295,7 @@ namespace BeachTime.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var user = await UserManager.FindByNameAsync(model.Email);
+				BeachUser user = await UserManager.FindByNameAsync(model.Email);
 				if (user == null)
 				{
 					ModelState.AddModelError("", "No user found.");
@@ -375,7 +375,7 @@ namespace BeachTime.Controllers
 						await this.UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
 					if (result.Succeeded)
 					{
-						var user = await this.UserManager.FindByIdAsync(User.Identity.GetUserId());
+						BeachUser user = await this.UserManager.FindByIdAsync(User.Identity.GetUserId());
 						await this.SignInAsync(user, isPersistent: false);
 						return this.RedirectToAction("Manage", new {Message = ManageMessageId.ChangePasswordSuccess});
 					}
@@ -431,7 +431,7 @@ namespace BeachTime.Controllers
 				await this.UserManager.RemoveLoginAsync(User.Identity.GetUserId(), new UserLoginInfo(loginProvider, providerKey));
 			if (result.Succeeded)
 			{
-				var user = await this.UserManager.FindByIdAsync(User.Identity.GetUserId());
+				BeachUser user = await this.UserManager.FindByIdAsync(User.Identity.GetUserId());
 				await this.SignInAsync(user, isPersistent: false);
 				message = ManageMessageId.RemoveLoginSuccess;
 			}
@@ -465,14 +465,14 @@ namespace BeachTime.Controllers
 		[AllowAnonymous]
 		public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
 		{
-			var loginInfo = await this.AuthenticationManager.GetExternalLoginInfoAsync();
+			ExternalLoginInfo loginInfo = await this.AuthenticationManager.GetExternalLoginInfoAsync();
 			if (loginInfo == null)
 			{
 				return this.RedirectToAction("Login");
 			}
 
 			// Sign in the user with this external login provider if the user already has a login
-			var user = await this.UserManager.FindAsync(loginInfo.Login);
+			BeachUser user = await this.UserManager.FindAsync(loginInfo.Login);
 			if (user != null)
 			{
 				await this.SignInAsync(user, isPersistent: false);
@@ -506,7 +506,7 @@ namespace BeachTime.Controllers
 		/// <returns></returns>
 		public async Task<ActionResult> LinkLoginCallback()
 		{
-			var loginInfo = await this.AuthenticationManager.GetExternalLoginInfoAsync(XsrfKey, User.Identity.GetUserId());
+			ExternalLoginInfo loginInfo = await this.AuthenticationManager.GetExternalLoginInfoAsync(XsrfKey, User.Identity.GetUserId());
 			if (loginInfo == null)
 			{
 				return this.RedirectToAction("Manage", new {Message = ManageMessageId.Error});
@@ -540,13 +540,13 @@ namespace BeachTime.Controllers
 			if (ModelState.IsValid)
 			{
 				// Get the information about the user from the external login provider
-				var info = await this.AuthenticationManager.GetExternalLoginInfoAsync();
+				ExternalLoginInfo info = await this.AuthenticationManager.GetExternalLoginInfoAsync();
 				if (info == null)
 				{
 					return this.View("ExternalLoginFailure");
 				}
 
-				var user = new BeachUser() {UserName = model.Email, Email = model.Email};
+				BeachUser user = new BeachUser() {UserName = model.Email, Email = model.Email};
 				IdentityResult result = await this.UserManager.CreateAsync(user);
 				if (result.Succeeded)
 				{
@@ -602,7 +602,7 @@ namespace BeachTime.Controllers
 		[ChildActionOnly]
 		public ActionResult RemoveAccountList()
 		{
-			var linkedAccounts = UserManager.GetLogins(User.Identity.GetUserId());
+			IList<UserLoginInfo> linkedAccounts = UserManager.GetLogins(User.Identity.GetUserId());
 			ViewBag.ShowRemoveButton = HasPassword() || linkedAccounts.Count > 1;
 			return (ActionResult)PartialView("_RemoveAccountPartial", linkedAccounts);
 		}
@@ -647,7 +647,7 @@ namespace BeachTime.Controllers
 
 		private void AddErrors(IdentityResult result)
 		{
-			foreach (var error in result.Errors)
+			foreach (string error in result.Errors)
 			{
 				ModelState.AddModelError("", error);
 			}
@@ -655,7 +655,7 @@ namespace BeachTime.Controllers
 
 		private bool HasPassword()
 		{
-			var user = UserManager.FindById(User.Identity.GetUserId());
+			BeachUser user = UserManager.FindById(User.Identity.GetUserId());
 			if (user != null)
 			{
 				return user.PasswordHash != null;
@@ -710,7 +710,7 @@ namespace BeachTime.Controllers
 
 			public override void ExecuteResult(ControllerContext context)
 			{
-				var properties = new AuthenticationProperties() { RedirectUri = RedirectUri };
+				AuthenticationProperties properties = new AuthenticationProperties() { RedirectUri = RedirectUri };
 				if (UserId != null)
 				{
 					properties.Dictionary[XsrfKey] = UserId;
@@ -731,14 +731,14 @@ namespace BeachTime.Controllers
 					HttpContext.AddError(new HttpException(403, "You need to be logged in to view this page."));
 
 
-				var store = new UserStore();
-				var user = store.FindByIdAsync(User.Identity.GetUserId()).Result;
+				UserStore store = new UserStore();
+				BeachUser user = store.FindByIdAsync(User.Identity.GetUserId()).Result;
 				// Get all current requests 
-				var requests = store.GetRoleChangeRequests(User.Identity.GetUserId());
-				var pending = requests.Select(request => request.RoleName);
-				var roles = store.GetAllRoles().ToList();
+				IEnumerable<RoleChangeRequest> requests = store.GetRoleChangeRequests(User.Identity.GetUserId());
+				IEnumerable<string> pending = requests.Select(request => request.RoleName);
+				List<string> roles = store.GetAllRoles().ToList();
 
-				var requestViewModel = new RequestRoleViewModel()
+				RequestRoleViewModel requestViewModel = new RequestRoleViewModel()
 				{
 					RoleName = String.Empty,
 					UserId = user.UserId,
@@ -771,7 +771,7 @@ namespace BeachTime.Controllers
 		{
 			try
 			{
-				var request = new RoleChangeRequest()
+				RoleChangeRequest request = new RoleChangeRequest()
 				{
 					UserId = model.UserId,
 					RoleName = model.RoleName

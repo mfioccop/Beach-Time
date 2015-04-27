@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.DataProtection;
 
 namespace BeachTime {
 	public class BeachUserManager : UserManager<BeachUser> {
@@ -17,7 +18,7 @@ namespace BeachTime {
 		}
 
 		public static BeachUserManager Create(IdentityFactoryOptions<BeachUserManager> options, IOwinContext context) {
-			var manager = new BeachUserManager(new UserStore());
+			BeachUserManager manager = new BeachUserManager(new UserStore());
 			// Configure validation logic for usernames
 			manager.UserValidator = new UserValidator<BeachUser>(manager) {
 				AllowOnlyAlphanumericUserNames = false,
@@ -41,7 +42,7 @@ namespace BeachTime {
 
 			manager.EmailService = new EmailService();
 			manager.SmsService = new SmsService();
-			var dataProtectionProvider = options.DataProtectionProvider;
+			IDataProtectionProvider dataProtectionProvider = options.DataProtectionProvider;
 			if (dataProtectionProvider != null) {
 				manager.UserTokenProvider =
 					new DataProtectorTokenProvider<BeachUser>(dataProtectionProvider.Create("ASP.NET Identity"));
@@ -50,42 +51,42 @@ namespace BeachTime {
 		}
 
 		public IEnumerable<BeachUser> FindAll() {
-			var userStore = (IBeachUserStore)Store;
+			IBeachUserStore userStore = (IBeachUserStore)Store;
 			return userStore.FindAll().Result;
 		} 
 		
 		public IList<string> GetUserSkills(BeachUser user) {
-			var skillStore = (IUserSkillStore<BeachUser, string>)Store;
+			IUserSkillStore<BeachUser, string> skillStore = (IUserSkillStore<BeachUser, string>)Store;
 			return skillStore.GetSkillsAsync(user).Result;
 		}
 
 		public void SetUserSkills(BeachUser user, IList<string> skills) {
-			var skillStore = (IUserSkillStore<BeachUser, string>)Store;
+			IUserSkillStore<BeachUser, string> skillStore = (IUserSkillStore<BeachUser, string>)Store;
 			skillStore.SetSkillsAsync(user, skills).Wait();
 		}
 
 		public void ClearUserSkills(BeachUser user) {
-			var skillStore = (IUserSkillStore<BeachUser, string>)Store;
+			IUserSkillStore<BeachUser, string> skillStore = (IUserSkillStore<BeachUser, string>)Store;
 			skillStore.ClearSkillsAsync(user).Wait();
 		}
 
 		public bool UserOnBeach(BeachUser user) {
-			var beachStore = (IUserBeachStore)Store;
+			IUserBeachStore beachStore = (IUserBeachStore)Store;
 			return beachStore.OnBeach(user);
 		}
 
 		public IEnumerable<BeachUser> GetBeachedUsers() {
-			var beachStore = (IUserBeachStore)Store;
+			IUserBeachStore beachStore = (IUserBeachStore)Store;
 			return beachStore.GetBeachedUsers();
 		}
 
 		public void RequestRoleChange(RoleChangeRequest request) {
-			var roleStore = (IBeachUserRoleStore)Store;
+			IBeachUserRoleStore roleStore = (IBeachUserRoleStore)Store;
 			roleStore.RequestRoleChange(request);
 		}
 
 		public IEnumerable<RoleChangeRequest> GetRoleChangeRequests(string userId) {
-			var roleStore = (IBeachUserRoleStore)Store;
+			IBeachUserRoleStore roleStore = (IBeachUserRoleStore)Store;
 			return roleStore.GetRoleChangeRequests(userId);
 		}
 	}
@@ -106,13 +107,13 @@ namespace BeachTime {
 
 	public class EmailService : IIdentityMessageService {
 		public Task SendAsync(IdentityMessage message) {
-			var mailMessage = new MailMessage(
+			MailMessage mailMessage = new MailMessage(
 				"BeachTime@example.com",
 				message.Destination,
 				message.Subject,
 				message.Body);
 
-			var client = new SmtpClient();
+			SmtpClient client = new SmtpClient();
 			client.SendAsync(mailMessage, null);
 
 			return Task.FromResult(0);

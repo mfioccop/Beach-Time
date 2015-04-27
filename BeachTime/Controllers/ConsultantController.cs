@@ -49,7 +49,7 @@ namespace BeachTime.Controllers
 			try
 			{
 				// Find the user in the database and retrieve basic account information
-				var user = UserManager.FindById(User.Identity.GetUserId());
+				BeachUser user = UserManager.FindById(User.Identity.GetUserId());
 
 				if (user == null)
 				{
@@ -58,16 +58,16 @@ namespace BeachTime.Controllers
 				}
 
 				// Get all projects
-				var projectRepo = new ProjectRepository();
+				ProjectRepository projectRepo = new ProjectRepository();
 
 				// Get the list of available projects
-				var availableProjects = projectRepo.FindAll().ToList();
+				List<Project> availableProjects = projectRepo.FindAll().ToList();
 				List<ProjectViewModel> projectViewModels = new List<ProjectViewModel>();
 				List<SelectListItem> listItems = new List<SelectListItem>();
 
 
 				// Create the ProjectViewModel for the consultant's current project
-				var project = projectRepo.FindByProjectId(user.ProjectId.GetValueOrDefault());
+				Project project = projectRepo.FindByProjectId(user.ProjectId.GetValueOrDefault());
 
 				ProjectViewModel pvm = new ProjectViewModel();
 
@@ -122,14 +122,14 @@ namespace BeachTime.Controllers
 
 
 				// Get all files
-				var fileRepo = new FileRepository();
-				var files = fileRepo.FindByUserId(user.UserId);
-				var fileViewModels = new List<FileIndexViewModel>();
+				FileRepository fileRepo = new FileRepository();
+				IEnumerable<FileInfo> files = fileRepo.FindByUserId(user.UserId);
+				List<FileIndexViewModel> fileViewModels = new List<FileIndexViewModel>();
 
 				// Create the FileIndexViewModels
-				foreach (var file in files)
+				foreach (FileInfo file in files)
 				{
-					var fvm = new FileIndexViewModel()
+					FileIndexViewModel fvm = new FileIndexViewModel()
 					{
 						Title = file.Title,
 						Description = file.Description,
@@ -139,7 +139,7 @@ namespace BeachTime.Controllers
 				}
 
 				// Construct view model for the consultant
-				var consultant = new ConsultantIndexViewModel()
+				ConsultantIndexViewModel consultant = new ConsultantIndexViewModel()
 				{
 					FirstName = user.FirstName,
 					LastName = user.LastName,
@@ -301,14 +301,14 @@ namespace BeachTime.Controllers
 		{
 			try
 			{
-				var user = UserManager.FindById(User.Identity.GetUserId());
+				BeachUser user = UserManager.FindById(User.Identity.GetUserId());
 
 				// Finding the project in the database
 				ProjectRepository projectRepo = new ProjectRepository();
 				Project project = projectRepo.FindByProjectId(model.Project.ProjectId);
 
 				// Setting the user's current project to the one selected
-				var userStore = new UserStore();
+				UserStore userStore = new UserStore();
 				userStore.AddProject(user, project);
 
 				return RedirectToAction("Index");
@@ -347,9 +347,9 @@ namespace BeachTime.Controllers
 		{
 			try
 			{
-				var user = UserManager.FindById(User.Identity.GetUserId());
+				BeachUser user = UserManager.FindById(User.Identity.GetUserId());
 
-				var validFileTypes = new string[]
+				string[] validFileTypes = new string[]
 			    {
 				    "application/pdf",		// .pdf
 				    "application/msword",	// .doc
@@ -359,7 +359,7 @@ namespace BeachTime.Controllers
 				    "text/richtext"			// .rtf
 			    };
 
-				var validFileExtensions = new string[]
+				string[] validFileExtensions = new string[]
 				{
 					".doc", ".docx", ".pdf", ".rtf"
 				};
@@ -382,7 +382,7 @@ namespace BeachTime.Controllers
 				{
 					if (model.FileUpload != null && model.FileUpload.ContentLength > 0)
 					{
-						var uploadDirectory = ConfigurationManager.AppSettings["FileUploadPath"];
+						string uploadDirectory = ConfigurationManager.AppSettings["FileUploadPath"];
 						uploadDirectory += "/" + user.UserId;
 
 						if (!Directory.Exists(Server.MapPath(uploadDirectory)))
@@ -391,14 +391,14 @@ namespace BeachTime.Controllers
 						}
 
 						// This is the path used to save the file to the application directory
-						var filePath = Path.Combine(Server.MapPath(uploadDirectory), model.FileUpload.FileName);
+						string filePath = Path.Combine(Server.MapPath(uploadDirectory), model.FileUpload.FileName);
 						model.FileUpload.SaveAs(filePath);
 
 						// This is the tail of the url that will be saved in the database
-						var fileUrl = Path.Combine(uploadDirectory, model.FileUpload.FileName);
+						string fileUrl = Path.Combine(uploadDirectory, model.FileUpload.FileName);
 
 						// Create the FileInfo instance to add to the database
-						var file = new FileInfo()
+						FileInfo file = new FileInfo()
 						{
 							Title = model.Title,
 							Description = model.Description,
@@ -406,7 +406,7 @@ namespace BeachTime.Controllers
 							Path = fileUrl
 						};
 
-						var repository = new FileRepository();
+						FileRepository repository = new FileRepository();
 						repository.Create(file);
 
 						return RedirectToAction("Index");
@@ -445,10 +445,10 @@ namespace BeachTime.Controllers
 				}
 
 				// Find the user in the database and retrieve basic account information
-				var user = UserManager.FindById(User.Identity.GetUserId());
+				BeachUser user = UserManager.FindById(User.Identity.GetUserId());
 
 				// Get current skills and add the newest addition, then update the database
-				var currentSkills = UserManager.GetUserSkills(user);
+				IList<string> currentSkills = UserManager.GetUserSkills(user);
 				currentSkills.Add(model.SkillViewModel.SkillName);
 				UserManager.SetUserSkills(user, currentSkills);
 
@@ -473,10 +473,10 @@ namespace BeachTime.Controllers
 			try
 			{
 				// Find the user in the database and retrieve basic account information
-				var user = UserManager.FindById(User.Identity.GetUserId());
+				BeachUser user = UserManager.FindById(User.Identity.GetUserId());
 
 				// Get current skills and remove specified skill, then update the database
-				var currentSkills = UserManager.GetUserSkills(user);
+				IList<string> currentSkills = UserManager.GetUserSkills(user);
 				currentSkills.Remove(name);
 				UserManager.SetUserSkills(user, currentSkills);
 

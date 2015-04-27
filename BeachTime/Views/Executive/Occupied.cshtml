@@ -1,4 +1,5 @@
-﻿@model BeachTime.Models.ExecutiveUserListViewModel
+﻿@using BeachTime.Models
+@model BeachTime.Models.ExecutiveUserListViewModel
 @{
     ViewBag.Title = "Beach";
 }
@@ -44,7 +45,7 @@
                     </tr>
 
                     @{
-                foreach (var item in Model.BeachConsultantViewModels)
+                foreach (ConsultantIndexViewModel item in Model.BeachConsultantViewModels)
                 {
                     <tr>
                         <td>@item.FirstName @item.LastName</td>

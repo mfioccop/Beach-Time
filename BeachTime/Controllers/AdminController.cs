@@ -54,10 +54,10 @@ namespace BeachTime.Controllers
 			try
 			{
 				// Get all users and initialize the view model
-				var users = UserManager.FindAll();
+				IEnumerable<BeachUser> users = UserManager.FindAll();
 
-				var store = new UserStore();
-				var user = UserManager.FindById(User.Identity.GetUserId());
+				UserStore store = new UserStore();
+				BeachUser user = UserManager.FindById(User.Identity.GetUserId());
 
 				if (user == null)
 				{
@@ -65,7 +65,7 @@ namespace BeachTime.Controllers
 					return RedirectToAction("Index", "Home");
 				}
 
-				var indexViewmodel = new AdminIndexViewModel
+				AdminIndexViewModel indexViewmodel = new AdminIndexViewModel
 				{
 					UserViewModels = new List<AdminUserViewModel>(),
 					RequestViewModels = new List<AdminRoleRequestViewModel>(),
@@ -80,9 +80,9 @@ namespace BeachTime.Controllers
 				};
 
 				// Populate the list of users
-				foreach (var beachUser in users)
+				foreach (BeachUser beachUser in users)
 				{
-					var userViewModel = new AdminUserViewModel()
+					AdminUserViewModel userViewModel = new AdminUserViewModel()
 					{
 						FirstName = beachUser.FirstName,
 						LastName = beachUser.LastName,
@@ -95,13 +95,13 @@ namespace BeachTime.Controllers
 				}
 
 				// TODO: FindAll requests from database
-				var requests = store.GetAllRoleChangeRequests();
+				IEnumerable<RoleChangeRequest> requests = store.GetAllRoleChangeRequests();
 
 				// Populate requests for new roles
-				foreach (var request in requests)
+				foreach (RoleChangeRequest request in requests)
 				{
 					// TODO: fill in info from each request + add to RequestViewModels
-					var requestViewModel = new AdminRoleRequestViewModel()
+					AdminRoleRequestViewModel requestViewModel = new AdminRoleRequestViewModel()
 					{
 						RequestId = request.RequestId,
 						UserId = request.UserId,
@@ -136,7 +136,7 @@ namespace BeachTime.Controllers
 			try
 			{
 				// Find the user in the database and retrieve basic account information
-				var user = UserManager.FindById(id.ToString());
+				BeachUser user = UserManager.FindById(id.ToString());
 
 				// URL id doesn't match a user in the database, 404
 				if (user == null)
@@ -145,7 +145,7 @@ namespace BeachTime.Controllers
 					return RedirectToAction("Index");
 				}
 
-				var userViewModel = new AdminUserViewModel()
+				AdminUserViewModel userViewModel = new AdminUserViewModel()
 				{
 					FirstName = user.FirstName,
 					LastName = user.LastName,
@@ -181,14 +181,14 @@ namespace BeachTime.Controllers
 			try
 			{
 				// Find the user in the database and populate it with updated data
-				var user = UserManager.FindById(model.UserId.ToString());
+				BeachUser user = UserManager.FindById(model.UserId.ToString());
 				user.FirstName = model.FirstName;
 				user.LastName = model.LastName;
 				user.Email = model.Email;
 				user.UserName = model.UserName;
 
 				// Update the user in the database
-				var store = new UserStore();
+				UserStore store = new UserStore();
 				store.UpdateAsync(user);
 
 				return RedirectToAction("Index");
@@ -215,8 +215,8 @@ namespace BeachTime.Controllers
 
 			try
 			{
-				var store = new UserStore();
-				var request = store.GetRoleChangeRequestById(id.ToString()).First();	// Throws InvalidOperationException if no results for that id
+				UserStore store = new UserStore();
+				RoleChangeRequest request = store.GetRoleChangeRequestById(id.ToString()).First();	// Throws InvalidOperationException if no results for that id
 
 				// URL id doesn't match a user in the database, 404
 				if (request == null)
@@ -226,7 +226,7 @@ namespace BeachTime.Controllers
 				}
 
 				// Find the user in the database and retrieve basic account information
-				var user = UserManager.FindById(request.UserId.ToString());
+				BeachUser user = UserManager.FindById(request.UserId.ToString());
 
 				// URL id doesn't match a user in the database, 404
 				if (user == null)
@@ -235,7 +235,7 @@ namespace BeachTime.Controllers
 					return RedirectToAction("PageNotFound", "Home");
 				}
 
-				var updateRoleViewModel = new AdminUpdateRoleViewModel()
+				AdminUpdateRoleViewModel updateRoleViewModel = new AdminUpdateRoleViewModel()
 				{
 					FirstName = user.FirstName,
 					LastName = user.LastName,
@@ -283,7 +283,7 @@ namespace BeachTime.Controllers
 				try
 				{
 					// Remove role request from the database
-					var store = new UserStore();
+					UserStore store = new UserStore();
 					store.RemoveRoleRequestAsync(accept.RequestId.ToString());
 				}
 				catch (ArgumentNullException e)
@@ -316,7 +316,7 @@ namespace BeachTime.Controllers
 			try
 			{
 				// Remove role request from the database
-				var store = new UserStore();
+				UserStore store = new UserStore();
 				store.RemoveRoleRequestAsync(reject.RequestId.ToString());
 
 				return RedirectToAction("Index");

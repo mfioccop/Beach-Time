@@ -24,7 +24,7 @@
         <table class="table table-stretch">
             @{
 
-                foreach (var item in Model.RoleNameList)
+                foreach (string item in Model.RoleNameList)
                 {
                     <tr>
                         @using (@Html.BeginForm("RequestRole", "Account"))

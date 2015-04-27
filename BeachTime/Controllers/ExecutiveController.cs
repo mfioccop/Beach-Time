@@ -47,7 +47,7 @@ namespace BeachTime.Controllers
 			try
 			{
 				// Find the user in the database and retrieve basic account information
-				var user = UserManager.FindById(User.Identity.GetUserId());
+				BeachUser user = UserManager.FindById(User.Identity.GetUserId());
 
 				if (user == null)
 				{
@@ -57,23 +57,23 @@ namespace BeachTime.Controllers
 
 				// Get all consultants on the beach
 				UserStore beachedUserStore = new UserStore();
-				var beachUsers = beachedUserStore.GetBeachedUsers();
+				IEnumerable<BeachUser> beachUsers = beachedUserStore.GetBeachedUsers();
 				int numBeach = beachUsers.Count();
 
 				// Get all consultants on projects
-				var occupiedUsers = beachedUserStore.FindAll().Result;
+				IEnumerable<BeachUser> occupiedUsers = beachedUserStore.FindAll().Result;
 				int numOccupied = occupiedUsers.Count() - numBeach;
 
 				// Get all skills on the beach
 				List<string> beachSkillsList = new List<string>();
-				foreach (var consultant in beachUsers)
+				foreach (BeachUser consultant in beachUsers)
 				{
-					var consultantManager = UserManager.FindById(consultant.Id);
+					BeachUser consultantManager = UserManager.FindById(consultant.Id);
 					beachSkillsList.AddRange(UserManager.GetUserSkills(consultantManager).ToList());
 				}
 
 				// Construct view model for the executive
-				var executive = new ExecutiveIndexViewModel()
+				ExecutiveIndexViewModel executive = new ExecutiveIndexViewModel()
 				{
 					FirstName = user.FirstName,
 					LastName = user.LastName,
@@ -112,15 +112,15 @@ namespace BeachTime.Controllers
 			{
 				// Get all consultants on the beach as ViewModels
 				UserStore beachedUserStore = new UserStore();
-				var beachUsers = beachedUserStore.GetBeachedUsers().ToList();
-				var beachViewModelList = new List<ConsultantIndexViewModel>();
-				var projectRepo = new ProjectRepository();
-				var fileRepo = new FileRepository();
+				List<BeachUser> beachUsers = beachedUserStore.GetBeachedUsers().ToList();
+				List<ConsultantIndexViewModel> beachViewModelList = new List<ConsultantIndexViewModel>();
+				ProjectRepository projectRepo = new ProjectRepository();
+				FileRepository fileRepo = new FileRepository();
 
-				foreach (var user in beachUsers)
+				foreach (BeachUser user in beachUsers)
 				{
 					// Get this user's current project
-					var project = projectRepo.FindByUserId(user.UserId);
+					Project project = projectRepo.FindByUserId(user.UserId);
 					
 					// Create the ProjectViewModel for the project
 					ProjectViewModel pvm;
@@ -153,13 +153,13 @@ namespace BeachTime.Controllers
 					}
 
 					// Get all files
-					var files = fileRepo.FindByUserId(user.UserId);
-					var fileViewModels = new List<FileIndexViewModel>();
+					IEnumerable<FileInfo> files = fileRepo.FindByUserId(user.UserId);
+					List<FileIndexViewModel> fileViewModels = new List<FileIndexViewModel>();
 
 					// Create the FileIndexViewModels
-					foreach (var file in files)
+					foreach (FileInfo file in files)
 					{
-						var fvm = new FileIndexViewModel()
+						FileIndexViewModel fvm = new FileIndexViewModel()
 						{
 							Title = file.Title,
 							Description = file.Description,
@@ -169,7 +169,7 @@ namespace BeachTime.Controllers
 					}
 
 					// Construct view model for the consultant
-					var consultant = new ConsultantIndexViewModel()
+					ConsultantIndexViewModel consultant = new ConsultantIndexViewModel()
 					{
 						FirstName = user.FirstName,
 						LastName = user.LastName,
@@ -183,10 +183,10 @@ namespace BeachTime.Controllers
 					beachViewModelList.Add(consultant);
 				}
 
-				var exec = UserManager.FindById(User.Identity.GetUserId());
+				BeachUser exec = UserManager.FindById(User.Identity.GetUserId());
 
 				// Construct view model for the beach
-				var executive = new ExecutiveUserListViewModel()
+				ExecutiveUserListViewModel executive = new ExecutiveUserListViewModel()
 				{
 					BeachConsultantViewModels = beachViewModelList,
 					Navbar = new HomeNavbarViewModel()
@@ -222,17 +222,17 @@ namespace BeachTime.Controllers
 			{
 				// Get all consultants on working on projects as ViewModels
 				UserStore beachedUserStore = new UserStore();
-				var allUsers = beachedUserStore.FindAll().Result;
-				var beachUsers = beachedUserStore.GetBeachedUsers();
-				var occupiedUsers = allUsers.Except(beachUsers); // Subtract beach users from all users
-				var occupiedViewModelList = new List<ConsultantIndexViewModel>();
-				var projectRepo = new ProjectRepository();
-				var fileRepo = new FileRepository();
+				IEnumerable<BeachUser> allUsers = beachedUserStore.FindAll().Result;
+				IEnumerable<BeachUser> beachUsers = beachedUserStore.GetBeachedUsers();
+				IEnumerable<BeachUser> occupiedUsers = allUsers.Except(beachUsers); // Subtract beach users from all users
+				List<ConsultantIndexViewModel> occupiedViewModelList = new List<ConsultantIndexViewModel>();
+				ProjectRepository projectRepo = new ProjectRepository();
+				FileRepository fileRepo = new FileRepository();
 
-				foreach (var user in occupiedUsers)
+				foreach (BeachUser user in occupiedUsers)
 				{
 					// Get this user's current project
-					var project = projectRepo.FindByUserId(user.UserId);
+					Project project = projectRepo.FindByUserId(user.UserId);
 
 
 					// Create the ProjectViewModel for the project
@@ -266,13 +266,13 @@ namespace BeachTime.Controllers
 					}
 
 					// Get all files
-					var files = fileRepo.FindByUserId(user.UserId);
-					var fileViewModels = new List<FileIndexViewModel>();
+					IEnumerable<FileInfo> files = fileRepo.FindByUserId(user.UserId);
+					List<FileIndexViewModel> fileViewModels = new List<FileIndexViewModel>();
 
 					// Create the FileIndexViewModels
-					foreach (var file in files)
+					foreach (FileInfo file in files)
 					{
-						var fvm = new FileIndexViewModel()
+						FileIndexViewModel fvm = new FileIndexViewModel()
 						{
 							Title = file.Title,
 							Description = file.Description,
@@ -282,7 +282,7 @@ namespace BeachTime.Controllers
 					}
 
 					// Construct view model for the consultant
-					var consultant = new ConsultantIndexViewModel()
+					ConsultantIndexViewModel consultant = new ConsultantIndexViewModel()
 					{
 						FirstName = user.FirstName,
 						LastName = user.LastName,
@@ -295,7 +295,7 @@ namespace BeachTime.Controllers
 					occupiedViewModelList.Add(consultant);
 				}
 
-				var exec = UserManager.FindById(User.Identity.GetUserId());
+				BeachUser exec = UserManager.FindById(User.Identity.GetUserId());
 
 				if (exec == null)
 				{
@@ -304,7 +304,7 @@ namespace BeachTime.Controllers
 				}
 
 				// Construct view model for occupied users
-				var executive = new ExecutiveUserListViewModel()
+				ExecutiveUserListViewModel executive = new ExecutiveUserListViewModel()
 				{
 					BeachConsultantViewModels = occupiedViewModelList,
 					Navbar = new HomeNavbarViewModel()
@@ -339,7 +339,7 @@ namespace BeachTime.Controllers
 			try
 			{
 				HttpContext.ClearError();
-				var user = UserManager.FindById(id.ToString());
+				BeachUser user = UserManager.FindById(id.ToString());
 
 				// URL id doesn't match a user in the database, 404
 				if (user == null)
@@ -348,9 +348,9 @@ namespace BeachTime.Controllers
 				}
 
 				// Get all projects
-				var projectRepo = new ProjectRepository();
+				ProjectRepository projectRepo = new ProjectRepository();
 				// Get this user's current project
-				var project = projectRepo.FindByUserId(user.UserId);
+				Project project = projectRepo.FindByUserId(user.UserId);
 
 				// Create the ProjectViewModel for the project
 				ProjectViewModel pvm;
@@ -383,14 +383,14 @@ namespace BeachTime.Controllers
 				}
 
 				// Get all files
-				var fileRepo = new FileRepository();
-				var files = fileRepo.FindByUserId(user.UserId);
-				var fileViewModels = new List<FileIndexViewModel>();
+				FileRepository fileRepo = new FileRepository();
+				IEnumerable<FileInfo> files = fileRepo.FindByUserId(user.UserId);
+				List<FileIndexViewModel> fileViewModels = new List<FileIndexViewModel>();
 
 				// Create the FileIndexViewModels
-				foreach (var file in files)
+				foreach (FileInfo file in files)
 				{
-					var fvm = new FileIndexViewModel()
+					FileIndexViewModel fvm = new FileIndexViewModel()
 					{
 						Title = file.Title,
 						Description = file.Description,
@@ -399,10 +399,10 @@ namespace BeachTime.Controllers
 					fileViewModels.Add(fvm);
 				}
 
-				var exec = UserManager.FindById(User.Identity.GetUserId());
+				BeachUser exec = UserManager.FindById(User.Identity.GetUserId());
 
 				// Construct view model for the consultant
-				var consultant = new ConsultantIndexViewModel()
+				ConsultantIndexViewModel consultant = new ConsultantIndexViewModel()
 				{
 					FirstName = user.FirstName,
 					LastName = user.LastName,

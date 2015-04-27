@@ -12,9 +12,9 @@ namespace BeachTime
 
 		public override bool IsValidName(ControllerContext controllerContext, string actionName, MethodInfo methodInfo)
 		{
-			var isValidName = false;
-			var keyValue = string.Format("{0}:{1}", Name, Argument);
-			var value = controllerContext.Controller.ValueProvider.GetValue(keyValue);
+			bool isValidName = false;
+			string keyValue = string.Format("{0}:{1}", Name, Argument);
+			ValueProviderResult value = controllerContext.Controller.ValueProvider.GetValue(keyValue);
 
 			if (value != null)
 			{
