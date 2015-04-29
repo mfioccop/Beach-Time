@@ -7,7 +7,6 @@
     ViewBag.Title = "Index";
 }
 
-
 <div class="row text-center">
     <div class="col-xs-12">
         <h2 class="text-primary">
@@ -27,17 +26,12 @@
 
     <div class="col-xs-12 col-lg-4">
 
-
         <h3 class="text-primary">
             <b>Current Project</b>
+            <br />
+            <a style="font-size:50%; padding-left:2mm" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Select the project that you are currently working on. If you aren't actively on a project, select None from the available options.">More Information</a>
         </h3>
-
-        <div class="row">
-            <p class="text-secondary">
-                Select the project that you are currently working on.  If you aren't actively on a project, select "None" from the available options.
-            </p>
-        </div>
-
+        
         <div class="row">
             <div class="centered">
 
@@ -99,13 +93,9 @@
     <div class="col-xs-12 col-lg-4">
         <h3 class="text-primary">
             <b>Skills</b>
+            <br />
+            <a style="font-size:50%; padding-left:2mm" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Use this area to display skills that you possess; programming languages, frameworks, tools, and whatever else you feel comfortable using on a project.">More Information</a>
         </h3>
-
-        <div class="row">
-            <p class="text-secondary">
-                Use this area to display skills that you possess; programming languages, frameworks, tools, and whatever else you feel comfortable using on a project.
-            </p>
-        </div>
 
         <div class="row">
 
@@ -159,9 +149,6 @@
                 </table>
             </div>
 
-
-
-
         </div>
 
 
@@ -173,13 +160,9 @@
     <div class="col-xs-12 col-lg-4">
         <h3 class="text-primary">
             <b>Files</b>
+            <br />
+            <a style="font-size:50%; padding-left:2mm" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Upload your résumé and any other documents you think would be important for people to see.">More Information</a>
         </h3>
-
-        <div class="row">
-            <p class="text-secondary">
-                Upload your résumé and any other documents you think would be important for people to see.
-            </p>
-        </div>
 
         <div class="row">
 
@@ -237,6 +220,13 @@
     });
 
 </script>
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+
 
 
 <script type="text/javascript">

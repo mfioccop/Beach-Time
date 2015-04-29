@@ -15,60 +15,59 @@
 
 </div>
 
-<div class="row">
-
-    <h3 class="text-primary">
-        <b>Consultant Information</b>
-    </h3>
-
-    <div class="col-xs-12 col-sm-6">
-        <p class="text-secondary">
-            The number of consultants on projects and on the beach are displayed here.  Click one of the links to view a group in detail.
-        </p>
-    </div>
-    <div class="col-xs-12 col-sm-6">
-
-        <div class="row">
-
-            <div class="col-xs-12 text-center">
-                @Html.ActionLink("Consultants on Projects: " + @Model.OccupiedConsultantsCount, "Occupied", null, new { @class = "btn btn-success btn-lg" })
-            </div>
-            <br/><br/>
-        </div>
-        <div class="row">
-
-            <div class="col-xs-12 text-center">
-                @Html.ActionLink("Consultants on the Beach: " + @Model.BeachConsultantsCount, "Beach", null, new { @class = "btn btn-warning btn-lg" })
-            </div>
-            <br/>
-        </div>
-    </div>
-
-
-</div>
 
 <div class="row">
+    <div class="col-xs-12 col-lg-6">
+        <h3 class="text-primary">
+            <b>Consultant Information</b>
+            <br />
+            <a style="font-size:50%; padding-left:2mm" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="The number of consultants on projects and on the beach are displayed here.  Click one of the links to view a group in detail.">More Information</a>
+        </h3>
 
-    <h3 class="text-primary">
-        <b>Skills on the Beach</b>
-    </h3>
+        <div class="col-xs-12 col-sm-6">
 
-    <div class="col-xs-12 col-sm-6">
-        <p class="text-secondary">
-            All skills that consultants on the beach claim to have are displayed here.  Click the link to view the Beach to view each individual consultant.
-        </p>
+            <div class="row">
+
+                <div class="col-xs-12 text-center">
+                    @Html.ActionLink("Consultants on Projects: " + @Model.OccupiedConsultantsCount, "Occupied", null, new { @class = "btn btn-success btn-lg" })
+                </div>
+                <br /><br />
+            </div>
+            <div class="row">
+
+                <div class="col-xs-12 text-center">
+                    @Html.ActionLink("Consultants on the Beach: " + @Model.BeachConsultantsCount, "Beach", null, new { @class = "btn btn-warning btn-lg" })
+                </div>
+                <br />
+            </div>
+        </div>
     </div>
 
-    <div class="col-sm-6">
+    <div class="col-xs-12 col-lg-6">
+        <h3 class="text-primary">
+            <b>Skills on the Beach</b>
+            <br />
+            <a style="font-size:50%; padding-left:2mm" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="All skills that consultants on the beach claim to have are displayed here.  Click the link to view the Beach to view each individual consultant.">More Information</a>
+        </h3>
 
-        <div class="row text-center">
-            @{
-                foreach (string skill in Model.SkillList)
-                {
-                    <div class="col-xs-4">@skill</div>
+        <div class="col-sm-6">
+
+            <div class="row text-center">
+                @{
+                    foreach (string skill in Model.SkillList)
+                    {
+                        <div class="col-xs-4">@skill</div>
+                    }
                 }
-            }
-        </div>
+            </div>
 
+        </div>
     </div>
+
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>

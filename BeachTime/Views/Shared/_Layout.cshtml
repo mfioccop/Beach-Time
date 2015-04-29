@@ -7,19 +7,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - IbEACH</title>
+    <link rel="icon" href="~/favicon/favicon01.ico" type="image/x-icon" />
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
-
-
+    
     <style>
         .modal-content {
             width: 600px !important;
             margin: 30px auto !important;
         }
     </style>
-
-
 
 </head>
 <body>
@@ -28,14 +25,16 @@
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 
-    <div class="navbar navbar-default navbar-fixed-top">
+
+    <div class="navbar navbar-default navbar-fixed-top" style="background-color:#E63D0F">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            @Html.ActionLink("IbEACH", "Index", "Home", new { area = "" }, new { @class = "navbar-brand", @style = "font-family:Aharoni; font-size: 250%" })
+            <img src="~/img/sogeti02.png" class="navbar-brand" style="padding:5px;"/>
+            @Html.ActionLink("IbEACH", "Index", "Home", new { area = "" }, new { @class = "navbar-brand", @style = "font-family:Aharoni; font-size: 250%; image"})
         </div>
         <div class="navbar-collapse collapse ">
             <ul class="nav navbar-nav" style="font-size: 115%">
