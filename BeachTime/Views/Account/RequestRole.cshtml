@@ -31,10 +31,21 @@
                         {
                             @Html.AntiForgeryToken();
                             @Html.HiddenFor(m => m.UserId);
-                                                  { Model.RoleName = item; }
-                                                @Html.HiddenFor(m => m.RoleName);
+                                                          { Model.RoleName = item; }
+                                                        @Html.HiddenFor(m => m.RoleName);
 
-                            <th>@item</th>
+                            <th>
+                                @{
+                            if (item.Equals("Executive"))
+                            {
+                                @:Account Executive
+                                    }
+                            else
+                            {
+                                @item
+                                    }
+                                }
+                            </th>
                             <td>
                                 @if (Model.CurrentRolesList.Contains(item))
                                 {
@@ -48,7 +59,7 @@
                                 {
                                     <span class="btn btn-warning disabled button-wide">Pending Approval</span>
 
-                        }
+                                }
                             </td>
                         }
                     </tr>

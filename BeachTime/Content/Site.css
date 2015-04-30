@@ -1,6 +1,10 @@
-﻿body {
-    padding-top: 0px;
-    /*padding-bottom: 20px;*/
+﻿html {
+    min-height: 100%;
+    position: relative;
+}
+
+body {
+    height: 100%;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -53,12 +57,11 @@ textarea {
     margin: 1px;
 }
 
-.skill-block:before {
-    content: "";
-    display: block;
-    padding-top: 100%;
-
-}
+    .skill-block:before {
+        content: "";
+        display: block;
+        padding-top: 100%;
+    }
 
 .block-content {
     position: absolute;
@@ -90,7 +93,6 @@ textarea {
 .jumbotron:after {
     box-shadow: 15px 0 15px -15px inset;
     content: " ";
-    height: 100%;
     position: absolute;
     right: -15px;
     width: 15px;
@@ -98,8 +100,7 @@ textarea {
 
 .profile-dropdown {
     padding: 20px;
-    background-color: #FFE9D2;
-    
+    background-color: #ffffff;
 }
 
 .navbar-text {
@@ -115,11 +116,23 @@ textarea {
 }
 
 .footer {
+    /*box-shadow: inset 0 30px 5px -25px #222222;*/
     background-color: #333333;
     height: 100px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
 .footer-inline {
     margin-left: auto;
     margin-right: auto;
+    width: 100%;
+}
+
+#wrapper {
+    background-color: #F3F3F3;
+    min-height: 100%;
+    /*margin: 0 auto -100px;*/
+    padding: 0 0 100px;
 }

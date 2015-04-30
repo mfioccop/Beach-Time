@@ -893,7 +893,7 @@ body {
   font-size: 13px;
   line-height: 1.846;
   color: #666666;
-  background-color: #FFBA6A;
+  background-color: #F3F3F3;
 }
 input,
 button,
@@ -1403,6 +1403,12 @@ pre code {
 	width: 1170px;
   }
 }
+@media (min-width: 1700px) {
+  .container {
+	width: 1670px;
+  }
+}
+
 
 
 .container-fluid {
@@ -4094,7 +4100,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
 }
 .navbar-default {
-  background-color: #E63D0F;
+  background-color: #EF4527;
   border-color: #401104;
   box-shadow: inset 20px 20px 30px rgba(255, 255, 255, 0.1);
 }
@@ -4107,10 +4113,11 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   background-color: transparent;
 }
 .navbar-default .navbar-text {
-  color: #401104;
+  color: #ffffff;
 }
 .navbar-default .navbar-nav > li > a {
-  color: #401104;
+  color: #ffffff;
+    font-variant-caps: small-caps;
 }
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
@@ -4551,8 +4558,8 @@ a.list-group-item.active > .badge,
   padding: 30px;
   margin-bottom: 30px;
   color: inherit;
-  background-color: #FAF3EC;
-  box-shadow: 10px 10px 20px #92612E;
+  background-color: #ffffff;
+  box-shadow: 5px 5px 5px -5px #333333;
 }
 .jumbotron h1,
 .jumbotron .h1 {

@@ -26,6 +26,8 @@
     @RenderSection("scripts", required: false)
 
 
+
+
     <div class="navbar navbar-default navbar-fixed-top">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -33,7 +35,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <img src="~/img/sogeti02.png" class="navbar-brand" style="padding:5px;" />
+            <img src="~/img/sogeti02.png" class="navbar-brand" style="padding: 5px;" />
             @Html.ActionLink("BEACH", "Index", "Home", new { area = "" }, new { @class = "navbar-brand", @style = "font-family:Aharoni; font-size: 250%; image" })
         </div>
         <div class="navbar-collapse collapse ">
@@ -51,7 +53,7 @@
                     }
                     if (User.IsInRole("Executive"))
                     {
-                        <li>@Html.ActionLink("Executive Dashboard", "Index", "Executive")</li>
+                        <li>@Html.ActionLink("Account Executive Dashboard", "Index", "Executive")</li>
                     }
                     if (User.IsInRole("Admin"))
                     {
@@ -75,20 +77,28 @@
             </ul>
         </div>
     </div>
-    <div class="container body-content">
-        <div class="jumbotron">
-            @RenderBody()
+    <div id="wrapper">
+
+        <div class="container body-content">
+            <div class="jumbotron">
+                @RenderBody()
+            </div>
+        </div>
+
+    </div>
+    <div class="footer">
+        <div class="container">
+
+            footer
         </div>
     </div>
-
-
-
-
 
     <div id="modal-container" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-content">
         </div>
     </div>
+
+
 
     <script type="text/javascript">
         $(function () {
