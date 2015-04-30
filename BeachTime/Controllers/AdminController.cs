@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -69,6 +70,15 @@ namespace BeachTime.Controllers
 				{
 					UserViewModels = new List<AdminUserViewModel>(),
 					RequestViewModels = new List<AdminRoleRequestViewModel>(),
+					NewUserViewModel = new RegisterViewModel()
+					{
+						FirstName = "",
+						LastName = "",
+						UserName = "",
+						Email = "",
+						Password = "",
+						ConfirmPassword = ""
+					},
 					Navbar = new HomeNavbarViewModel()
 					{
 						FirstName = user.FirstName,
@@ -151,7 +161,8 @@ namespace BeachTime.Controllers
 					LastName = user.LastName,
 					Email = user.Email,
 					UserName = user.UserName,
-					UserId = user.UserId
+					UserId = user.UserId,
+					DeleteUser = false
 				};
 
 				return PartialView("_UpdateUser", userViewModel);
@@ -180,15 +191,25 @@ namespace BeachTime.Controllers
 		{
 			try
 			{
-				// Find the user in the database and populate it with updated data
+				UserStore store = new UserStore();
 				BeachUser user = UserManager.FindById(model.UserId.ToString());
+
+
+				// Delete user from the database if requested. WARNING: Permanent change!
+				if (model.DeleteUser)
+				{
+					store.DeleteAsync(user);
+					return RedirectToAction("Index");
+				}
+
+
+				// Find the user in the database and populate it with updated data
 				user.FirstName = model.FirstName;
 				user.LastName = model.LastName;
 				user.Email = model.Email;
 				user.UserName = model.UserName;
 
 				// Update the user in the database
-				UserStore store = new UserStore();
 				store.UpdateAsync(user);
 
 				return RedirectToAction("Index");
@@ -342,5 +363,46 @@ namespace BeachTime.Controllers
 		#endregion
 
 
+
+		public ActionResult AddNewUser()
+		{
+			return PartialView("AddNewUser");
+		}
+
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult AddNewUser(RegisterViewModel model)
+		{
+			if (model == null)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error"));
+				return RedirectToAction("Index");
+			}
+
+			try
+			{
+				if (ModelState.IsValid)
+				{
+					var user = new BeachUser()
+					{
+						UserName = model.UserName,
+						Email = model.Email,
+						FirstName = model.FirstName,
+						LastName = model.LastName
+					};
+					IdentityResult result = UserManager.CreateAsync(user, model.Password).Result;
+
+				}
+			}
+			catch (Exception e)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error"));
+				return RedirectToAction("Index");				
+			}
+
+			// If we got this far, something failed, redisplay form
+			return RedirectToAction("Index");
+		}
 	}
 }

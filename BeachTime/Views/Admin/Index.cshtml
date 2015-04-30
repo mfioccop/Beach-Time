@@ -1,7 +1,6 @@
 ﻿@using BeachTime.Models
 @model BeachTime.Models.AdminIndexViewModel
 
-
 @{
     ViewBag.Title = "Index";
 }
@@ -18,14 +17,64 @@
     </div>
 </div>
 
+
+
+<div class="row">
+
+    <h3 class="text-primary">
+        <b>Role Requests</b>
+    </h3>
+
+    <div class="col-xs-12 col-md-3">
+        <p class="text-secondary">
+            When a user requests permission for a new role it will be displayed here.  Click on a request to view more details and accept or deny it.
+        </p>
+    </div>
+
+    <div class="col-xs-12 col-md-9">
+        <div class="centered">
+            <table class="table">
+                <thead>
+
+                    <tr>
+                        <th>UserId</th>
+                        <th>Desired Role</th>
+                        <th>Accept/Deny</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @{
+                        foreach (AdminRoleRequestViewModel item in Model.RequestViewModels)
+                        {
+                            <tr>
+                                <td>@item.UserId</td>
+                                <td>@item.RoleName</td>
+                                <td>@Html.ActionLink("View Request", "UpdateRole", "Admin", new { id = item.RequestId }, new { @class = "modal-link btn btn-warning btn-sm" })</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+
 <div class="row">
 
     <h3 class="text-primary">
         <b>Users</b>
-        <br />
-        <a style="font-size:50%; padding-left:2mm" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="All users of the application are displayed here.  Click one of the links to update a particular user's information.">More Information</a>
     </h3>
-    
+
+    <div class="col-xs-12 col-md-3">
+        <p class="text-secondary">
+            All users of the application are displayed here. Click one of the links to update a particular user's information. Or, create new one using the following link:
+        </p>
+        @Html.ActionLink("Create New User", "AddNewUser", null, new { @class = "modal-link btn btn-block btn-success" })
+    </div>
+
     <div class="col-xs-12 col-md-9">
         <div class="centered">
             <table class="table table-condensed">
@@ -59,46 +108,6 @@
     </div>
 </div>
 
-<div class="row">
 
-    <h3 class="text-primary">
-        <b>Role Requests</b>
-        <br />
-        <a style="font-size:50%; padding-left:2mm" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="When a user requests permission for a new role it will be displayed here.  Click on a request to view more details and accept or deny it.">More Information</a>
-    </h3>
-    
-    <div class="col-xs-12 col-md-9">
-        <div class="centered">
-            <table class="table">
-                <thead>
 
-                    <tr>
-                        <th>UserId</th>
-                        <th>Desired Role</th>
-                        <th>Accept/Deny</th>
-                    </tr>
-                </thead>
-                <tbody>
 
-                    @{
-                        foreach (AdminRoleRequestViewModel item in Model.RequestViewModels)
-                        {
-                            <tr>
-                                <td>@item.UserId</td>
-                                <td>@item.RoleName</td>
-                                <td>@Html.ActionLink("View Request", "UpdateRole", "Admin", new { id = item.RequestId }, new { @class = "modal-link btn btn-warning btn-sm" })</td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-
-            </table>
-        </div>
-    </div>
-</div>
-
-<script>
-    $(document).ready(function () {
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-</script>

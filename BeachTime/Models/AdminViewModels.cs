@@ -28,6 +28,16 @@ namespace BeachTime.Models
 		/// </value>
 		[Required]
 		public List<AdminRoleRequestViewModel> RequestViewModels { get; set; }
+
+
+		/// <summary>
+		/// Gets or sets the register new user view model.
+		/// </summary>
+		/// <value>
+		/// The register new user view model.
+		/// </value>
+		[Required]
+		public RegisterViewModel NewUserViewModel { get; set; }
 	}
 
 
@@ -81,6 +91,16 @@ namespace BeachTime.Models
 		/// </value>
 		[Required]
 		public int UserId { get; set; }
+
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the user should be deleted.  WARNING: This is a permanent operation that cannot be undone without a database roll-back.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if [delete user]; otherwise, <c>false</c>.
+		/// </value>
+		[Required]
+		public bool DeleteUser { get; set; }
 	}
 
 	/// <summary>

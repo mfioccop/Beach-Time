@@ -147,7 +147,7 @@ namespace BeachTime.Controllers
 					}
 					// Get this user's current project
 					Project project = projectRepo.FindByUserId(user.UserId);
-					
+
 					// Create the ProjectViewModel for the project
 					ProjectViewModel pvm;
 
@@ -465,6 +465,53 @@ namespace BeachTime.Controllers
 			}
 			return RedirectToAction("Index", "Home");
 		}
-	}
 		#endregion
+
+
+		public ActionResult CreateNewProject()
+		{
+			return View("_CreateNewProject");
+		}
+
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult CreateNewProject(ProjectCreateViewModel model)
+		{
+			try
+			{
+				if (ModelState.IsValid)
+				{
+					ProjectRepository projectRepo = new ProjectRepository();
+
+					Project project = new Project()
+					{
+						Code = model.Code,
+						Description = model.Description,
+						EndDate = model.EndDate,
+						Name = model.Name,
+						StartDate = model.StartDate
+					};
+
+
+					projectRepo.Create(project);
+
+					return RedirectToAction("Index");
+
+				}
+				else
+				{
+					HttpContext.AddError(new HttpException(500, "Internal server error."));
+					return RedirectToAction("Index");
+				}
+			}
+			catch (Exception e)
+			{
+				HttpContext.AddError(new HttpException(500, "Internal server error."));
+			}
+			return RedirectToAction("Index");
+		}
+
+	}
+
 }
