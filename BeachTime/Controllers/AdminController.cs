@@ -161,7 +161,8 @@ namespace BeachTime.Controllers
 					LastName = user.LastName,
 					Email = user.Email,
 					UserName = user.UserName,
-					UserId = user.UserId
+					UserId = user.UserId,
+					DeleteUser = false
 				};
 
 				return PartialView("_UpdateUser", userViewModel);
@@ -190,15 +191,25 @@ namespace BeachTime.Controllers
 		{
 			try
 			{
-				// Find the user in the database and populate it with updated data
+				UserStore store = new UserStore();
 				BeachUser user = UserManager.FindById(model.UserId.ToString());
+
+
+				// Delete user from the database if requested. WARNING: Permanent change!
+				if (model.DeleteUser)
+				{
+					store.DeleteAsync(user);
+					return RedirectToAction("Index");
+				}
+
+
+				// Find the user in the database and populate it with updated data
 				user.FirstName = model.FirstName;
 				user.LastName = model.LastName;
 				user.Email = model.Email;
 				user.UserName = model.UserName;
 
 				// Update the user in the database
-				UserStore store = new UserStore();
 				store.UpdateAsync(user);
 
 				return RedirectToAction("Index");
@@ -353,9 +364,15 @@ namespace BeachTime.Controllers
 
 
 
+		public ActionResult AddNewUser()
+		{
+			return PartialView("AddNewUser");
+		}
+
+
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> AddNewUser(RegisterViewModel model)
+		public ActionResult AddNewUser(RegisterViewModel model)
 		{
 			if (model == null)
 			{
@@ -374,7 +391,7 @@ namespace BeachTime.Controllers
 						FirstName = model.FirstName,
 						LastName = model.LastName
 					};
-					IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+					IdentityResult result = UserManager.CreateAsync(user, model.Password).Result;
 
 				}
 			}
@@ -385,7 +402,7 @@ namespace BeachTime.Controllers
 			}
 
 			// If we got this far, something failed, redisplay form
-			return View("Index");
+			return RedirectToAction("Index");
 		}
 	}
 }

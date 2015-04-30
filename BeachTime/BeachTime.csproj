@@ -265,6 +265,7 @@
     <Content Include="Views\Error\Error500.cshtml" />
     <Content Include="Views\Error\Unknown.cshtml" />
     <Content Include="Views\Shared\_ProjectPartialView.cshtml" />
+    <Content Include="Views\Admin\AddNewUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

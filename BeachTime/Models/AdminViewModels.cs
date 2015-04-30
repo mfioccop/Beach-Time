@@ -91,6 +91,16 @@ namespace BeachTime.Models
 		/// </value>
 		[Required]
 		public int UserId { get; set; }
+
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the user should be deleted.  WARNING: This is a permanent operation that cannot be undone without a database roll-back.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if [delete user]; otherwise, <c>false</c>.
+		/// </value>
+		[Required]
+		public bool DeleteUser { get; set; }
 	}
 
 	/// <summary>

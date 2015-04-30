@@ -45,8 +45,22 @@
                 </div>
             </div>
 
+            <div style="background-color: rgba(255, 0, 0, 0.3); padding: 5px;">
+                <h4 class="text-danger"><b>Delete User</b></h4>
+                <b class="text-danger">WARNING: If you select this box, the user will be permanently deleted from the database.  Use with caution and double check your selection!</b>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DeleteUser, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.DeleteUser, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.DeleteUser, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+            </div>
+
             @Html.HiddenFor(model => model.UserId)
 
+            <br/>
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
