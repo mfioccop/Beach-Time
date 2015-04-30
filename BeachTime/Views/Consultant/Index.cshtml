@@ -1,4 +1,6 @@
 ﻿@using BeachTime.Models
+@using Microsoft.Ajax.Utilities
+@using Newtonsoft.Json.Serialization
 @model BeachTime.Models.ConsultantIndexViewModel
 
 @{
@@ -21,208 +23,247 @@
 
 </div>
 
-
 <div class="row">
 
+    <div class="col-xs-12 col-lg-4">
 
-    <h3 class="text-primary">
-        <b>Projects</b>
-    </h3>
 
-    <div class="col-xs-12 col-md-3">
-        <p class="text-secondary">
-            Add any past or current projects that you have worked on or are working on that may be useful to Account Executives when assigning new projects.
-        </p>
+        <h3 class="text-primary">
+            <b>Current Project</b>
+        </h3>
+
+        <div class="row">
+            <p class="text-secondary">
+                Select the project that you are currently working on.  If you aren't actively on a project, select "None" from the available options.
+            </p>
+        </div>
+
+        <div class="row">
+            <div class="centered">
+
+                @{
+
+                    if (Model.Project == null || Model.Project.ProjectId == -1)
+                    {
+                        <h4 class="text-warning">
+                            <b>Nothing here...</b>
+                        </h4>
+
+                        <p>
+                            You haven't selected an active project yet!  If you are working on a project, use the following form to select one.
+                        </p>
+                    }
+                    else
+                    {
+                        @Html.Partial("_ProjectPartialView", Model.Project)
+                    }
+
+                }
+
+
+            </div>
+
+        </div>
+
+        <div class="row">
+
+
+
+            @using (Html.BeginForm("UpdateProject", "Consultant", FormMethod.Post, new { @id = "projectChangeForm" }))
+            {
+                @Html.AntiForgeryToken();
+
+                @Html.HiddenFor(m => m.Project.ProjectId, new { id = "projectId" });
+
+                <select id="dropdown" name="Current Project">
+                    @{
+                foreach (SelectListItem selectListItem in Model.ProjectSelectListItems)
+                {
+                    <option value=@selectListItem.Value>@selectListItem.Text</option>
+                }
+
+                    }
+                </select>
+
+                // @Html.ActionLink("Update Project", "UpdateProject", new { id = 3})
+                //<input type="submit" class="btn btn-warning" value="Update Current Project"/>
+                <input type="submit" id="updateProjectButton" value="Update" />
+            }
+
+
+        </div>
+
+
     </div>
 
-    <div class="col-xs-12 col-md-9">
-        <div class="centered">
+    <div class="col-xs-12 col-lg-4">
+        <h3 class="text-primary">
+            <b>Skills</b>
+        </h3>
 
+        <div class="row">
+            <p class="text-secondary">
+                Use this area to display skills that you possess; programming languages, frameworks, tools, and whatever else you feel comfortable using on a project.
+            </p>
+        </div>
 
-            <table class="table table-stretch">
-                <thead>
+        <div class="row">
 
-                    <tr>
-                        <th>Project Name</th>
-                        <th>Completed?</th>
-                        <th>Update Project</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div class="centered">
 
+                <table class="table table-stretch">
+                    <thead>
 
-                    @{
-                        foreach (var item in Model.Projects)
-                        {
-                            <tr>
-                                <td>@item.ProjectId @item.ProjectName</td>
-                                <td>
-                                    @{
-                            if (item.IsCompleted)
+                        <tr>
+                            <th>Skill</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @{
+                            foreach (var item in Model.SkillList)
                             {
-                                @:<span class="text-success">&#10004;</span>
-                                }
-                            else
+                                <tr>
+                                    <td>@item</td>
+                                    <td>
+                                        @using (Html.BeginForm("DeleteSkill", "Consultant", new { name = item }, FormMethod.Post, new { @id = "projectForm", @class = "form-horizontal", role = "form" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <input type="submit" class="btn btn-danger btn-sm" value="&#10006;" />
+
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+
+                        <tr>
+                            @using (Html.BeginForm("AddSkill", "Consultant", FormMethod.Post, new { @id = "projectForm", @class = "form-horizontal", role = "form" }))
                             {
-                                @:<span class="text-danger">&#10006;</span>
-                                }
-
-                                    }
-                                </td>
-                                <td>@Html.ActionLink("Update", "UpdateProject", new { id = item.ProjectId }, new { @class = "modal-link btn btn-warning btn-sm" })</td>
-                            </tr>
-                        }
-                    }
-
-                    <tr>
-                        <td>
-                            @Html.ActionLink("Create Project", "CreateProject", null, new { @class = "modal-link btn btn-sm btn-success" })
-                        </td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-
-            </table>
-        </div>
-
-    </div>
+                                @Html.AntiForgeryToken()
 
 
-</div>
 
-<div class="row">
-    <h3 class="text-primary">
-        <b>Skills</b>
-    </h3>
-
-    <div class="col-xs-12 col-md-3">
-        <p class="text-secondary">
-            Use this area to display skills that you possess; programming languages, frameworks, tools, and whatever else you feel comfortable using on a project.
-        </p>
-    </div>
-
-    <div class="col-xs-12 col-md-9">
-        
-        <div class="centered">
-
-            <table class="table table-stretch">
-                <thead>
-
-                    <tr>
-                        <th>Skill</th>
-                        <th>Remove</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    @{
-                        foreach (var item in Model.SkillList)
-                        {
-                            <tr>
-                                <td>@item</td>
                                 <td>
-                                    @using (Html.BeginForm("DeleteSkill", "Consultant", new { name = item} , FormMethod.Post, new {@id = "projectForm", @class = "form-horizontal", role = "form"}))
-                                    {
-                                        @Html.AntiForgeryToken()
-                                        <input type="submit" class="btn btn-danger btn-sm" value="&#10006;" />
+                                    @Html.EditorFor(model => model.SkillViewModel)
 
-                                    }
                                 </td>
-                            </tr>
-                        }
-                    }
 
-                    <tr>
-                        @using (Html.BeginForm("AddSkill", "Consultant", FormMethod.Post, new { @id = "projectForm", @class = "form-horizontal", role = "form" }))
-                        {
-                            @Html.AntiForgeryToken()
-
-
-
-                            <td>
-                                @Html.EditorFor(model => model.SkillViewModel)
-
-                            </td>
-
-                            <td>
-                                <input type="submit" class="btn btn-success btn-sm" value="&#10010;" />
-                            </td>
-                        }
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        
-
-        
-    </div>
-
-
-</div>
+                                <td>
+                                    <input type="submit" class="btn btn-success btn-sm" value="&#10010;" />
+                                </td>
+                            }
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
 
 
 
-<div class="row">
-    <h3 class="text-primary">
-        <b>Files</b>
-    </h3>
-
-    <div class="col-xs-12 col-md-3">
-        <p class="text-secondary">
-            Upload your résumé and any other documents you think would be important for people to see.
-        </p>
-    </div>
-
-    <div class="col-xs-12 col-md-9">
-
-        <div class="centered">
-
-            <table class="table table-stretch">
-                <thead>
-
-                    <tr>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Download Link</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    @{
-                        foreach (var item in Model.FileList)
-                        {
-                            <tr>
-                                <td>@item.Title</td>
-                                <td>@item.Description</td>
-                                <td><a href=@item.Path class="btn btn-sm btn-warning">&#8659;</a></td>
-                            </tr>
-                        }
-                    }
-
-                    <tr>
-                        <td>
-                            @Html.ActionLink("Upload File", "UploadFile", null, new { @class = "modal-link btn btn-sm btn-success" })
-                        </td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
 
+
     </div>
 
 
+
+
+    <div class="col-xs-12 col-lg-4">
+        <h3 class="text-primary">
+            <b>Files</b>
+        </h3>
+
+        <div class="row">
+            <p class="text-secondary">
+                Upload your résumé and any other documents you think would be important for people to see.
+            </p>
+        </div>
+
+        <div class="row">
+
+            <div class="centered">
+
+                <table class="table table-stretch">
+                    <thead>
+
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Download Link</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @{
+                            foreach (var item in Model.FileList)
+                            {
+                                <tr>
+                                    <td>@item.Title</td>
+                                    <td>@item.Description</td>
+                                    <td><a href=@item.Path class="btn btn-sm btn-warning">&#8659;</a></td>
+                                </tr>
+                            }
+                        }
+
+                        <tr>
+                            <td>
+                                @Html.ActionLink("Upload File", "UploadFile", null, new { @class = "modal-link btn btn-sm btn-success" })
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+
+    </div>
 </div>
+
 
 <script type="text/javascript">
-    $(function () {
-        $('#approve-btn').click(function () {
-            $('#modal-container').modal('hide');
+
+    $(document).ready(function () {
+
+        $(function () {
+            $('#approve-btn').click(function () {
+                $('#modal-container').modal('hide');
+            });
         });
     });
 
+</script>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var uploadUrl = '@Url.Action("UpdateProject", "Consultant")';
+
+        //function updateProject() {
+        //    $("#projectChangeForm").attr('action', uploadUrl).submit();
+        //}
+
+        //function buttonClicked() {
+        //    $("#updateProjectButton").click(function () {
+        //        //$('#projectChangeForm').attr('route')
+        //        //uploadUrl += '/' + $('#Project_ID :selected').val();
+        //        uploadUrl += '/2';
+
+        //        updateProject();
+        //    });
+        //}
+
+
+        $('#dropdown').on('change',
+            function () {
+                $('#projectId').val($('#dropdown :selected').val());
+            });
+
+    });
 </script>

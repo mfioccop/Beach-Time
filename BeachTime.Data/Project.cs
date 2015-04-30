@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 namespace BeachTime.Data {
 	public class Project {
 		public int ProjectId { get; set; }
-		public int UserId { get; set; }
 		public string Name { get; set; }
-		public bool Completed { get; set; }
+		public string Description { get; set; }
+		public string Code { get; set; }
+		public DateTime? StartDate { get; set; }
+		public DateTime? EndDate { get; set; }
+		public DateTime? LastUpdated { get; set; }
 	}
 }

@@ -1,0 +1,12 @@
+﻿@model BeachTime.Models.ProjectViewModel
+
+<div>
+    <h4>
+        <b>@Model.Name</b> (code: @Model.Code)
+    </h4>
+    <h6>
+        <b>Projected duration:</b> @Model.StartDate.ToShortDateString() - @Model.EndDate.ToShortDateString()
+        <br/><br/>
+        <b>Description:</b> @Model.Description
+    </h6>
+</div>

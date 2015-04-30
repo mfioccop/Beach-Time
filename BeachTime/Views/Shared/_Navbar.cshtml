@@ -15,10 +15,16 @@
                         @Html.ValueForModel(Model.FirstName) @Html.ValueForModel(Model.LastName)
                     </div>
                     <div class="col-xs-12">
-                        Email:  @Html.ValueForModel(Model.Email)
+                        @Html.ValueForModel(Model.Email)
                     </div>
                     <div class="col-xs-12">
-                        Status: @Html.ValueForModel(Model.Status)
+                        @if (Request.IsAuthenticated)
+                        {
+                            if (User.IsInRole("Consultant"))
+                            {
+                                @:Status: @Html.ValueForModel(Model.Status)
+                            }
+                        }
                     </div>
                 </div>
                 <div class="nav-divider"></div>

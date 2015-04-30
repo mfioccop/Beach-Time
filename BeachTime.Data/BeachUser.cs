@@ -24,6 +24,7 @@ namespace BeachTime.Data {
 		public string GoogleAuthenticatorSecretKey { get; set; }
 		public string PasswordHash { get; set; }
 		public Guid SecurityStamp { get; set; }
+		public int? ProjectId { get; set; }
 		public DateTime? LastUpdated { get; set; }
 
 		public string Id { get { return UserId.ToString(CultureInfo.InvariantCulture); } }
@@ -60,6 +61,7 @@ namespace BeachTime.Data {
 			       string.Equals(GoogleAuthenticatorSecretKey, other.GoogleAuthenticatorSecretKey) &&
 			       string.Equals(PasswordHash, other.PasswordHash) &&
 			       SecurityStamp.Equals(other.SecurityStamp) &&
+				   ProjectId == other.ProjectId &&
 				   LastUpdated.Equals(other.LastUpdated);
 		}
 
@@ -82,6 +84,7 @@ namespace BeachTime.Data {
 					GoogleAuthenticatorSecretKey,
 					PasswordHash,
 					SecurityStamp,
+					ProjectId,
 					LastUpdated
 				}.GetHashCode();
 		}
@@ -89,10 +92,10 @@ namespace BeachTime.Data {
 		public override string ToString() {
 			return
 				string.Format(
-					"UserId: {0}, UserName: {1}, FirstName: {14}, LastName: {15}, Email: {2}, EmailConfirmed: {3}, PhoneNumber: {4}, PhoneNumberConfirmed: {5}, AccessFailedCount: {6}, LockoutEndDateUtc: {7}, LockoutEnabled: {8}, EmailTwoFactorEnabled: {9}, GoogleAuthenticatorEnabled: {10}, GoogleAuthenticatorSecretKey: {11}, PasswordHash: {12}, SecurityStamp: {13}, LastUpdate: {14}",
+					"UserId: {0}, UserName: {1}, FirstName: {14}, LastName: {15}, Email: {2}, EmailConfirmed: {3}, PhoneNumber: {4}, PhoneNumberConfirmed: {5}, AccessFailedCount: {6}, LockoutEndDateUtc: {7}, LockoutEnabled: {8}, EmailTwoFactorEnabled: {9}, GoogleAuthenticatorEnabled: {10}, GoogleAuthenticatorSecretKey: {11}, PasswordHash: {12}, SecurityStamp: {13}, ProjectId: {16}, LastUpdate: {17}",
 					UserId, UserName, Email, EmailConfirmed, PhoneNumber, PhoneNumberConfirmed, AccessFailedCount, LockoutEndDateUtc,
 					LockoutEnabled, EmailTwoFactorEnabled, GoogleAuthenticatorEnabled, GoogleAuthenticatorSecretKey, PasswordHash,
-					SecurityStamp, FirstName, LastName, LastUpdated);
+					SecurityStamp, FirstName, LastName, ProjectId, LastUpdated);
 		}
 	}
 

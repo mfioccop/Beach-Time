@@ -1,4 +1,5 @@
-﻿using BeachTime.Models;
+﻿using BeachTime.Data;
+using BeachTime.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
@@ -41,25 +42,27 @@ namespace BeachTime.Controllers
 		{
 			try
 			{
-				var navbarViewModel = new HomeNavbarViewModel()
+				HomeNavbarViewModel navbarViewModel = new HomeNavbarViewModel()
 				{
 					FirstName = String.Empty,
 					LastName = String.Empty,
 					Email = String.Empty,
-					Id = -1
+					Id = -1,
+					Status = String.Empty
 				};
 
 				// If no user is logged in, then return with the dummy user
 				if (User.Identity.GetUserId() == null) return navbarViewModel;
 			
 				// Otherwise find the user in the database and retrieve basic account information
-				var user = UserManager.FindById(User.Identity.GetUserId());
+				BeachUser user = UserManager.FindById(User.Identity.GetUserId());
 
 				// Populate the view model with the proper info
 				navbarViewModel.FirstName = user.FirstName;
 				navbarViewModel.LastName = user.LastName;
 				navbarViewModel.Email = user.Email;
 				navbarViewModel.Id = user.UserId;
+				navbarViewModel.Status = UserManager.UserOnBeach(user) ? "On the beach" : "On a project";
 
 				return navbarViewModel;
 			}

@@ -12,7 +12,7 @@ namespace BeachTime.Data {
 	public class UserStore : IBeachUserStore, IUserLoginStore<BeachUser>, IUserPasswordStore<BeachUser>,
 		IUserSecurityStampStore<BeachUser>, IUserEmailStore<BeachUser>, IUserLockoutStore<BeachUser, string>,
 		IUserTwoFactorStore<BeachUser, string>, IBeachUserRoleStore, IUserPhoneNumberStore<BeachUser>,
-		IUserSkillStore<BeachUser, string>, IUserBeachStore {
+		IUserSkillStore<BeachUser, string>, IUserBeachStore, IBeachUserProjectStore {
 		private readonly string connectionString;
 
 		public UserStore(string connectionStringName) {
@@ -53,6 +53,7 @@ namespace BeachTime.Data {
 			p.Add("@googleAuthenticatorSecretKey", beachUser.GoogleAuthenticatorSecretKey);
 			p.Add("@passwordHash", beachUser.PasswordHash);
 			p.Add("@securityStamp", beachUser.SecurityStamp);
+			p.Add("@projectId", beachUser.ProjectId);
 			return p;
 		}
 
@@ -578,9 +579,7 @@ namespace BeachTime.Data {
 			if (user == null)
 				throw new ArgumentNullException("user");
 
-			using (var con = GetConnection())
-				return con.Query<bool>("spUserBeachOn", new { user.UserId },
-					commandType: CommandType.StoredProcedure).Single();
+			return !user.ProjectId.HasValue;
 		}
 
 		public IEnumerable<BeachUser> GetBeachedUsers() {
@@ -590,6 +589,28 @@ namespace BeachTime.Data {
 		}
 
 		#endregion IUserBeachStore
+
+		# region IUserBeachProjectStore
+
+		public void AddProject(BeachUser user, Project project) {
+			if (user == null)
+				throw new ArgumentNullException("user");
+			if (project == null)
+				throw new ArgumentNullException("project");
+
+			user.ProjectId = project.ProjectId;
+			UpdateAsync(user).Wait();
+		}
+
+		public void RemoveProject(BeachUser user) {
+			if (user == null)
+				throw new ArgumentNullException("user");
+
+			user.ProjectId = null;
+			UpdateAsync(user).Wait();
+		}
+
+		#endregion IUserBeachProjectStore
 
 		#region Helpers
 		struct Skill {

@@ -31,14 +31,14 @@
         <div class="row">
 
             <div class="col-xs-12 text-center">
-                @Html.ActionLink("Consultants on Projects: " + @Model.OccupiedConsultantsCount, "Occupied", "Executive", new { @class = "btn btn-success btn-lg" })
+                @Html.ActionLink("Consultants on Projects: " + @Model.OccupiedConsultantsCount, "Occupied", null, new { @class = "btn btn-success btn-lg" })
             </div>
             <br/><br/>
         </div>
         <div class="row">
 
             <div class="col-xs-12 text-center">
-                @Html.ActionLink("Consultants on the Beach: " + @Model.BeachConsultantsCount, "Beach", "Executive", new { @class = "btn btn-warning btn-lg" })
+                @Html.ActionLink("Consultants on the Beach: " + @Model.BeachConsultantsCount, "Beach", null, new { @class = "btn btn-warning btn-lg" })
             </div>
             <br/>
         </div>
@@ -55,7 +55,7 @@
 
     <div class="col-xs-12 col-sm-6">
         <p class="text-secondary">
-            All skills that consultants on the beach claim to have are displayed here.  Click a skill to view a list of consultants on the beach with that particular skill.
+            All skills that consultants on the beach claim to have are displayed here.  Click the link to view the Beach to view each individual consultant.
         </p>
     </div>
 
@@ -63,7 +63,7 @@
 
         <div class="row text-center">
             @{
-                foreach (var skill in Model.SkillList)
+                foreach (string skill in Model.SkillList)
                 {
                     <div class="col-xs-4">@skill</div>
                 }
