@@ -364,12 +364,21 @@ namespace BeachTime.Controllers
 
 
 
+		/// <summary>
+		/// Returns a view for adding a new user.
+		/// </summary>
+		/// <returns></returns>
 		public ActionResult AddNewUser()
 		{
 			return PartialView("AddNewUser");
 		}
 
 
+		/// <summary>
+		/// Adds a new user to the database.
+		/// </summary>
+		/// <param name="model">The model.</param>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult AddNewUser(RegisterViewModel model)

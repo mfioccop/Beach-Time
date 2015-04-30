@@ -472,12 +472,21 @@ namespace BeachTime.Controllers
 		#endregion
 
 
+		/// <summary>
+		/// Returns the view for creating a new project.
+		/// </summary>
+		/// <returns></returns>
 		public ActionResult CreateNewProject()
 		{
 			return PartialView("_CreateNewProject");
 		}
 
 
+		/// <summary>
+		/// Creates a new project.
+		/// </summary>
+		/// <param name="model">The model.</param>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult CreateNewProject(ProjectCreateViewModel model)

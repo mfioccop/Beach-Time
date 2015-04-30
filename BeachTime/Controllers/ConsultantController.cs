@@ -124,12 +124,6 @@ namespace BeachTime.Controllers
 					listItems.Add(item);
 				}
 
-
-
-
-
-
-
 				// Get all files
 				FileRepository fileRepo = new FileRepository();
 				IEnumerable<FileInfo> files = fileRepo.FindByUserId(user.UserId);
@@ -194,116 +188,12 @@ namespace BeachTime.Controllers
 		}
 
 
-		// POST: Consultant/CreateProject
-		/// <summary>
-		/// POST: Creates a new project.
-		/// </summary>
-		/// <param name="model">The model containing the new project's information.</param>
-		/// <returns></returns>
-		//[HttpPost]
-		//[ValidateAntiForgeryToken]
-		//public ActionResult CreateProject(ProjectCreateViewModel model)
-		//{
-		//	try
-		//	{
-		//		var user = UserManager.FindById(User.Identity.GetUserId());
-
-		//		var project = new Project()
-		//		{
-		//			Name = model.ProjectName,
-		//			Completed = model.IsCompleted,
-		//			UserId = user.UserId
-		//		};
-
-		//		var projectRepo = new ProjectRepository();
-		//		projectRepo.Create(project);
-
-		//		return RedirectToAction("Index");
-		//	}
-		//	catch
-		//	{
-		//		HttpContext.AddError(new HttpException(500, "Internal server error."));
-		//		return View("_CreateProject");
-		//	}
-		//}
-
-
-		// GET: Consultant/UpdateProject/5
-		/// <summary>
-		/// GET: Page for updating a project.
-		/// </summary>
-		/// <param name="id">The id of the project.</param>
-		/// <returns></returns>
-		//public ActionResult UpdateProject(int id)
-		//{
-		//	try
-		//	{
-		//		var projectRepo = new ProjectRepository();
-		//		Project project = projectRepo.FindByProjectId(id);
-
-		//		// URL id doesn't match a project in the database, 404
-		//		if (project == null)
-		//		{
-		//			HttpContext.AddError(new HttpException(404, "Page not found"));
-		//			return RedirectToAction("PageNotFound", "Home");
-		//		}
-
-		//		// Check that the current user owns this project before allowing an update
-		//		if (int.Parse(User.Identity.GetUserId()) != project.UserId)
-		//			return RedirectToAction("Index", "Consultant");
-
-		//		var projectViewModel = new ProjectViewModel()
-		//		{
-		//			ProjectName = project.Name,
-		//			IsCompleted = project.Completed,
-		//			ProjectId = project.ProjectId
-		//		};
-
-		//		return PartialView("_UpdateProject", projectViewModel);
-		//	}
-		//	catch (Exception e)
-		//	{
-		//		HttpContext.AddError(new HttpException(500, "Internal server error."));
-		//	}
-		//	return RedirectToAction("Index", "Home");
-		//}
-
-
 		// POST: Consultant/UpdateProject
 		/// <summary>
 		/// POST: Updates a project.
 		/// </summary>
 		/// <param name="model">The model containing the project information to update.</param>
 		/// <returns></returns>
-		//[HttpPost]
-		//[ValidateAntiForgeryToken]
-		//public ActionResult UpdateProject(ConsultantIndexViewModel model)
-		//{
-		//	try
-		//	{
-		//		var user = UserManager.FindById(User.Identity.GetUserId());
-
-		//		var project = new Project()
-		//		{
-		//			Name = model.ProjectName,
-		//			Completed = model.IsCompleted,
-		//			UserId = user.UserId,
-		//			ProjectId = model.ProjectId
-		//		};
-
-		//		var projectRepo = new ProjectRepository();
-		//		projectRepo.Update(project);
-
-		//		return RedirectToAction("Index");
-		//	}
-		//	catch
-		//	{
-		//		HttpContext.AddError(new HttpException(500, "Internal server error."));
-		//		return View("_UpdateProject");
-		//	}
-		//}
-
-
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult UpdateProject(ConsultantIndexViewModel model)
