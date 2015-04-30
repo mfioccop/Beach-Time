@@ -13,6 +13,16 @@ namespace BeachTime.Models
 	public class ProjectCreateViewModel
 	{
 		/// <summary>
+		/// Gets or sets the project identifier.
+		/// </summary>
+		/// <value>
+		/// The project identifier.
+		/// </value>
+		[Required]
+		[Display(Name = "Project ID")]
+		public int ProjectId { get; set; }
+
+		/// <summary>
 		/// Gets or sets the name of the project.
 		/// </summary>
 		/// <value>
@@ -20,17 +30,48 @@ namespace BeachTime.Models
 		/// </value>
 		[Required]
 		[Display(Name = "Project Name")]
-		public string ProjectName { get; set; }
+		public string Name { get; set; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether this instance is completed.
+		/// Gets or sets the description.
 		/// </summary>
 		/// <value>
-		/// <c>true</c> if this instance is completed; otherwise, <c>false</c>.
+		/// The description of the project.
 		/// </value>
 		[Required]
-		[Display(Name = "Completed?")]
-		public bool IsCompleted { get; set; }
+		[Display(Name = "Description")]
+		public string Description { get; set; }
+
+		/// <summary>
+		/// Gets or sets the code.
+		/// </summary>
+		/// <value>
+		/// The project code.
+		/// </value>
+		[Required]
+		[Display(Name = "Project Code")]
+		public string Code { get; set; }
+
+		/// <summary>
+		/// Gets or sets the start date.
+		/// </summary>
+		/// <value>
+		/// The start date.
+		/// </value>
+		[Required]
+		[Display(Name = "Start Date")]
+		[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "MM/dd/yyyy")]
+		public DateTime StartDate { get; set; }
+
+		/// <summary>
+		/// Gets or sets the end date.
+		/// </summary>
+		/// <value>
+		/// The expected end date of the project.
+		/// </value>
+		[Required]
+		[Display(Name = "Projected End Date")]
+		public DateTime EndDate { get; set; }
 
 	}
 	/// <summary>
