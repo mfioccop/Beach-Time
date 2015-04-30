@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.EnterpriseServices;
+using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Security;
 using BeachTime.Data;
@@ -11,6 +13,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using WebGrease;
 using WebGrease.Css.Extensions;
+using FileInfo = BeachTime.Data.FileInfo;
 
 namespace BeachTime.Controllers
 {
@@ -425,10 +428,11 @@ namespace BeachTime.Controllers
 					{
 						Title = file.Title,
 						Description = file.Description,
-						Path = Server.MapPath(file.Path)
+						Path = Path.Combine(HostingEnvironment.ApplicationVirtualPath, file.Path)
 					};
 					fileViewModels.Add(fvm);
 				}
+
 
 				BeachUser exec = UserManager.FindById(User.Identity.GetUserId());
 

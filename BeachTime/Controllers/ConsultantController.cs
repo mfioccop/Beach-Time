@@ -142,7 +142,7 @@ namespace BeachTime.Controllers
 					{
 						Title = file.Title,
 						Description = file.Description,
-						Path = Server.MapPath(file.Path)
+						Path = file.Path
 					};
 					fileViewModels.Add(fvm);
 				}
@@ -401,20 +401,22 @@ namespace BeachTime.Controllers
 				{
 					if (model.FileUpload != null && model.FileUpload.ContentLength > 0)
 					{
-						string uploadDirectory = ConfigurationManager.AppSettings["FileUploadPath"];
-						uploadDirectory += "/" + user.UserId;
+						string uploadDirectoryBase = ConfigurationManager.AppSettings["FileUploadPath"];
+						string uploadDirectory = Path.Combine("~", uploadDirectoryBase, user.UserId.ToString());
 
 						if (!Directory.Exists(Server.MapPath(uploadDirectory)))
 						{
 							Directory.CreateDirectory(Server.MapPath(uploadDirectory));
 						}
 
+						string fileName = model.FileUpload.FileName.Replace(" ", "_");
+
 						// This is the path used to save the file to the application directory
-						string filePath = Path.Combine(Server.MapPath(uploadDirectory), model.FileUpload.FileName);
+						string filePath = Path.Combine(Server.MapPath(uploadDirectory), fileName);
 						model.FileUpload.SaveAs(filePath);
 
 						// This is the tail of the url that will be saved in the database
-						string fileUrl = Path.Combine(uploadDirectory, model.FileUpload.FileName);
+						string fileUrl = Path.Combine(uploadDirectoryBase, user.UserId.ToString(), fileName);
 
 						// Create the FileInfo instance to add to the database
 						FileInfo file = new FileInfo()
