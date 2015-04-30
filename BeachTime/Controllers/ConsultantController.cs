@@ -14,6 +14,9 @@ using FileInfo = BeachTime.Data.FileInfo;
 
 namespace BeachTime.Controllers
 {
+	/// <summary>
+	/// Controls all Consultant functionality.  Includes profile management, current project, and file uploads.
+	/// </summary>
 	[AuthorizeBeachUser(Roles = "Consultant")]
 	public class ConsultantController : Controller
 	{

@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeachTime", "BeachTime\BeachTime.csproj", "{BA7B4907-E249-41BD-974F-E05CD82A7A0A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeachTime.Data", "BeachTime.Data\BeachTime.Data.csproj", "{26145CEB-E87B-4D60-9A71-A230D7BBA83E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeachTime.Data.Tests", "BeachTime.Data.Tests\BeachTime.Data.Tests.csproj", "{CC55F4B7-0381-454D-85D8-5A0325F1A654}"
+EndProject
+Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "BeachTimeDocumentation", "BeachTimeDocumentation\BeachTimeDocumentation.shfbproj", "{2D617F21-809E-4A9F-BF93-21571CD48AD4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{CC55F4B7-0381-454D-85D8-5A0325F1A654}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC55F4B7-0381-454D-85D8-5A0325F1A654}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC55F4B7-0381-454D-85D8-5A0325F1A654}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D617F21-809E-4A9F-BF93-21571CD48AD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D617F21-809E-4A9F-BF93-21571CD48AD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D617F21-809E-4A9F-BF93-21571CD48AD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D617F21-809E-4A9F-BF93-21571CD48AD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

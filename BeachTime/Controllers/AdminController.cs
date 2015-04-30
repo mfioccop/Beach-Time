@@ -13,7 +13,7 @@ using Microsoft.AspNet.Identity.Owin;
 namespace BeachTime.Controllers
 {
 	/// <summary>
-	/// 
+	/// Controls all Administrator functionality.  This includes user and role management.
 	/// </summary>
 	[AuthorizeBeachUser(Roles = "Admin")]
 	public class AdminController : Controller

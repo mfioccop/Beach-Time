@@ -17,6 +17,9 @@ using FileInfo = BeachTime.Data.FileInfo;
 
 namespace BeachTime.Controllers
 {
+	/// <summary>
+	/// Controls all Account Executive functionality.  Includes project management and overviews of the statuses of all consultants.
+	/// </summary>
 	[AuthorizeBeachUser(Roles = "Executive")]
 	public class ExecutiveController : Controller
 	{
