@@ -69,6 +69,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Diagram.png" />
     <Content Include="Scripts\CreateDatabase.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

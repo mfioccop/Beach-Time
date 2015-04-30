@@ -10,7 +10,7 @@ namespace BeachTime.Data {
 		/// <summary>
 		/// Add a role change request to the database
 		/// </summary>
-		/// <param name="request">The request, UserId and RoleName must be specified</param>
+		/// <param name="request">The request. UserId and RoleName must be specified</param>
 		void RequestRoleChange(RoleChangeRequest request);
 
 		/// <summary>
