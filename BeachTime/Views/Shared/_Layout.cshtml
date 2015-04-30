@@ -10,7 +10,7 @@
     <link rel="icon" href="~/favicon/favicon01.ico" type="image/x-icon" />
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-    
+
     <style>
         .modal-content {
             width: 600px !important;
@@ -26,15 +26,15 @@
     @RenderSection("scripts", required: false)
 
 
-    <div class="navbar navbar-default navbar-fixed-top" style="background-color:#E63D0F">
+    <div class="navbar navbar-default navbar-fixed-top">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <img src="~/img/sogeti02.png" class="navbar-brand" style="padding:5px;"/>
-            @Html.ActionLink("IbEACH", "Index", "Home", new { area = "" }, new { @class = "navbar-brand", @style = "font-family:Aharoni; font-size: 250%; image"})
+            <img src="~/img/sogeti02.png" class="navbar-brand" style="padding:5px;" />
+            @Html.ActionLink("BEACH", "Index", "Home", new { area = "" }, new { @class = "navbar-brand", @style = "font-family:Aharoni; font-size: 250%; image" })
         </div>
         <div class="navbar-collapse collapse ">
             <ul class="nav navbar-nav" style="font-size: 115%">
@@ -79,11 +79,9 @@
         <div class="jumbotron">
             @RenderBody()
         </div>
-        <footer>
-            <p>&copy; @DateTime.Now.Year - IbEACH</p>
-        </footer>
-
     </div>
+
+
 
 
 

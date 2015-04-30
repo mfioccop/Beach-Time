@@ -1,6 +1,6 @@
 ﻿body {
     padding-top: 0px;
-    padding-bottom: 20px;
+    /*padding-bottom: 20px;*/
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -77,6 +77,25 @@ textarea {
     padding-top: 80px;
 }
 
+.jumbotron:before {
+    box-shadow: -15px 0 15px -15px inset;
+    content: " ";
+    height: 100%;
+    left: -15px;
+    position: absolute;
+    top: 0;
+    width: 15px;
+}
+
+.jumbotron:after {
+    box-shadow: 15px 0 15px -15px inset;
+    content: " ";
+    height: 100%;
+    position: absolute;
+    right: -15px;
+    width: 15px;
+}
+
 .profile-dropdown {
     padding: 20px;
     background-color: #FFE9D2;
@@ -93,4 +112,14 @@ textarea {
 
 .responsive-header {
     font-size: 10vw;
+}
+
+.footer {
+    background-color: #333333;
+    height: 100px;
+}
+
+.footer-inline {
+    margin-left: auto;
+    margin-right: auto;
 }
