@@ -470,7 +470,7 @@ namespace BeachTime.Controllers
 
 		public ActionResult CreateNewProject()
 		{
-			return View("_CreateNewProject");
+			return PartialView("_CreateNewProject");
 		}
 
 

@@ -77,27 +77,14 @@
             To create a new project that consultants will be able to assign themselves to, use the following link:
         </p>
 
-        @Html.ActionLink("Create New Project", "CreateNewProject", null, new { @class = "modal-link btn btn-block btn-success" })
+        @Html.ActionLink("Create New Project", "CreateNewProject", null, new { @class = "modal-link btn btn-success" })
 
 
     </div>
 
-    <div class="col-sm-6">
-
-        <input id="datepicker" class="form-control text-box single-line" data-val="true" data-val-date="The field Start Date must be a date." data-val-required="The Start Date field is required." id="StartDate" name="StartDate" value="" type="datetime">
-
-    </div>
 
 </div>
 
-<script type="text/javascript">
-    $(function () { // will trigger when the document is ready
-        $('#datepicker').datepicker(
-        {
-            dateFormat: "mm/dd/yyyy"
-        }); //Initialise any date pickers
-    });
-</script>
 
 <script>
     $(document).ready(function () {

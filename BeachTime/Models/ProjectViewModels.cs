@@ -60,7 +60,6 @@ namespace BeachTime.Models
 		/// </value>
 		[Required]
 		[Display(Name = "Start Date")]
-		[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "MM/dd/yyyy")]
 		public DateTime StartDate { get; set; }
 
 		/// <summary>

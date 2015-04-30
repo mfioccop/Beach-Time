@@ -37,7 +37,7 @@
 
                 @{
 
-                    if (Model.Project == null || Model.Project.ProjectId == -1)
+                    if (Model.Project == null || Model.Project.ProjectId == -1 || Model.Project.Name == null)
                     {
                         <h4 class="text-warning">
                             <b>Nothing here...</b>

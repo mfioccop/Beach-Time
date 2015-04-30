@@ -65,6 +65,14 @@ namespace BeachTime.Controllers
 				List<ProjectViewModel> projectViewModels = new List<ProjectViewModel>();
 				List<SelectListItem> listItems = new List<SelectListItem>();
 
+				// The "None" project so user's can clear their current project
+				listItems.Add(new SelectListItem()
+				{
+					Disabled = false,
+					Text = "None",
+					Value = "-1",
+					Selected = false
+				});
 
 				// Create the ProjectViewModel for the consultant's current project
 				Project project = projectRepo.FindByProjectId(user.ProjectId.GetValueOrDefault());
@@ -108,13 +116,14 @@ namespace BeachTime.Controllers
 						Value = proj.ProjectId.ToString()
 					};
 
-					if (proj.ProjectId == project.ProjectId)
+					if (project != null && proj.ProjectId == project.ProjectId)
 					{
 						item.Selected = true;
 					}
 
 					listItems.Add(item);
 				}
+
 
 
 
@@ -307,9 +316,19 @@ namespace BeachTime.Controllers
 				ProjectRepository projectRepo = new ProjectRepository();
 				Project project = projectRepo.FindByProjectId(model.Project.ProjectId);
 
-				// Setting the user's current project to the one selected
 				UserStore userStore = new UserStore();
-				userStore.AddProject(user, project);
+
+
+				// If the project doesn't exist in the database, clear user's project
+				if (project == null)
+				{
+					userStore.RemoveProject(user);
+				}
+				else
+				{
+					// Setting the user's current project to the one selected
+					userStore.AddProject(user, project);
+				}
 
 				return RedirectToAction("Index");
 			}
